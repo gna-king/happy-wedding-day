@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>진아와 형민의 초대장</title>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: sans-serif; }
+    
+    .train { 
+      display: flex; 
+      width: 200vw; 
+      transition: transform 1.5s ease-in-out; /* 스르륵 부드럽게 넘어가기 */
+    }
+    
+    .room { 
+      width: 100vw; height: 100vh; 
+      display: flex; flex-direction: column; 
+      align-items: center; justify-content: center; 
+    }
+    
+    #room1 { background-color: #fff0f5; }
+    #room2 { background-color: #f0fff0; }
+    
+    button { 
+      padding: 15px 30px; font-size: 20px; 
+      background-color: #ff69b4; color: white; 
+      border: none; border-radius: 20px; cursor: pointer; margin-top: 30px;
+    }
+    
+    .move-left { transform: translateX(-100vw); }
+
+    /* --- 여기서부터 2번 방 꾸미기 마법 --- */
+    
+    /* 1. 길을 그릴 도화지 (투명한 박스) */
+    .map-box {
+      position: relative;
+      width: 300px; height: 500px;
+      margin-top: 20px;
+    }
+
+    /* 2. 구불구불한 점선 기찻길 그리기 */
+    .path-line {
+      width: 100%; height: 100%;
+      fill: none; /* 안쪽은 색칠 안 함 */
+      stroke: #8B4513; /* 나무색 선 */
+      stroke-width: 4; /* 선 굵기 */
+      stroke-dasharray: 8, 8; /* 점선으로 만들기 */
+    }
+
+    /* 3. 진아와 형민 캐릭터 (귀여운 이모지!) */
+    .couple-icon {
+      font-size: 40px;
+      position: absolute;
+      top: -20px; left: -20px;
+      
+      /* 기찻길이랑 똑같은 모양의 투명 레일 깔기 */
+      offset-path: path("M 50,50 C 250,50 250,250 150,350 C 50,450 150,550 250,500");
+      
+      /* 4초 동안 투명 레일을 따라 걷는 애니메이션 */
+      animation: walk 4s linear forwards;
+      
+      /* 처음엔 모터 끄기 (방에 들어오기 전까진 멈춰있기) */
+      animation-play-state: paused; 
+    }
+
+    /* 4. 첫 만남 팻말 위치 */
+    .signpost {
+      font-size: 25px;
+      position: absolute;
+      left: 220px; top: 480px; /* 도착 지점에 팻말 세우기 */
+      cursor: pointer;
+      background-color: white;
+      padding: 5px 10px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* 5. 걷는 규칙 (0% 출발 -> 100% 도착) */
+    @keyframes walk {
+      0% { offset-distance: 0%; }
+      100% { offset-distance: 100%; }
+    }
+
+    /* 6. 핵심 마법! 기차가 2번 방으로 넘어오면 캐릭터 모터 켜기! */
+    .move-left #room2 .couple-icon {
+      animation-play-state: running; 
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="train" id="myTrain">
+    
+    <div class="room" id="room1">
+      <h1>진아 & 형민 결혼해요!</h1>
+      <h2>2026년 5월 20일</h2>
+      <button onclick="goNextRoom()">진아랑 형민이 이야기 보러가기</button>
+    </div>
+
+    <div class="room" id="room2">
+      <h2 style="color: #4CAF50;">우리의 여정</h2>
+      
+      <div class="map-box">
+        <svg class="path-line">
+          <path d="M 50,50 C 250,50 250,250 150,350 C 50,450 150,550 250,500"></path>
+        </svg>
+
+        <div class="couple-icon">👫</div>
+
+        <div class="signpost" onclick="showPhoto()">📍첫 만남</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function goNextRoom() {
+      // 1번: 스위치를 누르면 화면이 옆으로 넘어감
+      document.getElementById('myTrain').classList.add('move-left');
+    }
+
+    function showPhoto() {
+      // 2번: 팻말을 눌렀을 때 나타나는 작은 알림창!
+      alert("짜잔! 나중에 여기에 진아와 형민의 첫 만남 사진이 뜰 거예요!");
+    }
+  </script>
+</body>
+</html>
