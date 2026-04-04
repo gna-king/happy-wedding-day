@@ -9,92 +9,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
-        /* 기본 초기화 및 폰트 세팅 */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            background-color: #f6f5f5; 
-            font-family: 'Noto Sans KR', sans-serif; 
-            color: #333; 
-            display: flex; justify-content: center; 
-        }
+        body { background-color: #f6f5f5; font-family: 'Noto Sans KR', sans-serif; color: #333; display: flex; justify-content: center; }
         
-        .phone-wrapper { 
-            width: 100%; max-width: 420px; background-color: #ffffff; 
-            min-height: 100vh; position: relative; overflow: hidden; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-        }
-        
+        .phone-wrapper { width: 100%; max-width: 420px; background-color: #ffffff; min-height: 100vh; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .slider-track { display: flex; width: 200%; min-height: 100vh; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1); }
         .page { width: 50%; min-height: 100vh; overflow-y: auto; background-color: #fff; padding-bottom: 80px; }
 
         .section { padding: 70px 24px; text-align: center; }
-        .section-title { 
-            font-family: 'Gowun Batang', serif; /* 폰트 변경 */
-            font-size: 14px; font-weight: 700; color: #8c8279; 
-            letter-spacing: 0.25em; margin-bottom: 45px; 
-        }
+        .section-title { font-family: 'Gowun Batang', serif; font-size: 14px; font-weight: 700; color: #8c8279; letter-spacing: 0.25em; margin-bottom: 45px; }
 
-        /* 1. 메인 커버 */
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
         .main-img-placeholder { width: 100%; height: 60vh; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; }
         
         .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; }
-        .btn-story { 
-            width: 100%; padding: 15px 0; background-color: #fff; 
-            border: 1px solid #e1dfdc; color: #555; font-family: 'Noto Sans KR', sans-serif;
-            font-size: 13px; font-weight: 400; letter-spacing: 1px; cursor: pointer;
-        }
+        .btn-story { width: 100%; padding: 15px 0; background-color: #fff; border: 1px solid #e1dfdc; color: #555; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 400; letter-spacing: 1px; cursor: pointer; }
 
-        /* 메인 텍스트 영역 가운데 정렬 및 폰트 변경 */
         .main-text { padding: 40px 0 30px 0; text-align: center; }
         .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
         .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; font-weight: 400; letter-spacing: 0.5px; }
 
-        /* 2. 초대의 글 */
         .greeting-wrap { background-color: #faf9f8; padding: 80px 24px; text-align: center; }
         .greeting-text { font-family: 'Gowun Batang', serif; font-size: 16px; line-height: 2.2; color: #444; font-weight: 400; margin-bottom: 50px; }
         .parents-info { font-family: 'Gowun Batang', serif; font-size: 16px; color: #333; line-height: 2; font-weight: 400; }
         .parents-info strong { font-weight: 700; font-size: 17px; margin-left: 6px; }
 
-        /* 3. 갤러리 */
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
         .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; }
 
-        /* 4. 달력 & D-Day */
         .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; letter-spacing: 1px; }
         .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
         .cal-table th, .cal-table td { padding: 12px 0; font-size: 14px; font-weight: 400; color: #666; text-align: center; }
         .cal-table th { color: #a39c95; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .cal-table td.sun { color: #d67a7a; }
-        .cal-table td.d-day span { 
-            background-color: #8c8279; color: #fff; 
-            border-radius: 50%; width: 28px; height: 28px; 
-            display: inline-flex; align-items: center; justify-content: center; font-weight: 500; 
-        }
-        .d-day-counter { 
-            margin-top: 35px; font-family: 'Gowun Batang', serif; 
-            font-size: 16px; color: #555; text-align: center; letter-spacing: 0.5px; 
-        }
+        .cal-table td.d-day span { background-color: #8c8279; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; }
+        
+        .d-day-counter { margin-top: 35px; font-family: 'Gowun Batang', serif; font-size: 16px; color: #555; text-align: center; letter-spacing: 0.5px; }
         .d-day-counter strong { color: #8c8279; font-weight: 700; font-size: 18px; }
 
-        /* 5. 오시는 길 */
         .map-section { padding: 60px 24px; }
         .map-title { text-align: center; margin-bottom: 35px; }
         
-        /* Location 아래 장소와 주소 가운데 정렬 */
         .venue-info { text-align: center; margin-bottom: 35px; }
         .venue-name { font-family: 'Gowun Batang', serif; font-size: 22px; font-weight: 700; color: #222; margin-bottom: 10px; }
         .venue-addr { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; font-weight: 400; margin-bottom: 25px; line-height: 1.6; }
         
         .map-embed { width: 100%; height: 240px; background-color: #eee; margin-bottom: 15px; }
         
-        /* 내비게이션 버튼 (로고 수정 및 티맵 추가) */
         .navi-btns { display: flex; gap: 8px; margin-bottom: 50px; }
-        .navi-btn { 
-            flex: 1; padding: 12px 0; background-color: #f9f9f9; 
-            border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; 
-            display: flex; justify-content: center; align-items: center; gap: 6px; 
-        }
+        .navi-btn { flex: 1; padding: 12px 0; background-color: #f9f9f9; border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .navi-btn span { font-size: 12px; color: #555; font-weight: 400; }
         .navi-btn svg { width: 18px; height: 18px; border-radius: 4px; }
 
@@ -104,23 +67,12 @@
         .way-desc h4 { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; letter-spacing: -0.3px; }
         .way-desc p { font-size: 14px; color: #666; font-weight: 300; line-height: 1.7; }
 
-        /* 6. 마음 전하실 곳 */
         .account-wrap { background-color: #faf9f8; padding: 70px 24px; text-align: center; }
-        .acc-desc { 
-            font-family: 'Gowun Batang', serif; text-align: center; 
-            font-size: 15px; color: #777; line-height: 1.8; font-weight: 400; margin-bottom: 40px; 
-        }
+        .acc-desc { font-family: 'Gowun Batang', serif; text-align: center; font-size: 15px; color: #777; line-height: 1.8; font-weight: 400; margin-bottom: 40px; }
         
         .acc-box { margin-bottom: 10px; }
-        .acc-btn { 
-            width: 100%; background-color: #fff; border: 1px solid #e1dfdc; 
-            padding: 16px 20px; display: flex; justify-content: space-between; 
-            align-items: center; font-size: 14px; color: #444; font-weight: 400; cursor: pointer;
-        }
-        .acc-content { 
-            background-color: #fcfbfb; border: 1px solid #e1dfdc; border-top: none; 
-            padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; 
-        }
+        .acc-btn { width: 100%; background-color: #fff; border: 1px solid #e1dfdc; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #444; font-weight: 400; cursor: pointer; }
+        .acc-content { background-color: #fcfbfb; border: 1px solid #e1dfdc; border-top: none; padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .acc-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px dashed #e1dfdc; }
         .acc-row:last-child { border-bottom: none; }
         .acc-info { text-align: left; font-size: 13.5px; color: #555; line-height: 1.6; font-weight: 300; }
@@ -136,14 +88,11 @@
     <div class="slider-track" id="sliderTrack">
         
         <div class="page">
-            
             <div class="main-cover">
                 <div class="main-img-placeholder">[일러스트 또는 사진]</div>
-                
                 <div class="btn-wrap">
                     <button class="btn-story" onclick="goTimeline()">진아 · 형민 스토리 보러가기</button>
                 </div>
-
                 <div class="main-text">
                     <h1>진아 & 형민</h1>
                     <p>2026. 10. 11. SUN. PM 3:00<br>서울대학교 교수회관</p>
@@ -212,11 +161,18 @@
                         <svg viewBox="0 0 24 24" style="background:#FEE500;">
                             <path d="M12 5.5c-4.418 0-8 2.866-8 6.4 0 2.27 1.51 4.254 3.784 5.396-.16.586-.58 2.125-.6 2.213-.026.106.084.194.182.13.078-.05 2.32-1.504 3.233-2.138.52.072 1.065.11 1.625.11 4.418 0 8-2.866 8-6.4S16.418 5.5 12 5.5z" fill="#3C1E1E"/>
                         </svg>
-                        <span>카카오네비</span>
+                        <span>카카오내비</span>
                     </a>
                     <a href="tmap://search?name=서울대교수회관" class="navi-btn">
-                        <svg viewBox="0 0 24 24" style="background:#FF4B4B;">
-                            <text x="12" y="17" fill="white" font-size="15" font-weight="bold" font-family="sans-serif" text-anchor="middle">T</text>
+                        <svg viewBox="0 0 24 24" style="background:#fff; border: 1px solid #eee;">
+                            <defs>
+                                <linearGradient id="tmapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#00E676" />
+                                    <stop offset="50%" stop-color="#2979FF" />
+                                    <stop offset="100%" stop-color="#D500F9" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M7 8h10v2.5h-3.5v7h-3v-7H7z" fill="url(#tmapGrad)"/>
                         </svg>
                         <span>티맵</span>
                     </a>
@@ -286,11 +242,9 @@
 </div>
 
 <script>
-    // 타임라인 슬라이드 기능
     function goTimeline() { document.getElementById('sliderTrack').classList.add('show-timeline'); window.scrollTo(0,0); }
     function goHome() { document.getElementById('sliderTrack').classList.remove('show-timeline'); window.scrollTo(0,0); }
     
-    // 아코디언 기능
     function toggleAcc(id) {
         const content = document.getElementById(id);
         const btnText = content.previousElementSibling.querySelector('span');
@@ -303,7 +257,6 @@
         }
     }
 
-    // 계좌 복사 기능
     function copyText(text) {
         const t = document.createElement("textarea");
         document.body.appendChild(t);
@@ -313,10 +266,26 @@
         alert("계좌번호가 복사되었습니다.");
     }
 
-    // D-Day 자동 계산 로직
+    // D-Day 자동 계산 로직 (페이지 로딩 기다리지 않고 즉시 실행)
     function calculateDday() {
-        // 결혼식 날짜: 2026년 10월 11일
         const weddingDate = new Date("2026-10-11T00:00:00").getTime();
         const today = new Date().getTime();
         const gap = weddingDate - today;
-        const dDay = Math.ceil(gap / (1000 * 60 * 6
+        const dDay = Math.ceil(gap / (1000 * 60 * 60 * 24));
+        
+        const dDayElement = document.getElementById('dDayText');
+        if (dDay > 0) {
+            dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${dDay}일</strong> 남았습니다.`;
+        } else if (dDay === 0) {
+            dDayElement.innerHTML = `<strong>오늘</strong>은 진아와 형민의 예식일입니다!`;
+        } else {
+            dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${Math.abs(dDay)}일</strong> 지났습니다.`;
+        }
+    }
+    
+    // 함수 즉시 실행 (이제 문제없이 바로 뜹니다)
+    calculateDday();
+</script>
+
+</body>
+</html>
