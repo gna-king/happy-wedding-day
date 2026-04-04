@@ -1,166 +1,227 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>진아 & 형민 우리의 시작 (PRO)</title>
-  <style>
-    /* 기본 리셋 */
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-    body { font-family: 'Pretendard', sans-serif; overflow: hidden; background-color: #FAFAFA; color: #333; }
-    
-    /* 2칸짜리 가로 기차 (전체 컨테이너) */
-    .app-container {
-      display: flex;
-      width: 200vw; height: 100vh;
-      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
-    }
-    
-    /* 개별 페이지 공통 */
-    .section { width: 100vw; height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    
-    /* --- 1번 방 (첫 화면) --- */
-    .home-section { background-color: #FFFFFF; text-align: center; padding: 20px; }
-    .home-section h1 { font-size: 28px; margin-bottom: 15px; font-weight: 600; }
-    .home-section p { font-size: 16px; color: #666; margin-bottom: 5px; }
-    
-    .start-btn {
-      margin-top: 50px; padding: 18px 36px;
-      background-color: #333; color: #fff;
-      border: none; border-radius: 30px;
-      font-size: 16px; font-weight: bold;
-      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      transition: background 0.3s, transform 0.1s;
-    }
-    .start-btn:active { transform: scale(0.97); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>진아 & 형민 결혼합니다</title>
+    <style>
+        /* 기본 리셋 및 폰트 설정 (고급스러운 명조+고딕 혼합) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background-color: #f4f4f4; /* PC에서 볼 때의 배경색 */
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; /* 화면 중앙 정렬 */
+        }
+        
+        /* 1. 모바일 최적화 컨테이너 (PC에서도 폰 비율 유지) */
+        .phone-container {
+            width: 100%; 
+            max-width: 430px; /* 스마트폰 최대 너비 */
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden; /* 영역 밖으로 나가는 슬라이드 숨김 */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
 
-    /* --- 2번 방 (구불구불 길) --- */
-    .story-section { 
-      background-color: #F4F7F6;
-      /* 중요: '깔끔한' 새 배경 이미지를 배경으로 사용 */
-      background-image: url('image_2.png'); 
-      background-size: cover; 
-      background-position: center; 
-      position: relative;
-    }
+        /* 2. 페이지 슬라이드 트랙 (방 2개를 가로로 연결) */
+        .slider-track {
+            display: flex;
+            width: 200%; /* 페이지가 2개이므로 200% */
+            min-height: 100vh;
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1); /* 고급스러운 부드러운 전환 */
+        }
 
-    .story-section h2 { font-size: 24px; position: absolute; top: 30px; width: 100%; text-align: center; color: #4CAF50; }
+        /* 개별 페이지 공통 설정 */
+        .page {
+            width: 50%; /* 컨테이너의 100% 너비 */
+            min-height: 100vh;
+            overflow-y: auto; /* 세로 스크롤 허용 */
+            overflow-x: hidden;
+            background-color: #fff;
+        }
 
-    /* 길을 그릴 가상의 도화지 (캐릭터 좌표 기준) */
-    .path-map {
-      width: 100%; height: 100%;
-      position: absolute; top: 0; left: 0;
-    }
+        /* --- [메인 페이지 스타일] --- */
+        .main-image {
+            width: 100%;
+            height: 60vh;
+            background-color: #e2ded9; /* 차분한 베이지 톤 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
 
-    /* 새로 생성된 깔끔한 커플 아이콘 이미지 */
-    .couple-icon {
-      width: 65px; height: auto; 
-      position: absolute;
-      top: -32px; left: -32px; /* 중심점 맞추기 */
-      
-      /* 중요: 새로 생성된 깔끔한 길 그림의 경로를 정밀 추적 (좌표 수정됨) */
-      offset-path: path("M 82,152 C 160,113 256,163 252,254 C 248,345 167,399 157,485 C 147,571 216,634 290,626 C 364,618 418,555 423,534");
-      
-      /* 6초 동안 경로를 따라 걷기 (자동으로 방향 전환) */
-      animation: walkPath 6s linear forwards;
-      
-      /* 처음엔 멈춰두기 */
-      animation-play-state: paused; 
-    }
+        /* 스토리 보러가기 버튼 */
+        .story-btn-wrap {
+            text-align: center;
+            margin: 40px 0 20px 0;
+            padding: 0 20px;
+        }
+        .story-btn {
+            background-color: #4a4a4a;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 14px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: background 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        .story-btn:hover { background-color: #333; }
 
-    /* 걷기 애니메이션 설정 */
-    @keyframes walkPath {
-      0% { offset-distance: 0%; transform: rotate(0deg); }
-      100% { offset-distance: 100%; transform: rotate(0deg); }
-    }
+        /* 예식 정보 */
+        .wedding-info {
+            text-align: center;
+            padding: 20px 20px 50px 20px;
+        }
+        .wedding-info h1 {
+            font-family: 'Nanum Myeongjo', serif; /* 감성적인 명조체 느낌 */
+            font-size: 26px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #222;
+        }
+        .wedding-info .date-time {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+        }
 
-    /* 기차가 2번 방으로 오면 캐릭터 걷기 시작! */
-    .slide-active #room2 .couple-icon {
-      animation-play-state: running; 
-    }
+        /* 초대의 글 (Greeting) */
+        .greeting-section {
+            text-align: center;
+            padding: 50px 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .section-title {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .greeting-text {
+            font-size: 15px;
+            line-height: 2.2;
+            color: #444;
+            margin-bottom: 40px;
+        }
 
-    /* 첫 만남 팻말을 누를 수 있는 투명 영역 (좌표 미세 조정) */
-    .signpost-trigger {
-      width: 80px; height: 50px;
-      position: absolute;
-      left: 420px; top: 520px; /* 도착 지점 팻말 위치 */
-      background-color: rgba(255,0,0,0.1); /* 투명하게 만들기 (0.1로 테스트 후 0으로 변경) */
-      border-radius: 10px;
-      cursor: pointer;
-    }
+        /* --- [타임라인 페이지 스타일] --- */
+        .timeline-page {
+            background-color: #fbfbfb;
+            padding: 30px 20px;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        .timeline-content {
+            text-align: center;
+            padding-top: 50px;
+        }
+        .timeline-content h2 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .timeline-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+        }
 
-    /* --- 모달 (사진 팝업창) --- */
-    .modal {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: rgba(0,0,0,0.8);
-      display: none; align-items: center; justify-content: center;
-      z-index: 100; padding: 20px;
-    }
-    .modal-content {
-      background-color: white; border-radius: 20px;
-      width: 100%; max-width: 300px; padding: 20px;
-      text-align: center; position: relative;
-    }
-    .modal img { width: 100%; border-radius: 10px; }
-    .modal h3 { margin-top: 15px; font-size: 20px; }
-    .modal p { color: #666; margin-top: 5px; font-size: 14px; }
-    .close-btn { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; color: #aaa; }
+        /* 자바스크립트 동작용 클래스 */
+        .show-timeline { transform: translateX(-50%); }
 
-    /* 슬라이드 트리거 */
-    .slide-active { transform: translateX(-100vw); }
-  </style>
+    </style>
 </head>
 <body>
 
-  <div class="app-container" id="app">
-    
-    <section class="home-section section" id="room1">
-      <h1>진아 & 형민 우리의 시작</h1>
-      <p>우리의 여정에 당신을 초대합니다</p>
-      <p>2026년 5월 20일</p>
-      <p>오후 2시, 하늘 정원 하우스</p>
-      <button class="start-btn" onclick="startJourney()">진아랑 형민이 이야기 보러가기</button>
-    </section>
-
-    <section class="story-section section" id="room2">
-      <h2>우리의 여정</h2>
-      
-      <div class="path-map">
-        <img src="image_3.png" class="couple-icon" id="couple">
+    <div class="phone-container">
         
-        <div class="signpost-trigger" onclick="openModal()"></div>
-      </div>
+        <div class="slider-track" id="sliderTrack">
+            
+            <div class="page main-page">
+                
+                <div class="main-image">
+                    [메인 커플 일러스트 영역]
+                </div>
 
+                <div class="story-btn-wrap">
+                    <button class="story-btn" onclick="toggleTimeline()">진아 형민 스토리 보러가기</button>
+                </div>
+
+                <div class="wedding-info">
+                    <h1>진아 & 형민</h1>
+                    <div class="date-time">
+                        2026년 5월 20일 수요일 오후 2시<br>
+                        하늘 정원 하우스
+                    </div>
+                </div>
+
+                <div class="greeting-section">
+                    <div class="section-title">Invitation</div>
+                    <div class="greeting-text">
+                        서로가 마주 보며 다져온 사랑을<br>
+                        이제 함께 한 곳을 바라보며<br>
+                        걸어갈 수 있는 큰 사랑으로 키우고자 합니다.<br><br>
+                        저희 두 사람이 사랑의 이름으로<br>
+                        지켜나갈 수 있게 앞날을<br>
+                        축복해 주시면 감사하겠습니다.
+                    </div>
+                </div>
+
+                </div>
+
+
+            <div class="page timeline-page">
+                <button class="back-btn" onclick="toggleTimeline()">← 청첩장으로 돌아가기</button>
+                
+                <div class="timeline-content">
+                    <h2>Our Timeline</h2>
+                    <p>이곳에 진아와 형민의 스토리 타임라인 코드가<br>추가로 업데이트될 예정입니다.</p>
+                    <br><br>
+                    <div style="width: 100%; height: 200px; background-color: #eee; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px;">
+                        [타임라인 일러스트 영역]
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-  </div>
 
-  <div class="modal" id="modal" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <span class="close-btn" onclick="closeModal()">×</span>
-      <img src="https://via.placeholder.com/300x200?text=OUR+FIRST+MEETING" alt="첫 만남 사진">
-      <h3>우리의 첫 만남</h3>
-      <p>비 내리는 날, 우연한 만남이</p>
-      <p>영원한 여정의 시작이 되었습니다.</p>
-    </div>
-  </div>
-
-  <script>
-    // 1. 버튼 클릭 시 화면 전환
-    function startJourney() {
-      document.getElementById('app').classList.add('slide-active');
-    }
-
-    // 2. 팻말 클릭 시 모달 열기
-    function openModal() {
-      document.getElementById('modal').style.display = 'flex';
-    }
-
-    // 3. 모달 닫기
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-  </script>
+    <script>
+        // 타임라인 페이지 열고 닫기 함수
+        function toggleTimeline() {
+            const track = document.getElementById('sliderTrack');
+            // 클래스가 있으면 빼고, 없으면 넣어서 부드럽게 화면 전환
+            track.classList.toggle('show-timeline');
+            
+            // 페이지가 전환될 때 스크롤을 맨 위로 올려주는 디테일
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+    </script>
 
 </body>
 </html>
