@@ -5,153 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>진아 & 형민 결혼합니다</title>
     <style>
-        /* 기본 리셋 및 폰트 설정 (고급스러운 명조+고딕 혼합) */
+        /* 기본 리셋 및 폰트 설정 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background-color: #f4f4f4; /* PC에서 볼 때의 배경색 */
+            background-color: #f4f4f4; 
             font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; 
             color: #333; 
             display: flex; 
-            justify-content: center; /* 화면 중앙 정렬 */
+            justify-content: center; 
         }
         
-        /* 1. 모바일 최적화 컨테이너 (PC에서도 폰 비율 유지) */
+        /* 모바일 최적화 컨테이너 */
         .phone-container {
             width: 100%; 
-            max-width: 430px; /* 스마트폰 최대 너비 */
+            max-width: 430px; 
             background-color: #ffffff;
             min-height: 100vh;
             position: relative;
-            overflow: hidden; /* 영역 밖으로 나가는 슬라이드 숨김 */
+            overflow: hidden; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
 
-        /* 2. 페이지 슬라이드 트랙 (방 2개를 가로로 연결) */
+        /* 슬라이드 트랙 */
         .slider-track {
             display: flex;
-            width: 200%; /* 페이지가 2개이므로 200% */
+            width: 200%; 
             min-height: 100vh;
-            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1); /* 고급스러운 부드러운 전환 */
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1); 
         }
 
-        /* 개별 페이지 공통 설정 */
         .page {
-            width: 50%; /* 컨테이너의 100% 너비 */
+            width: 50%; 
             min-height: 100vh;
-            overflow-y: auto; /* 세로 스크롤 허용 */
+            overflow-y: auto; 
             overflow-x: hidden;
             background-color: #fff;
+            padding-bottom: 80px; /* 하단 여백 확보 */
         }
 
-        /* --- [메인 페이지 스타일] --- */
-        .main-image {
-            width: 100%;
-            height: 60vh;
-            background-color: #e2ded9; /* 차분한 베이지 톤 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #777;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        /* 스토리 보러가기 버튼 */
-        .story-btn-wrap {
-            text-align: center;
-            margin: 40px 0 20px 0;
-            padding: 0 20px;
-        }
-        .story-btn {
-            background-color: #4a4a4a;
-            color: #fff;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-size: 14px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: background 0.3s;
-            width: 100%;
-            max-width: 300px;
-        }
-        .story-btn:hover { background-color: #333; }
-
-        /* 예식 정보 */
-        .wedding-info {
-            text-align: center;
-            padding: 20px 20px 50px 20px;
-        }
-        .wedding-info h1 {
-            font-family: 'Nanum Myeongjo', serif; /* 감성적인 명조체 느낌 */
-            font-size: 26px;
-            font-weight: 400;
-            margin-bottom: 20px;
-            color: #222;
-        }
-        .wedding-info .date-time {
-            font-size: 15px;
-            color: #555;
-            line-height: 1.6;
-            letter-spacing: 0.5px;
-        }
-
-        /* 초대의 글 (Greeting) */
-        .greeting-section {
-            text-align: center;
+        /* --- [섹션 공통 스타일] --- */
+        .section {
             padding: 50px 20px;
-            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            text-align: center;
         }
         .section-title {
             font-family: 'Nanum Myeongjo', serif;
-            font-size: 12px;
+            font-size: 13px;
             color: #999;
             letter-spacing: 3px;
             margin-bottom: 30px;
             text-transform: uppercase;
         }
-        .greeting-text {
-            font-size: 15px;
-            line-height: 2.2;
-            color: #444;
-            margin-bottom: 40px;
-        }
 
-        /* --- [타임라인 페이지 스타일] --- */
-        .timeline-page {
-            background-color: #fbfbfb;
-            padding: 30px 20px;
-        }
-        .back-btn {
-            background: none;
-            border: none;
-            font-size: 14px;
-            color: #666;
-            cursor: pointer;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-        }
-        .timeline-content {
-            text-align: center;
-            padding-top: 50px;
-        }
-        .timeline-content h2 {
-            font-family: 'Nanum Myeongjo', serif;
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .timeline-content p {
-            font-size: 14px;
-            color: #888;
-            line-height: 1.6;
-        }
+        /* 메인 커버 */
+        .main-image { width: 100%; height: 60vh; background-color: #e2ded9; display: flex; align-items: center; justify-content: center; color: #777; font-size: 14px; }
+        
+        /* 스토리 보러가기 버튼 */
+        .story-btn-wrap { text-align: center; margin: 40px 0 20px 0; padding: 0 20px; }
+        .story-btn { background-color: #4a4a4a; color: #fff; border: none; padding: 15px 30px; border-radius: 30px; font-size: 14px; letter-spacing: 1px; cursor: pointer; width: 100%; max-width: 300px; }
+        
+        /* 예식 정보 */
+        .wedding-info { text-align: center; padding: 20px 20px 40px 20px; }
+        .wedding-info h1 { font-family: 'Nanum Myeongjo', serif; font-size: 26px; font-weight: 400; margin-bottom: 20px; color: #222; }
+        .wedding-info .date-time { font-size: 15px; color: #555; line-height: 1.6; letter-spacing: 0.5px; }
 
-        /* 자바스크립트 동작용 클래스 */
+        /* 초대의 글 */
+        .greeting-text { font-size: 15px; line-height: 2.2; color: #444; margin-bottom: 40px; }
+        
+        /* --- [1. 축하 연락하기 (Contact)] --- */
+        .contact-desc { font-size: 14px; color: #666; margin-bottom: 25px; }
+        .contact-box { background-color: #fcfcfc; border-radius: 10px; padding: 10px 20px; border: 1px solid #eee; }
+        .contact-person { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px dashed #eee; }
+        .contact-person:last-child { border-bottom: none; }
+        .who { font-size: 15px; color: #444; }
+        .who strong { font-size: 16px; margin-left: 5px; color: #222; }
+        .action-btn { background-color: #f0f0f0; text-decoration: none; border-radius: 50%; width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; margin-left: 8px; color: #555; }
+
+        /* --- [2. 달력 (Calendar)] --- */
+        .cal-month { font-size: 18px; color: #333; margin-bottom: 20px; font-family: 'Nanum Myeongjo', serif; }
+        .calendar-table { width: 100%; max-width: 300px; margin: 0 auto; border-collapse: collapse; }
+        .calendar-table th, .calendar-table td { padding: 12px 0; text-align: center; font-size: 14px; color: #555; }
+        .calendar-table th { font-weight: normal; color: #999; border-bottom: 1px solid #eee; }
+        .calendar-table td.sun { color: #d9534f; }
+        .d-day-circle { background-color: #e2ded9; color: #333; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; }
+        .d-day-text { margin-top: 25px; font-size: 14px; color: #666; letter-spacing: 0.5px; }
+
+        /* --- [3. 지도 및 오시는 길 (Map & Directions)] --- */
+        .venue-name { font-size: 18px; color: #222; margin-bottom: 8px; }
+        .venue-address { font-size: 14px; color: #777; margin-bottom: 25px; }
+        .map-area { width: 100%; height: 200px; background-color: #e9e9e9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 13px; margin-bottom: 15px; }
+        .map-btn-wrap { display: flex; gap: 8px; margin-bottom: 40px; }
+        .map-btn { flex: 1; padding: 12px 0; background-color: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 6px; text-decoration: none; color: #444; font-size: 13px; }
+        
+        .way-item { text-align: left; margin-bottom: 25px; }
+        .way-title { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 8px; padding-left: 12px; position: relative; }
+        .way-title::before { content: ''; position: absolute; left: 0; top: 6px; width: 4px; height: 4px; background-color: #ccc; border-radius: 50%; }
+        .way-desc { font-size: 14px; color: #666; line-height: 1.6; padding-left: 12px; }
+
+        /* 타임라인 페이지 스타일 */
+        .timeline-page { background-color: #fbfbfb; padding: 30px 20px; }
+        .back-btn { background: none; border: none; font-size: 14px; color: #666; cursor: pointer; margin-bottom: 30px; }
+        .timeline-content { text-align: center; padding-top: 50px; }
+        
+        /* 애니메이션 클래스 */
         .show-timeline { transform: translateX(-50%); }
-
     </style>
 </head>
 <body>
@@ -173,12 +131,12 @@
                 <div class="wedding-info">
                     <h1>진아 & 형민</h1>
                     <div class="date-time">
-                        2026년 5월 20일 수요일 오후 2시<br>
-                        하늘 정원 하우스
+                        2026년 10월 11일 일요일 오후 3시<br>
+                        서울대 교수회관
                     </div>
                 </div>
 
-                <div class="greeting-section">
+                <div class="section greeting-section" style="border-top: 1px solid #f0f0f0;">
                     <div class="section-title">Invitation</div>
                     <div class="greeting-text">
                         서로가 마주 보며 다져온 사랑을<br>
@@ -190,19 +148,82 @@
                     </div>
                 </div>
 
+                <div class="section contact-section">
+                    <div class="section-title">Contact</div>
+                    <p class="contact-desc">축하의 마음을 전해 주세요</p>
+                    <div class="contact-box">
+                        <div class="contact-person">
+                            <span class="who">신랑 <strong>형민</strong></span>
+                            <span class="actions">
+                                <a href="tel:01000000000" class="action-btn">📞</a>
+                                <a href="sms:01000000000" class="action-btn">✉️</a>
+                            </span>
+                        </div>
+                        <div class="contact-person">
+                            <span class="who">신부 <strong>진아</strong></span>
+                            <span class="actions">
+                                <a href="tel:01000000000" class="action-btn">📞</a>
+                                <a href="sms:01000000000" class="action-btn">✉️</a>
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="section calendar-section">
+                    <div class="section-title">Calendar</div>
+                    <div class="cal-month">2026. 10</div>
+                    <table class="calendar-table">
+                        <tr><th class="sun">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th></tr>
+                        <tr><td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr>
+                        <tr><td class="sun">4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+                        <tr><td class="sun"><span class="d-day-circle">11</span></td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
+                        <tr><td class="sun">18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr>
+                        <tr><td class="sun">25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td></tr>
+                    </table>
+                    <div class="d-day-text" id="dDayText">진아와 형민의 예식이 <strong>OO일</strong> 남았습니다.</div>
+                </div>
+
+                <div class="section map-section">
+                    <div class="section-title">Location</div>
+                    <h3 class="venue-name">서울대 교수회관</h3>
+                    <p class="venue-address">서울 관악구 관악로 1 서울대학교 65동</p>
+                    
+                    <div class="map-area">
+                        [카카오/네이버 지도 연동 영역]
+                    </div>
+                    
+                    <div class="map-btn-wrap">
+                        <a href="https://map.naver.com/" target="_blank" class="map-btn">네이버 지도</a>
+                        <a href="https://map.kakao.com/" target="_blank" class="map-btn">카카오 지도</a>
+                        <a href="https://tmap.co.kr/" target="_blank" class="map-btn">티맵</a>
+                    </div>
+
+                    <div class="way-item">
+                        <div class="way-title">지하철 및 셔틀버스</div>
+                        <div class="way-desc">
+                            <strong>2호선 서울대입구역 3번 출구</strong><br>
+                            - 교내 셔틀버스 탑승 후 '행정관' 하차<br>
+                            <strong>2호선 낙성대역 4번 출구</strong><br>
+                            - 마을버스 관악02 탑승 후 '교수회관' 하차
+                        </div>
+                    </div>
+                    <div class="way-item">
+                        <div class="way-title">자가용</div>
+                        <div class="way-desc">
+                            내비게이션 '서울대 교수회관' 검색<br>
+                            * 하객 무료 주차 2시간 지원
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
 
             <div class="page timeline-page">
                 <button class="back-btn" onclick="toggleTimeline()">← 청첩장으로 돌아가기</button>
-                
                 <div class="timeline-content">
-                    <h2>Our Timeline</h2>
-                    <p>이곳에 진아와 형민의 스토리 타임라인 코드가<br>추가로 업데이트될 예정입니다.</p>
-                    <br><br>
-                    <div style="width: 100%; height: 200px; background-color: #eee; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px;">
-                        [타임라인 일러스트 영역]
-                    </div>
+                    <h2 style="font-family: 'Nanum Myeongjo', serif; font-size: 22px; color: #333; margin-bottom: 20px;">Our Timeline</h2>
+                    <p style="font-size: 14px; color: #888; line-height: 1.6;">이곳에 진아와 형민의 스토리 타임라인 코드가<br>추가로 업데이트될 예정입니다.</p>
                 </div>
             </div>
 
@@ -210,17 +231,32 @@
     </div>
 
     <script>
-        // 타임라인 페이지 열고 닫기 함수
+        // 1. 타임라인 페이지 슬라이드 기능
         function toggleTimeline() {
             const track = document.getElementById('sliderTrack');
-            // 클래스가 있으면 빼고, 없으면 넣어서 부드럽게 화면 전환
             track.classList.toggle('show-timeline');
-            
-            // 페이지가 전환될 때 스크롤을 맨 위로 올려주는 디테일
-            setTimeout(() => {
-                window.scrollTo(0, 0);
-            }, 300);
+            setTimeout(() => { window.scrollTo(0, 0); }, 300);
         }
+
+        // 2. 결혼식 D-Day 자동 계산 기능
+        function calculateDday() {
+            const weddingDate = new Date('2026-10-11T15:00:00+09:00').getTime();
+            const today = new Date().getTime();
+            const gap = weddingDate - today;
+            const dDay = Math.ceil(gap / (1000 * 60 * 60 * 24));
+            
+            const dDayElement = document.getElementById('dDayText');
+            if(dDay > 0) {
+                dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${dDay}일</strong> 남았습니다.`;
+            } else if(dDay === 0) {
+                dDayElement.innerHTML = `<strong>오늘</strong>은 진아와 형민의 예식일입니다!`;
+            } else {
+                dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${Math.abs(dDay)}일</strong> 지났습니다.`;
+            }
+        }
+        
+        // 페이지 로드 시 D-Day 계산 실행
+        calculateDday();
     </script>
 
 </body>
