@@ -1,128 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <title>진아와 형민의 초대장</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>진아 & 형민 우리의 시작 (PRO)</title>
   <style>
-    body { margin: 0; overflow: hidden; font-family: sans-serif; }
+    /* 기본 리셋 */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+    body { font-family: 'Pretendard', sans-serif; overflow: hidden; background-color: #FAFAFA; color: #333; }
     
-    .train { 
-      display: flex; 
-      width: 200vw; 
-      transition: transform 1.5s ease-in-out; /* 스르륵 부드럽게 넘어가기 */
+    /* 2칸짜리 가로 기차 (전체 컨테이너) */
+    .app-container {
+      display: flex;
+      width: 200vw; height: 100vh;
+      transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
     }
     
-    .room { 
-      width: 100vw; height: 100vh; 
-      display: flex; flex-direction: column; 
-      align-items: center; justify-content: center; 
+    /* 개별 페이지 공통 */
+    .section { width: 100vw; height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    /* --- 1번 방 (첫 화면) --- */
+    .home-section { background-color: #FFFFFF; text-align: center; padding: 20px; }
+    .home-section h1 { font-size: 28px; margin-bottom: 15px; font-weight: 600; }
+    .home-section p { font-size: 16px; color: #666; margin-bottom: 5px; }
+    
+    .start-btn {
+      margin-top: 50px; padding: 18px 36px;
+      background-color: #333; color: #fff;
+      border: none; border-radius: 30px;
+      font-size: 16px; font-weight: bold;
+      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: background 0.3s, transform 0.1s;
     }
-    
-    #room1 { background-color: #fff0f5; }
-    #room2 { background-color: #f0fff0; }
-    
-    button { 
-      padding: 15px 30px; font-size: 20px; 
-      background-color: #ff69b4; color: white; 
-      border: none; border-radius: 20px; cursor: pointer; margin-top: 30px;
-    }
-    
-    .move-left { transform: translateX(-100vw); }
+    .start-btn:active { transform: scale(0.97); }
 
-    /* --- 여기서부터 2번 방 꾸미기 마법 --- */
-    
-    /* 1. 길을 그릴 도화지 (투명한 박스) */
-    .map-box {
+    /* --- 2번 방 (구불구불 길) --- */
+    .story-section { 
+      background-color: #F4F7F6;
+      /* 중요: '깔끔한' 새 배경 이미지를 배경으로 사용 */
+      background-image: url('image_2.png'); 
+      background-size: cover; 
+      background-position: center; 
       position: relative;
-      width: 300px; height: 500px;
-      margin-top: 20px;
     }
 
-    /* 2. 구불구불한 점선 기찻길 그리기 */
-    .path-line {
+    .story-section h2 { font-size: 24px; position: absolute; top: 30px; width: 100%; text-align: center; color: #4CAF50; }
+
+    /* 길을 그릴 가상의 도화지 (캐릭터 좌표 기준) */
+    .path-map {
       width: 100%; height: 100%;
-      fill: none; /* 안쪽은 색칠 안 함 */
-      stroke: #8B4513; /* 나무색 선 */
-      stroke-width: 4; /* 선 굵기 */
-      stroke-dasharray: 8, 8; /* 점선으로 만들기 */
+      position: absolute; top: 0; left: 0;
     }
 
-    /* 3. 진아와 형민 캐릭터 (귀여운 이모지!) */
+    /* 새로 생성된 깔끔한 커플 아이콘 이미지 */
     .couple-icon {
-      font-size: 40px;
+      width: 65px; height: auto; 
       position: absolute;
-      top: -20px; left: -20px;
+      top: -32px; left: -32px; /* 중심점 맞추기 */
       
-      /* 기찻길이랑 똑같은 모양의 투명 레일 깔기 */
-      offset-path: path("M 50,50 C 250,50 250,250 150,350 C 50,450 150,550 250,500");
+      /* 중요: 새로 생성된 깔끔한 길 그림의 경로를 정밀 추적 (좌표 수정됨) */
+      offset-path: path("M 82,152 C 160,113 256,163 252,254 C 248,345 167,399 157,485 C 147,571 216,634 290,626 C 364,618 418,555 423,534");
       
-      /* 4초 동안 투명 레일을 따라 걷는 애니메이션 */
-      animation: walk 4s linear forwards;
+      /* 6초 동안 경로를 따라 걷기 (자동으로 방향 전환) */
+      animation: walkPath 6s linear forwards;
       
-      /* 처음엔 모터 끄기 (방에 들어오기 전까진 멈춰있기) */
+      /* 처음엔 멈춰두기 */
       animation-play-state: paused; 
     }
 
-    /* 4. 첫 만남 팻말 위치 */
-    .signpost {
-      font-size: 25px;
-      position: absolute;
-      left: 220px; top: 480px; /* 도착 지점에 팻말 세우기 */
-      cursor: pointer;
-      background-color: white;
-      padding: 5px 10px;
-      border-radius: 10px;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    /* 걷기 애니메이션 설정 */
+    @keyframes walkPath {
+      0% { offset-distance: 0%; transform: rotate(0deg); }
+      100% { offset-distance: 100%; transform: rotate(0deg); }
     }
 
-    /* 5. 걷는 규칙 (0% 출발 -> 100% 도착) */
-    @keyframes walk {
-      0% { offset-distance: 0%; }
-      100% { offset-distance: 100%; }
-    }
-
-    /* 6. 핵심 마법! 기차가 2번 방으로 넘어오면 캐릭터 모터 켜기! */
-    .move-left #room2 .couple-icon {
+    /* 기차가 2번 방으로 오면 캐릭터 걷기 시작! */
+    .slide-active #room2 .couple-icon {
       animation-play-state: running; 
     }
+
+    /* 첫 만남 팻말을 누를 수 있는 투명 영역 (좌표 미세 조정) */
+    .signpost-trigger {
+      width: 80px; height: 50px;
+      position: absolute;
+      left: 420px; top: 520px; /* 도착 지점 팻말 위치 */
+      background-color: rgba(255,0,0,0.1); /* 투명하게 만들기 (0.1로 테스트 후 0으로 변경) */
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* --- 모달 (사진 팝업창) --- */
+    .modal {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0,0,0,0.8);
+      display: none; align-items: center; justify-content: center;
+      z-index: 100; padding: 20px;
+    }
+    .modal-content {
+      background-color: white; border-radius: 20px;
+      width: 100%; max-width: 300px; padding: 20px;
+      text-align: center; position: relative;
+    }
+    .modal img { width: 100%; border-radius: 10px; }
+    .modal h3 { margin-top: 15px; font-size: 20px; }
+    .modal p { color: #666; margin-top: 5px; font-size: 14px; }
+    .close-btn { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; color: #aaa; }
+
+    /* 슬라이드 트리거 */
+    .slide-active { transform: translateX(-100vw); }
   </style>
 </head>
 <body>
-  
-  <div class="train" id="myTrain">
+
+  <div class="app-container" id="app">
     
-    <div class="room" id="room1">
-      <h1>진아 & 형민 결혼해요!</h1>
-      <h2>2026년 5월 20일</h2>
-      <button onclick="goNextRoom()">진아랑 형민이 이야기 보러가기</button>
-    </div>
+    <section class="home-section section" id="room1">
+      <h1>진아 & 형민 우리의 시작</h1>
+      <p>우리의 여정에 당신을 초대합니다</p>
+      <p>2026년 5월 20일</p>
+      <p>오후 2시, 하늘 정원 하우스</p>
+      <button class="start-btn" onclick="startJourney()">진아랑 형민이 이야기 보러가기</button>
+    </section>
 
-    <div class="room" id="room2">
-      <h2 style="color: #4CAF50;">우리의 여정</h2>
+    <section class="story-section section" id="room2">
+      <h2>우리의 여정</h2>
       
-      <div class="map-box">
-        <svg class="path-line">
-          <path d="M 50,50 C 250,50 250,250 150,350 C 50,450 150,550 250,500"></path>
-        </svg>
-
-        <div class="couple-icon">👫</div>
-
-        <div class="signpost" onclick="showPhoto()">📍첫 만남</div>
+      <div class="path-map">
+        <img src="image_3.png" class="couple-icon" id="couple">
+        
+        <div class="signpost-trigger" onclick="openModal()"></div>
       </div>
 
     </div>
   </div>
 
+  <div class="modal" id="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <img src="https://via.placeholder.com/300x200?text=OUR+FIRST+MEETING" alt="첫 만남 사진">
+      <h3>우리의 첫 만남</h3>
+      <p>비 내리는 날, 우연한 만남이</p>
+      <p>영원한 여정의 시작이 되었습니다.</p>
+    </div>
+  </div>
+
   <script>
-    function goNextRoom() {
-      // 1번: 스위치를 누르면 화면이 옆으로 넘어감
-      document.getElementById('myTrain').classList.add('move-left');
+    // 1. 버튼 클릭 시 화면 전환
+    function startJourney() {
+      document.getElementById('app').classList.add('slide-active');
     }
 
-    function showPhoto() {
-      // 2번: 팻말을 눌렀을 때 나타나는 작은 알림창!
-      alert("짜잔! 나중에 여기에 진아와 형민의 첫 만남 사진이 뜰 거예요!");
+    // 2. 팻말 클릭 시 모달 열기
+    function openModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    // 3. 모달 닫기
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
     }
   </script>
+
 </body>
 </html>
