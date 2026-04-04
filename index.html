@@ -3,160 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>준규 & 애은 결혼합니다</title>
+    <title>진아 & 형민 결혼합니다</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <style>
-        /* 폰트 및 기본 설정 */
-        @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&display=swap');
+        /* 기본 초기화 및 폰트 세팅 */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background-color: #f6f5f5; /* PC 배경 */
+            font-family: 'Noto Sans KR', sans-serif; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+        }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #f8f8f8; font-family: 'Pretendard', sans-serif; color: #333; display: flex; justify-content: center; }
+        /* 모바일 컨테이너 (URL 오리지널 너비) */
+        .phone-wrapper { 
+            width: 100%; max-width: 420px; 
+            background-color: #ffffff; 
+            min-height: 100vh; position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+        }
         
-        .phone-container { width: 100%; max-width: 430px; background-color: #ffffff; min-height: 100vh; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .slider-track { display: flex; width: 200%; min-height: 100vh; transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1); }
+        /* 타임라인 슬라이드 트랙 */
+        .slider-track { display: flex; width: 200%; min-height: 100vh; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1); }
         .page { width: 50%; min-height: 100vh; overflow-y: auto; background-color: #fff; padding-bottom: 80px; }
 
-        .section { padding: 60px 24px; text-align: center; border-bottom: 1px solid #f9f9f9; }
-        .section-title { font-family: 'Nanum Myeongjo', serif; font-size: 13px; color: #b2a393; letter-spacing: 3px; margin-bottom: 35px; text-transform: uppercase; }
+        /* https://blog.naver.com/design_mag/223721221451 */
+        .section { padding: 70px 24px; text-align: center; }
+        .section-title { 
+            font-family: 'Nanum Myeongjo', serif; 
+            font-size: 13px; color: #8c8279; /* URL 특유의 뮤트된 베이지/브라운 */
+            letter-spacing: 0.25em; margin-bottom: 45px; 
+        }
 
-        /* 메인 커버 */
-        .main-image { width: 100%; height: 65vh; background-color: #f0ede9; display: flex; align-items: center; justify-content: center; }
-        .story-btn-wrap { text-align: center; margin: 45px 0 25px 0; padding: 0 30px; }
-        .story-btn { background-color: transparent; color: #555; border: 1px solid #d1d1d1; padding: 14px 0; border-radius: 4px; font-size: 13px; cursor: pointer; width: 100%; }
-
-        .wedding-info { text-align: center; padding: 20px 24px 60px 24px; }
-        .wedding-info h1 { font-family: 'Nanum Myeongjo', serif; font-size: 28px; font-weight: 400; margin-bottom: 25px; }
-
-        /* 달력 및 연락처 */
-        .calendar-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
-        .calendar-table td { padding: 10px 0; text-align: center; font-size: 14px; color: #555; }
-        .d-day-circle { background-color: #b2a393; color: #fff; border-radius: 50%; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; }
-
-        .contact-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #f1f1f1; }
-        .contact-label { font-size: 15px; }
-        .contact-btns { display: flex; gap: 12px; }
-        .icon-btn { text-decoration: none; font-size: 18px; color: #888; }
-
-        /* --- [지도 및 교통 안내 - 참고 사이트 스타일 완벽 재현] --- */
-        .venue-name { font-size: 20px; color: #222; margin-bottom: 10px; font-family: 'Nanum Myeongjo', serif; }
-        .venue-address { font-size: 14px; color: #888; margin-bottom: 30px; line-height: 1.5; }
+        /* 1. 메인 커버 */
+        .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
+        .main-img-placeholder { width: 100%; height: 60vh; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; }
         
-        /* 실제 지도 (Iframe 연결) */
-        .map-wrapper { width: 100%; height: 260px; margin-bottom: 20px; border-radius: 4px; overflow: hidden; border: 1px solid #eee; }
-        
-        /* 내비게이션 아이콘 버튼 (참고 사이트와 동일) */
-        .navi-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 50px; }
-        .navi-btn { flex: 1; display: flex; flex-direction: column; align-items: center; text-decoration: none; padding: 15px 0; background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; transition: background 0.2s; }
-        .navi-btn:active { background: #f9f9f9; }
-        .navi-btn img { width: 32px; height: 32px; margin-bottom: 8px; border-radius: 8px; }
-        .navi-btn span { font-size: 11px; color: #777; font-weight: 500; }
+        /* 추가된 스토리 버튼 (URL 디자인 톤앤매너 적용) */
+        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; }
+        .btn-story { 
+            width: 100%; padding: 15px 0; background-color: #fff; 
+            border: 1px solid #e1dfdc; color: #555; 
+            font-size: 13px; font-weight: 400; letter-spacing: 1px; cursor: pointer;
+        }
 
-        /* 교통 안내 상세 (아이콘 + 텍스트) */
-        .transport-wrap { text-align: left; padding: 0 10px; }
-        .transport-item { display: flex; margin-bottom: 35px; }
-        .transport-icon-box { width: 45px; font-size: 20px; color: #b2a393; display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
-        .transport-content { flex: 1; padding-left: 10px; }
-        .transport-title { font-size: 15px; font-weight: 600; color: #444; margin-bottom: 10px; letter-spacing: -0.5px; }
-        .transport-desc { font-size: 14px; color: #777; line-height: 1.8; }
-        .transport-desc strong { color: #555; font-weight: 600; }
+        .main-text { padding: 40px 0 30px 0; }
+        .main-text h1 { font-family: 'Nanum Myeongjo', serif; font-size: 26px; font-weight: 400; color: #222; margin-bottom: 25px; letter-spacing: 2px; }
+        .main-text p { font-size: 14px; color: #777; line-height: 1.8; font-weight: 300; letter-spacing: 0.5px; }
+
+        /* 2. 초대의 글 */
+        .greeting-wrap { background-color: #faf9f8; padding: 80px 24px; text-align: center; }
+        .greeting-text { font-size: 15px; line-height: 2.2; color: #444; font-weight: 300; margin-bottom: 50px; }
+        .parents-info { font-size: 15px; color: #333; line-height: 2; font-weight: 300; }
+        .parents-info strong { font-weight: 500; font-size: 16px; margin-left: 6px; }
+
+        /* 3. 갤러리 (그리드) */
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
+        .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; }
+
+        /* 4. 달력 */
+        .cal-month { font-family: 'Nanum Myeongjo', serif; font-size: 18px; color: #333; margin-bottom: 30px; letter-spacing: 1px; }
+        .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
+        .cal-table th, .cal-table td { padding: 12px 0; font-size: 13px; font-weight: 300; color: #666; text-align: center; }
+        .cal-table th { color: #a39c95; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .cal-table td.sun { color: #d67a7a; }
+        .cal-table td.d-day span { 
+            background-color: #8c8279; color: #fff; 
+            border-radius: 50%; width: 26px; height: 26px; 
+            display: inline-flex; align-items: center; justify-content: center; font-weight: 400; 
+        }
+
+        /* 5. 오시는 길 (지도 & 심플 아이콘) */
+        .map-section { text-align: left; padding: 60px 24px; }
+        .map-title { text-align: center; margin-bottom: 40px; }
+        .venue-name { font-family: 'Nanum Myeongjo', serif; font-size: 18px; color: #222; margin-bottom: 8px; }
+        .venue-addr { font-size: 14px; color: #777; font-weight: 300; margin-bottom: 25px; }
+        
+        .map-embed { width: 100%; height: 240px; background-color: #eee; margin-bottom: 15px; }
+        
+        /* 내비게이션 (URL 스타일의 둥근 모서리 버튼) */
+        .navi-btns { display: flex; gap: 8px; margin-bottom: 50px; }
+        .navi-btn { 
+            flex: 1; padding: 12px 0; background-color: #f9f9f9; 
+            border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; 
+            display: flex; justify-content: center; align-items: center; gap: 6px; 
+        }
+        .navi-btn span { font-size: 12px; color: #555; font-weight: 400; }
+        .navi-btn svg { width: 14px; height: 14px; border-radius: 3px; }
+
+        /* 심플한 교통안내 아이콘 및 텍스트 */
+        .way-item { display: flex; margin-bottom: 30px; align-items: flex-start; }
+        .way-icon { width: 40px; }
+        /* URL 느낌의 극도로 얇고 심플한 선형 아이콘 */
+        .way-icon svg { width: 20px; height: 20px; stroke: #8c8279; fill: none; stroke-width: 1.2; }
+        .way-desc h4 { font-size: 14.5px; font-weight: 500; color: #333; margin-bottom: 6px; letter-spacing: -0.3px; }
+        .way-desc p { font-size: 14px; color: #666; font-weight: 300; line-height: 1.7; }
+
+        /* 6. 마음 전하실 곳 (URL 스타일 아코디언) */
+        .account-wrap { background-color: #faf9f8; padding: 70px 24px; }
+        .acc-desc { text-align: center; font-size: 14px; color: #777; line-height: 1.8; font-weight: 300; margin-bottom: 40px; }
+        
+        .acc-box { margin-bottom: 10px; }
+        .acc-btn { 
+            width: 100%; background-color: #fff; border: 1px solid #e1dfdc; 
+            padding: 16px 20px; display: flex; justify-content: space-between; 
+            align-items: center; font-size: 14px; color: #444; font-weight: 400; cursor: pointer;
+        }
+        .acc-content { 
+            background-color: #fcfbfb; border: 1px solid #e1dfdc; border-top: none; 
+            padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; 
+        }
+        .acc-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px dashed #e1dfdc; }
+        .acc-row:last-child { border-bottom: none; }
+        .acc-info { text-align: left; font-size: 13.5px; color: #555; line-height: 1.6; font-weight: 300; }
+        .acc-info strong { font-weight: 500; color: #333; }
+        .copy-btn { padding: 6px 12px; background-color: #fff; border: 1px solid #ccc; font-size: 11px; color: #666; border-radius: 2px; cursor: pointer; }
 
         .show-timeline { transform: translateX(-50%); }
     </style>
 </head>
 <body>
 
-    <div class="phone-container">
-        <div class="slider-track" id="sliderTrack">
+<div class="phone-wrapper">
+    <div class="slider-track" id="sliderTrack">
+        
+        <div class="page">
             
-            <div class="page main-page">
-                <div class="main-image">[커플 일러스트 영역]</div>
-                <div class="story-btn-wrap">
-                    <button class="story-btn" onclick="toggleTimeline()">진아 · 형민 스토리 보러가기</button>
+            <div class="main-cover">
+                <div class="main-img-placeholder">[일러스트 또는 사진]</div>
+                
+                <div class="btn-wrap">
+                    <button class="btn-story" onclick="goTimeline()">진아 · 형민 스토리 보러가기</button>
                 </div>
-                <div class="wedding-info">
+
+                <div class="main-text">
                     <h1>형민 & 진아</h1>
-                    <div class="date-time">2026. 10. 11 SUN PM 3:00<br>서울대 교수회관</div>
+                    <p>2026. 10. 11. SUN. PM 3:00<br>서울대학교 교수회관</p>
                 </div>
-
-                <div class="section">
-                    <div class="section-title">Location</div>
-                    <h3 class="venue-name">서울대 교수회관</h3>
-                    <p class="venue-address">서울 관악구 관악로 1 서울대학교 65동<br>02-880-5241</p>
-                    
-                    <div class="map-wrapper">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m12!1m3!1d3165.447545802271!2d126.9482590763567!3d37.45013093077673!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca03780373a67%3A0xe67591605658e225!2z7ISc7Jq464yA7ZWZ6rWQIOq1keyImO2ajOq0IA!5e0!3m2!1sko!2skr!4v1711510000000!5m2!1sko!2skr" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                    </div>
-
-                    <div class="navi-buttons">
-                        <a href="https://map.naver.com/v5/search/%EC%84%9C%EC%9A%B8%EB%8C%80%EA%B5%90%EC%88%98%ED%9A%8C%EA%B4%80" target="_blank" class="navi-btn">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Naver_Logotype.svg" alt="네이버" style="width:20px; height:20px; margin-top:6px;">
-                            <span>네이버 지도</span>
-                        </a>
-                        <a href="https://map.kakao.com/link/to/서울대 교수회관,37.45013,126.95083" target="_blank" class="navi-btn">
-                            <img src="https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/service/a85d053501750001.png" alt="카카오">
-                            <span>카카오내비</span>
-                        </a>
-                        <a href="https://surl.tmap.co.kr/6be81878" target="_blank" class="navi-btn">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/T_map_logo.png" alt="티맵">
-                            <span>T맵</span>
-                        </a>
-                    </div>
-
-                    <div class="transport-wrap">
-                        <div class="transport-item">
-                            <div class="transport-icon-box">🚇</div>
-                            <div class="transport-content">
-                                <div class="transport-title">지하철 및 셔틀버스</div>
-                                <div class="transport-desc">
-                                    <strong>2호선 서울대입구역 3번 출구</strong><br>
-                                    - 교내 셔틀버스 탑승 후 '행정관' 하차 (도보 5분)<br>
-                                    - 택시 이용 시 약 10분 소요
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="transport-item">
-                            <div class="transport-icon-box">🚌</div>
-                            <div class="transport-content">
-                                <div class="transport-title">버스</div>
-                                <div class="transport-desc">
-                                    <strong>낙성대역 4번 출구 (마을버스)</strong><br>
-                                    - 관악 02번 탑승 후 '교수회관' 하차 (식장 앞)
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="transport-item" style="margin-bottom: 0;">
-                            <div class="transport-icon-box">🚗</div>
-                            <div class="transport-content">
-                                <div class="transport-title">자가용 및 주차</div>
-                                <div class="transport-desc">
-                                    <strong>내비게이션 : 서울대 교수회관</strong><br>
-                                    - 서울대학교 정문 통과 후 우회전하여 1.5km 직진<br>
-                                    - 하객 무료 주차 2시간 제공 (식장 안내데스크 등록)
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            <div class="page timeline-page">
-                <button class="back-btn" onclick="toggleTimeline()">← 돌아가기</button>
-                <div style="text-align: center; padding-top: 50px;">
-                    <h2 style="font-family: 'Nanum Myeongjo', serif; font-size: 22px;">Our Journey</h2>
+            <div class="greeting-wrap">
+                <div class="section-title">Invitation</div>
+                <div class="greeting-text">
+                    곁에 있을 때 가장 나다워지는 사람을 만났습니다.<br>
+                    서로의 색깔을 잃지 않으면서도<br>
+                    함께일 때 더 아름다운 빛을 내는<br>
+                    그런 삶을 시작하려 합니다.<br><br>
+                    저희의 첫걸음이 시작되는 날,<br>
+                    오셔서 따뜻한 마음으로 축복해 주세요.
+                </div>
+                <div class="parents-info">
+                    아버지 · 어머니 의 아들 <strong>형민</strong><br>
+                    아버지 · 어머니 의 딸 <strong>진아</strong>
+                </div>
+            </div>
+
+            <div class="section" style="padding-bottom: 40px;">
+                <div class="section-title">Gallery</div>
+                <div class="gallery-grid">
+                    <div class="gallery-item"></div><div class="gallery-item"></div><div class="gallery-item"></div>
+                    <div class="gallery-item"></div><div class="gallery-item"></div><div class="gallery-item"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Date</div>
+                <div class="cal-month">2026. 10</div>
+                <table class="cal-table">
+                    <thead><tr><th class="sun">S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead>
+                    <tbody>
+                        <tr><td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr>
+                        <tr><td class="sun">4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+                        <tr><td class="sun d-day"><span>11</span></td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
+                        <tr><td class="sun">18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr>
+                        <tr><td class="sun">25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="map-section">
+                <div class="section-title map-title">Location</div>
+                <div class="venue-name">서울대학교 교수회관</div>
+                <div class="venue-addr">서울 관악구 관악로 1 서울대학교 65동<br>02-880-5241</div>
+                
+                <div class="map-embed">
+                    <iframe src="https://maps.google.com/maps?q=서울대%20교수회관&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen></iframe>
+                </div>
+
+                <div class="navi-btns">
+                    <a href="#" class="navi-btn">
+                        <svg viewBox="0 0 24 24" style="fill:#03C75A; border-radius:0;"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z"/></svg>
+                        <span>네이버지도</span>
+                    </a>
+                    <a href="#" class="navi-btn">
+                        <svg viewBox="0 0 24 24" style="fill:#FEE500; border-radius:0;"><path d="M12 3c-5.523 0-10 3.477-10 7.766 0 2.766 1.838 5.164 4.606 6.545l-1.127 4.204 4.887-3.26c.53.076 1.077.111 1.634.111 5.523 0 10-3.477 10-7.766C22 6.477 17.523 3 12 3z" style="fill:#3C1E1E"/></svg>
+                        <span>카카오내비</span>
+                    </a>
+                    <a href="#" class="navi-btn">
+                        <svg viewBox="0 0 24 24" style="fill:#FF4B4B; border-radius:0;"><path d="M12 4l9 16H3z" style="fill:#fff"/></svg>
+                        <span>티맵</span>
+                    </a>
+                </div>
+
+                <div class="way-item">
+                    <div class="way-icon">
+                        <svg viewBox="0 0 24 24"><path d="M6 4h12v11H6zM6 15l-2 5M18 15l2 5M9 11h6M10 18h4"/></svg>
+                    </div>
+                    <div class="way-desc">
+                        <h4>지하철 및 셔틀버스</h4>
+                        <p>2호선 서울대입구역 3번 출구<br>교내 셔틀버스 탑승 후 '행정관' 하차 (도보 5분)</p>
+                    </div>
+                </div>
+
+                <div class="way-item">
+                    <div class="way-icon">
+                        <svg viewBox="0 0 24 24"><path d="M5 6h14v11H5zM5 17v2h2v-2M17 17v2h2v-2M8 13h8M7 9h10"/></svg>
+                    </div>
+                    <div class="way-desc">
+                        <h4>마을버스</h4>
+                        <p>낙성대역 4번 출구<br>관악 02번 탑승 후 '교수회관' 정류장 하차</p>
+                    </div>
+                </div>
+
+                <div class="way-item">
+                    <div class="way-icon">
+                        <svg viewBox="0 0 24 24"><path d="M4 11h16v6H4zM6 11l2-4h8l2 4M7 14h2M15 14h2"/></svg>
+                    </div>
+                    <div class="way-desc">
+                        <h4>자가용 주차</h4>
+                        <p>서울대학교 정문 통과 후 우회전하여 1.5km 직진<br>하객 무료 주차 2시간 지원</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="account-wrap">
+                <div class="section-title" style="margin-bottom:20px;">마음 전하실 곳</div>
+                <p class="acc-desc">참석이 어려우신 분들을 위해<br>계좌번호를 기재하였습니다.</p>
+                
+                <div class="acc-box">
+                    <div class="acc-btn" onclick="toggleAcc('acc1')">신랑측 계좌번호 확인 <span>+</span></div>
+                    <div id="acc1" class="acc-content">
+                        <div class="acc-row">
+                            <div class="acc-info"><strong>OO은행</strong> 1002-123-456789<br>예금주 : 형민</div>
+                            <button class="copy-btn" onclick="copyText('1002123456789')">복사</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-box">
+                    <div class="acc-btn" onclick="toggleAcc('acc2')">신부측 계좌번호 확인 <span>+</span></div>
+                    <div id="acc2" class="acc-content">
+                        <div class="acc-row">
+                            <div class="acc-info"><strong>OO은행</strong> 110-123-456789<br>예금주 : 진아</div>
+                            <button class="copy-btn" onclick="copyText('110123456789')">복사</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
-    </div>
 
-    <script>
-        function toggleTimeline() {
-            const track = document.getElementById('sliderTrack');
-            track.classList.toggle('show-timeline');
-            setTimeout(() => { window.scrollTo(0, 0); }, 300);
+        <div class="page" style="background:#fcfcfc; padding:40px 24px;">
+            <div onclick="goHome()" style="font-size:13px; color:#888; margin-bottom:40px; cursor:pointer;">← 돌아가기</div>
+            <h2 style="font-family:'Nanum Myeongjo', serif; font-size:20px; font-weight:400; text-align:center; color:#222;">Our Story</h2>
+            <div style="margin-top:80px; text-align:center; color:#999; font-size:14px; font-weight:300;">
+                진아와 형민의 이야기가<br>업데이트될 공간입니다.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 타임라인 슬라이드 기능
+    function goTimeline() { document.getElementById('sliderTrack').classList.add('show-timeline'); window.scrollTo(0,0); }
+    function goHome() { document.getElementById('sliderTrack').classList.remove('show-timeline'); window.scrollTo(0,0); }
+    
+    // 아코디언 기능 (URL 특유의 부드러운 펼침)
+    function toggleAcc(id) {
+        const content = document.getElementById(id);
+        const btnText = content.previousElementSibling.querySelector('span');
+        
+        if (content.style.maxHeight) { 
+            content.style.maxHeight = null; 
+            btnText.innerText = '+';
+        } else { 
+            content.style.maxHeight = content.scrollHeight + "px"; 
+            btnText.innerText = '-';
         }
-    </script>
+    }
+
+    // 계좌 복사 기능
+    function copyText(text) {
+        const t = document.createElement("textarea");
+        document.body.appendChild(t);
+        t.value = text; t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
+        alert("계좌번호가 복사되었습니다.");
+    }
+</script>
+
 </body>
 </html>
