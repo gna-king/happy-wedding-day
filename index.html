@@ -6,37 +6,31 @@
     <title>진아 & 형민 결혼합니다</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
     
     <style>
         /* 기본 초기화 및 폰트 세팅 */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            background-color: #f6f5f5; /* PC 배경 */
+            background-color: #f6f5f5; 
             font-family: 'Noto Sans KR', sans-serif; 
             color: #333; 
-            display: flex; 
-            justify-content: center; 
+            display: flex; justify-content: center; 
         }
         
-        /* 모바일 컨테이너 (URL 오리지널 너비) */
         .phone-wrapper { 
-            width: 100%; max-width: 420px; 
-            background-color: #ffffff; 
-            min-height: 100vh; position: relative; 
-            overflow: hidden; 
+            width: 100%; max-width: 420px; background-color: #ffffff; 
+            min-height: 100vh; position: relative; overflow: hidden; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
         }
         
-        /* 타임라인 슬라이드 트랙 */
         .slider-track { display: flex; width: 200%; min-height: 100vh; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1); }
         .page { width: 50%; min-height: 100vh; overflow-y: auto; background-color: #fff; padding-bottom: 80px; }
 
-        /* https://blog.naver.com/design_mag/223721221451 */
         .section { padding: 70px 24px; text-align: center; }
         .section-title { 
-            font-family: 'Nanum Myeongjo', serif; 
-            font-size: 13px; color: #8c8279; /* URL 특유의 뮤트된 베이지/브라운 */
+            font-family: 'Gowun Batang', serif; /* 폰트 변경 */
+            font-size: 14px; font-weight: 700; color: #8c8279; 
             letter-spacing: 0.25em; margin-bottom: 45px; 
         }
 
@@ -44,49 +38,57 @@
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
         .main-img-placeholder { width: 100%; height: 60vh; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; }
         
-        /* 추가된 스토리 버튼 (URL 디자인 톤앤매너 적용) */
-        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; }
+        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; }
         .btn-story { 
             width: 100%; padding: 15px 0; background-color: #fff; 
-            border: 1px solid #e1dfdc; color: #555; 
+            border: 1px solid #e1dfdc; color: #555; font-family: 'Noto Sans KR', sans-serif;
             font-size: 13px; font-weight: 400; letter-spacing: 1px; cursor: pointer;
         }
 
-        .main-text { padding: 40px 0 30px 0; }
-        .main-text h1 { font-family: 'Nanum Myeongjo', serif; font-size: 26px; font-weight: 400; color: #222; margin-bottom: 25px; letter-spacing: 2px; }
-        .main-text p { font-size: 14px; color: #777; line-height: 1.8; font-weight: 300; letter-spacing: 0.5px; }
+        /* 메인 텍스트 영역 가운데 정렬 및 폰트 변경 */
+        .main-text { padding: 40px 0 30px 0; text-align: center; }
+        .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
+        .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; font-weight: 400; letter-spacing: 0.5px; }
 
         /* 2. 초대의 글 */
         .greeting-wrap { background-color: #faf9f8; padding: 80px 24px; text-align: center; }
-        .greeting-text { font-size: 15px; line-height: 2.2; color: #444; font-weight: 300; margin-bottom: 50px; }
-        .parents-info { font-size: 15px; color: #333; line-height: 2; font-weight: 300; }
-        .parents-info strong { font-weight: 500; font-size: 16px; margin-left: 6px; }
+        .greeting-text { font-family: 'Gowun Batang', serif; font-size: 16px; line-height: 2.2; color: #444; font-weight: 400; margin-bottom: 50px; }
+        .parents-info { font-family: 'Gowun Batang', serif; font-size: 16px; color: #333; line-height: 2; font-weight: 400; }
+        .parents-info strong { font-weight: 700; font-size: 17px; margin-left: 6px; }
 
-        /* 3. 갤러리 (그리드) */
+        /* 3. 갤러리 */
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
         .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; }
 
-        /* 4. 달력 */
-        .cal-month { font-family: 'Nanum Myeongjo', serif; font-size: 18px; color: #333; margin-bottom: 30px; letter-spacing: 1px; }
+        /* 4. 달력 & D-Day */
+        .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; letter-spacing: 1px; }
         .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
-        .cal-table th, .cal-table td { padding: 12px 0; font-size: 13px; font-weight: 300; color: #666; text-align: center; }
+        .cal-table th, .cal-table td { padding: 12px 0; font-size: 14px; font-weight: 400; color: #666; text-align: center; }
         .cal-table th { color: #a39c95; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .cal-table td.sun { color: #d67a7a; }
         .cal-table td.d-day span { 
             background-color: #8c8279; color: #fff; 
-            border-radius: 50%; width: 26px; height: 26px; 
-            display: inline-flex; align-items: center; justify-content: center; font-weight: 400; 
+            border-radius: 50%; width: 28px; height: 28px; 
+            display: inline-flex; align-items: center; justify-content: center; font-weight: 500; 
         }
+        .d-day-counter { 
+            margin-top: 35px; font-family: 'Gowun Batang', serif; 
+            font-size: 16px; color: #555; text-align: center; letter-spacing: 0.5px; 
+        }
+        .d-day-counter strong { color: #8c8279; font-weight: 700; font-size: 18px; }
 
-        /* 5. 오시는 길 (지도 & 심플 아이콘) */
-        .map-section { text-align: left; padding: 60px 24px; }
-        .map-title { text-align: center; margin-bottom: 40px; }
-        .venue-name { font-family: 'Nanum Myeongjo', serif; font-size: 18px; color: #222; margin-bottom: 8px; }
-        .venue-addr { font-size: 14px; color: #777; font-weight: 300; margin-bottom: 25px; }
+        /* 5. 오시는 길 */
+        .map-section { padding: 60px 24px; }
+        .map-title { text-align: center; margin-bottom: 35px; }
+        
+        /* Location 아래 장소와 주소 가운데 정렬 */
+        .venue-info { text-align: center; margin-bottom: 35px; }
+        .venue-name { font-family: 'Gowun Batang', serif; font-size: 22px; font-weight: 700; color: #222; margin-bottom: 10px; }
+        .venue-addr { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; font-weight: 400; margin-bottom: 25px; line-height: 1.6; }
         
         .map-embed { width: 100%; height: 240px; background-color: #eee; margin-bottom: 15px; }
         
-        /* 내비게이션 (URL 스타일의 둥근 모서리 버튼) */
+        /* 내비게이션 버튼 (로고 수정 및 티맵 추가) */
         .navi-btns { display: flex; gap: 8px; margin-bottom: 50px; }
         .navi-btn { 
             flex: 1; padding: 12px 0; background-color: #f9f9f9; 
@@ -94,19 +96,20 @@
             display: flex; justify-content: center; align-items: center; gap: 6px; 
         }
         .navi-btn span { font-size: 12px; color: #555; font-weight: 400; }
-        .navi-btn svg { width: 14px; height: 14px; border-radius: 3px; }
+        .navi-btn svg { width: 18px; height: 18px; border-radius: 4px; }
 
-        /* 심플한 교통안내 아이콘 및 텍스트 */
-        .way-item { display: flex; margin-bottom: 30px; align-items: flex-start; }
+        .way-item { display: flex; margin-bottom: 30px; align-items: flex-start; text-align: left; }
         .way-icon { width: 40px; }
-        /* URL 느낌의 극도로 얇고 심플한 선형 아이콘 */
         .way-icon svg { width: 20px; height: 20px; stroke: #8c8279; fill: none; stroke-width: 1.2; }
-        .way-desc h4 { font-size: 14.5px; font-weight: 500; color: #333; margin-bottom: 6px; letter-spacing: -0.3px; }
+        .way-desc h4 { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; letter-spacing: -0.3px; }
         .way-desc p { font-size: 14px; color: #666; font-weight: 300; line-height: 1.7; }
 
-        /* 6. 마음 전하실 곳 (URL 스타일 아코디언) */
-        .account-wrap { background-color: #faf9f8; padding: 70px 24px; }
-        .acc-desc { text-align: center; font-size: 14px; color: #777; line-height: 1.8; font-weight: 300; margin-bottom: 40px; }
+        /* 6. 마음 전하실 곳 */
+        .account-wrap { background-color: #faf9f8; padding: 70px 24px; text-align: center; }
+        .acc-desc { 
+            font-family: 'Gowun Batang', serif; text-align: center; 
+            font-size: 15px; color: #777; line-height: 1.8; font-weight: 400; margin-bottom: 40px; 
+        }
         
         .acc-box { margin-bottom: 10px; }
         .acc-btn { 
@@ -142,7 +145,7 @@
                 </div>
 
                 <div class="main-text">
-                    <h1>형민 & 진아</h1>
+                    <h1>진아 & 형민</h1>
                     <p>2026. 10. 11. SUN. PM 3:00<br>서울대학교 교수회관</p>
                 </div>
             </div>
@@ -184,36 +187,43 @@
                         <tr><td class="sun">25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td></tr>
                     </tbody>
                 </table>
+                <div class="d-day-counter" id="dDayText"></div>
             </div>
 
             <div class="map-section">
                 <div class="section-title map-title">Location</div>
-                <div class="venue-name">서울대학교 교수회관</div>
-                <div class="venue-addr">서울 관악구 관악로 1 서울대학교 65동<br>02-880-5241</div>
+                <div class="venue-info">
+                    <div class="venue-name">서울대학교 교수회관</div>
+                    <div class="venue-addr">서울 관악구 관악로 1 서울대학교 65동<br>02-880-5241</div>
+                </div>
                 
                 <div class="map-embed">
                     <iframe src="https://maps.google.com/maps?q=서울대%20교수회관&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen></iframe>
                 </div>
 
                 <div class="navi-btns">
-                    <a href="#" class="navi-btn">
-                        <svg viewBox="0 0 24 24" style="fill:#03C75A; border-radius:0;"><path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z"/></svg>
+                    <a href="https://map.naver.com/v5/search/서울대교수회관" class="navi-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" style="background:#03C75A;">
+                            <path d="M15.5 10.5L8.5 0H0v24h7.5V13.5l7 10.5h8V0h-7.5v10.5z" fill="#fff" transform="scale(0.6) translate(8,8)"/>
+                        </svg>
                         <span>네이버지도</span>
                     </a>
-                    <a href="#" class="navi-btn">
-                        <svg viewBox="0 0 24 24" style="fill:#FEE500; border-radius:0;"><path d="M12 3c-5.523 0-10 3.477-10 7.766 0 2.766 1.838 5.164 4.606 6.545l-1.127 4.204 4.887-3.26c.53.076 1.077.111 1.634.111 5.523 0 10-3.477 10-7.766C22 6.477 17.523 3 12 3z" style="fill:#3C1E1E"/></svg>
-                        <span>카카오내비</span>
+                    <a href="https://map.kakao.com/link/to/서울대교수회관,37.4533,126.9508" class="navi-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" style="background:#FEE500;">
+                            <path d="M12 5.5c-4.418 0-8 2.866-8 6.4 0 2.27 1.51 4.254 3.784 5.396-.16.586-.58 2.125-.6 2.213-.026.106.084.194.182.13.078-.05 2.32-1.504 3.233-2.138.52.072 1.065.11 1.625.11 4.418 0 8-2.866 8-6.4S16.418 5.5 12 5.5z" fill="#3C1E1E"/>
+                        </svg>
+                        <span>카카오네비</span>
                     </a>
-                    <a href="#" class="navi-btn">
-                        <svg viewBox="0 0 24 24" style="fill:#FF4B4B; border-radius:0;"><path d="M12 4l9 16H3z" style="fill:#fff"/></svg>
+                    <a href="tmap://search?name=서울대교수회관" class="navi-btn">
+                        <svg viewBox="0 0 24 24" style="background:#FF4B4B;">
+                            <text x="12" y="17" fill="white" font-size="15" font-weight="bold" font-family="sans-serif" text-anchor="middle">T</text>
+                        </svg>
                         <span>티맵</span>
                     </a>
                 </div>
 
                 <div class="way-item">
-                    <div class="way-icon">
-                        <svg viewBox="0 0 24 24"><path d="M6 4h12v11H6zM6 15l-2 5M18 15l2 5M9 11h6M10 18h4"/></svg>
-                    </div>
+                    <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M6 4h12v11H6zM6 15l-2 5M18 15l2 5M9 11h6M10 18h4"/></svg></div>
                     <div class="way-desc">
                         <h4>지하철 및 셔틀버스</h4>
                         <p>2호선 서울대입구역 3번 출구<br>교내 셔틀버스 탑승 후 '행정관' 하차 (도보 5분)</p>
@@ -221,9 +231,7 @@
                 </div>
 
                 <div class="way-item">
-                    <div class="way-icon">
-                        <svg viewBox="0 0 24 24"><path d="M5 6h14v11H5zM5 17v2h2v-2M17 17v2h2v-2M8 13h8M7 9h10"/></svg>
-                    </div>
+                    <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M5 6h14v11H5zM5 17v2h2v-2M17 17v2h2v-2M8 13h8M7 9h10"/></svg></div>
                     <div class="way-desc">
                         <h4>마을버스</h4>
                         <p>낙성대역 4번 출구<br>관악 02번 탑승 후 '교수회관' 정류장 하차</p>
@@ -231,9 +239,7 @@
                 </div>
 
                 <div class="way-item">
-                    <div class="way-icon">
-                        <svg viewBox="0 0 24 24"><path d="M4 11h16v6H4zM6 11l2-4h8l2 4M7 14h2M15 14h2"/></svg>
-                    </div>
+                    <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M4 11h16v6H4zM6 11l2-4h8l2 4M7 14h2M15 14h2"/></svg></div>
                     <div class="way-desc">
                         <h4>자가용 주차</h4>
                         <p>서울대학교 정문 통과 후 우회전하여 1.5km 직진<br>하객 무료 주차 2시간 지원</p>
@@ -270,7 +276,7 @@
 
         <div class="page" style="background:#fcfcfc; padding:40px 24px;">
             <div onclick="goHome()" style="font-size:13px; color:#888; margin-bottom:40px; cursor:pointer;">← 돌아가기</div>
-            <h2 style="font-family:'Nanum Myeongjo', serif; font-size:20px; font-weight:400; text-align:center; color:#222;">Our Story</h2>
+            <h2 style="font-family:'Gowun Batang', serif; font-size:24px; font-weight:700; text-align:center; color:#222;">Our Story</h2>
             <div style="margin-top:80px; text-align:center; color:#999; font-size:14px; font-weight:300;">
                 진아와 형민의 이야기가<br>업데이트될 공간입니다.
             </div>
@@ -284,11 +290,10 @@
     function goTimeline() { document.getElementById('sliderTrack').classList.add('show-timeline'); window.scrollTo(0,0); }
     function goHome() { document.getElementById('sliderTrack').classList.remove('show-timeline'); window.scrollTo(0,0); }
     
-    // 아코디언 기능 (URL 특유의 부드러운 펼침)
+    // 아코디언 기능
     function toggleAcc(id) {
         const content = document.getElementById(id);
         const btnText = content.previousElementSibling.querySelector('span');
-        
         if (content.style.maxHeight) { 
             content.style.maxHeight = null; 
             btnText.innerText = '+';
@@ -307,7 +312,11 @@
         document.body.removeChild(t);
         alert("계좌번호가 복사되었습니다.");
     }
-</script>
 
-</body>
-</html>
+    // D-Day 자동 계산 로직
+    function calculateDday() {
+        // 결혼식 날짜: 2026년 10월 11일
+        const weddingDate = new Date("2026-10-11T00:00:00").getTime();
+        const today = new Date().getTime();
+        const gap = weddingDate - today;
+        const dDay = Math.ceil(gap / (1000 * 60 * 6
