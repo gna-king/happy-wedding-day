@@ -6,138 +6,167 @@
     <title>진아 & 형민 결혼합니다</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: #f6f5f5; font-family: 'Noto Sans KR', sans-serif; color: #333; display: flex; justify-content: center; }
         
-        .phone-wrapper { width: 100%; max-width: 420px; background-color: #ffffff; min-height: 100vh; position: relative; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .phone-wrapper { width: 100%; max-width: 420px; background-color: #ffffff; min-height: 100vh; position: relative; overflow-x: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .slider-track { display: flex; width: 200%; min-height: 100vh; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1); }
-        .page { width: 50%; min-height: 100vh; overflow-y: auto; background-color: #fff; padding-bottom: 80px; }
+        .page { width: 50%; min-height: 100vh; overflow-y: auto; overflow-x: hidden; background-color: #fff; padding-bottom: 80px; }
         .page::-webkit-scrollbar { display: none; }
 
         .section { padding: 70px 24px; text-align: center; }
         .section-title { font-family: 'Gowun Batang', serif; font-size: 14px; font-weight: 700; color: #8c8279; letter-spacing: 0.25em; margin-bottom: 45px; }
 
-        /* 메인 커버 */
+        /* [1. 메인 커버] */
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
         .main-img-placeholder { width: 100%; height: 60vh; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; }
-        
         .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; }
-        .btn-story { width: 100%; padding: 15px 0; background-color: #fff; border: 1px solid #e1dfdc; color: #555; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 400; letter-spacing: 1px; cursor: pointer; }
-
+        .btn-story { width: 100%; padding: 15px 0; background-color: #fff; border: 1px solid #e1dfdc; color: #555; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; cursor: pointer; border-radius: 4px; }
         .main-text { padding: 40px 0 30px 0; text-align: center; }
         .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
-        .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; font-weight: 400; letter-spacing: 0.5px; }
-
-        /* 인사말 */
+        .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; letter-spacing: 0.5px; }
+        
+        /* [기존 섹션들 생략 방지 - 축소 정리] */
         .greeting-wrap { background-color: #faf9f8; padding: 80px 24px; text-align: center; }
-        .greeting-text { font-family: 'Gowun Batang', serif; font-size: 16px; line-height: 2.2; color: #444; font-weight: 400; margin-bottom: 50px; }
-        .parents-info { font-family: 'Gowun Batang', serif; font-size: 16px; color: #333; line-height: 2; font-weight: 400; }
+        .greeting-text { font-family: 'Gowun Batang', serif; font-size: 16px; line-height: 2.2; color: #444; margin-bottom: 50px; }
+        .parents-info { font-family: 'Gowun Batang', serif; font-size: 16px; color: #333; line-height: 2; }
         .parents-info strong { font-weight: 700; font-size: 17px; margin-left: 6px; }
-
-        /* 갤러리 */
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
         .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; }
-
-        /* 달력 & D-Day */
-        .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; letter-spacing: 1px; }
+        .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; }
         .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
-        .cal-table th, .cal-table td { padding: 12px 0; font-size: 14px; font-weight: 400; color: #666; text-align: center; }
+        .cal-table th, .cal-table td { padding: 12px 0; font-size: 14px; color: #666; text-align: center; }
         .cal-table th { color: #a39c95; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .cal-table td.sun { color: #d67a7a; }
         .cal-table td.d-day span { background-color: #8c8279; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; }
-        
-        .d-day-counter { margin-top: 35px; font-family: 'Gowun Batang', serif; font-size: 16px; color: #555; text-align: center; letter-spacing: 0.5px; }
+        .d-day-counter { margin-top: 35px; font-family: 'Gowun Batang', serif; font-size: 16px; color: #555; text-align: center; }
         .d-day-counter strong { color: #8c8279; font-weight: 700; font-size: 18px; }
-
-        /* =========================================
-           [새로 추가됨: 축하 연락하기]
-           ========================================= */
+        
+        /* 연락처 */
         .contact-section { padding: 20px 24px 60px 24px; text-align: center; }
         .contact-wrap { margin-top: 10px; }
         .contact-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #f1f1f1; }
-        .contact-row:last-child { border-bottom: none; }
         .contact-label { font-family: 'Gowun Batang', serif; font-size: 16px; color: #555; }
         .contact-label strong { font-weight: 700; color: #222; margin-left: 8px; font-size: 17px; }
         .contact-actions { display: flex; gap: 18px; }
         .contact-actions a { text-decoration: none; font-size: 18px; color: #8c8279; opacity: 0.8; }
 
-        /* 오시는 길 */
+        /* 지도 */
         .map-section { padding: 60px 24px; }
-        .map-title { text-align: center; margin-bottom: 35px; }
-        
         .venue-info { text-align: center; margin-bottom: 35px; }
         .venue-name { font-family: 'Gowun Batang', serif; font-size: 22px; font-weight: 700; color: #222; margin-bottom: 10px; }
-        .venue-addr { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; font-weight: 400; margin-bottom: 25px; line-height: 1.6; }
-        
+        .venue-addr { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; margin-bottom: 25px; line-height: 1.6; }
         .map-embed { width: 100%; height: 240px; background-color: #eee; margin-bottom: 15px; }
-        
-        /* 내비게이션 아이콘 정비율 맞춤 */
         .navi-btns { display: flex; gap: 8px; margin-bottom: 50px; }
-        .navi-btn { flex: 1; padding: 12px 0; background-color: #f9f9f9; border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .navi-btn span { font-size: 12px; color: #555; font-weight: 400; }
-        
-        /* 아이콘 사이즈를 20x20으로 완벽하게 통일 */
+        .navi-btn { flex: 1; padding: 12px 0; background-color: #f9f9f9; border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .navi-btn span { font-size: 12px; color: #555; }
         .navi-btn svg { width: 20px; height: 20px; border-radius: 4px; }
-
+        
+        /* 대중교통 아이콘 */
         .way-item { display: flex; margin-bottom: 30px; align-items: flex-start; text-align: left; }
         .way-icon { width: 40px; }
         .way-icon svg { width: 20px; height: 20px; stroke: #8c8279; fill: none; stroke-width: 1.2; }
-        .way-desc h4 { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; letter-spacing: -0.3px; }
-        .way-desc p { font-size: 14px; color: #666; font-weight: 300; line-height: 1.7; }
-
-        /* 마음 전하실 곳 */
-        .account-wrap { background-color: #faf9f8; padding: 70px 24px; text-align: center; }
-        .acc-desc { font-family: 'Gowun Batang', serif; text-align: center; font-size: 15px; color: #777; line-height: 1.8; font-weight: 400; margin-bottom: 40px; }
+        .way-desc h4 { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; }
+        .way-desc p { font-size: 14px; color: #666; line-height: 1.7; }
         
+        /* 계좌번호 */
+        .account-wrap { background-color: #faf9f8; padding: 70px 24px; text-align: center; }
+        .acc-desc { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; line-height: 1.8; margin-bottom: 40px; }
         .acc-box { margin-bottom: 10px; }
-        .acc-btn { width: 100%; background-color: #fff; border: 1px solid #e1dfdc; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: #444; font-weight: 400; cursor: pointer; }
+        .acc-btn { width: 100%; background-color: #fff; border: 1px solid #e1dfdc; padding: 16px 20px; display: flex; justify-content: space-between; font-size: 14px; color: #444; cursor: pointer; border-radius: 4px; }
         .acc-content { background-color: #fcfbfb; border: 1px solid #e1dfdc; border-top: none; padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .acc-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px dashed #e1dfdc; }
-        .acc-row:last-child { border-bottom: none; }
-        .acc-info { text-align: left; font-size: 13.5px; color: #555; line-height: 1.6; font-weight: 300; }
-        .acc-info strong { font-weight: 500; color: #333; }
-        .copy-btn { padding: 6px 12px; background-color: #fff; border: 1px solid #ccc; font-size: 11px; color: #666; border-radius: 2px; cursor: pointer; }
+        .acc-info { text-align: left; font-size: 13.5px; color: #555; line-height: 1.6; }
+        .copy-btn { padding: 6px 12px; background-color: #fff; border: 1px solid #ccc; font-size: 11px; color: #666; cursor: pointer; border-radius: 2px;}
 
+        /* 화면 슬라이드 */
         .show-timeline { transform: translateX(-50%); }
 
-        /* 타임라인 스토리 CSS */
-        .timeline-container { position: relative; padding: 20px 0 100px 0; font-family: 'Gowun Batang', serif; }
-        .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 0; border-left: 2px dashed #ddd; transform: translateX(-50%); z-index: 1; }
-        .scene { position: relative; z-index: 2; margin-bottom: 100px; width: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0.3; transition: opacity 0.5s; }
-        .scene.active { opacity: 1; }
-
-        .char { width: 40px; height: 40px; border: 1.5px solid #333; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; z-index: 3; }
-        .char.girl { border-color: #d67a7a; color: #d67a7a; }
-        .char.boy { border-color: #5b8db8; color: #5b8db8; }
+        /* =========================================
+           [타임라인 (Our Story) 완벽 구현 CSS]
+           ========================================= */
+        .timeline-container { position: relative; padding: 0 0 100px 0; width: 100%; }
         
-        .scene-birth { flex-direction: row; justify-content: center; gap: 60px; }
-        .profile { display: flex; flex-direction: column; align-items: center; }
-        .profile-name { font-weight: 700; margin-top: 8px; font-size: 16px; }
-        .profile-date { font-size: 13px; color: #888; font-family: 'Noto Sans KR', sans-serif; }
-
-        .company-box { border: 2px solid #1428A0; border-radius: 30px; padding: 15px 40px; background: #fff; color: #1428A0; font-family: 'Noto Sans KR', sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 1px; position: relative; margin-top: 80px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .walk-container { position: absolute; width: 100%; top: -80px; display: flex; justify-content: center; gap: 40px; }
-        .scene.active .char-jina-walk { animation: walkIn 2s forwards; }
-        .scene.active .char-hm-walk { opacity: 0; animation: walkIn 2s 1s forwards; }
-        .enter-year { font-size: 11px; color: #666; font-family: 'Noto Sans KR', sans-serif; position: absolute; white-space: nowrap; }
-        .enter-jina { left: -60px; top: -30px; }
-        .enter-hm { right: -60px; top: -30px; }
-
-        @keyframes walkIn {
-            0% { transform: translateY(-50px); opacity: 0; }
-            30% { transform: translateY(0); opacity: 1; }
-            70% { transform: translateY(20px); opacity: 1; }
-            100% { transform: translateY(50px); opacity: 0; }
+        /* 중앙 점선 */
+        .timeline-line { 
+            position: absolute; left: 50%; top: 50px; bottom: 0; width: 1px; 
+            border-left: 2px dashed #e0e0e0; transform: translateX(-50%); z-index: 1; 
         }
 
-        .scene-post-company { margin-top: -30px; display: flex; flex-direction: row; justify-content: center; gap: 30px; position: relative; }
-        .speech-bubble { position: absolute; top: -40px; left: -20px; background: #fff; border: 1.5px solid #333; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; opacity: 0; transform: translateY(10px); }
-        .speech-bubble::after { content: ''; position: absolute; bottom: -5px; left: 20px; width: 8px; height: 8px; background: #fff; border-bottom: 1.5px solid #333; border-right: 1.5px solid #333; transform: rotate(45deg); }
-        .scene.active .speech-bubble { animation: popBubble 3s 0.5s forwards; }
+        /* 씬 기본 설정 (스크롤 애니메이션을 위한 숨김 처리) */
+        .scene { 
+            position: relative; z-index: 2; margin-bottom: 120px; width: 100%; 
+            opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; 
+        }
+        .scene.in-view { opacity: 1; transform: translateY(0); }
+
+        /* 아바타 공통 (이모지 대신 시안 느낌의 원형 프로필) */
+        .avatar { 
+            width: 50px; height: 50px; border-radius: 50%; background-color: #fff; 
+            display: flex; align-items: center; justify-content: center; z-index: 3; position: relative;
+        }
+        .avatar-girl { border: 2px solid #e6a7a7; box-shadow: 0 2px 8px rgba(230,167,167,0.3); }
+        .avatar-boy { border: 2px solid #a7badb; box-shadow: 0 2px 8px rgba(167,186,219,0.3); }
+        .avatar-couple { border: 2px solid #e6a7a7; width: 56px; height: 56px; }
+
+        /* 아바타 내부 아이콘 (SVG) */
+        .svg-icon { width: 30px; height: 30px; }
+
+        /* 가로 3분할 레이아웃 (좌측텍스트 - 중앙아바타 - 우측사진) */
+        .t-row { display: flex; align-items: center; justify-content: space-between; width: 100%; position: relative; }
+        .t-left { width: 35%; text-align: right; padding-right: 15px; }
+        .t-center { width: 30%; display: flex; justify-content: center; position: relative; z-index: 2; }
+        .t-right { width: 35%; padding-left: 15px; text-align: left; }
+
+        /* 텍스트 스타일 */
+        .t-name { font-family: 'Gowun Batang', serif; font-size: 18px; font-weight: 700; color: #222; margin-top: 10px; }
+        .t-date { font-size: 13px; color: #aaa; font-weight: 300; margin-top: 4px; }
+        .t-title { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #555; }
         
+        /* 1. 아기 시절 */
+        .birth-wrap { display: flex; justify-content: center; gap: 80px; padding-top: 40px; }
+        .birth-col { display: flex; flex-direction: column; align-items: center; background: #fff; padding: 0 10px; }
+
+        /* 2 & 3. 입사 및 삼성 */
+        .scene-samsung { margin-top: -20px; }
+        .samsung-box { 
+            border: 2px solid #b2bce6; border-radius: 40px; padding: 18px 40px; 
+            background: #fff; color: #8e9bd6; font-family: 'Noto Sans KR', sans-serif; 
+            font-weight: 700; font-size: 26px; z-index: 3; position: relative;
+        }
+        
+        .enter-text { font-size: 12px; color: #b5b5b5; font-weight: 500; position: absolute; }
+        .enter-girl { right: 25px; top: -50px; }
+        .enter-boy { left: 25px; top: -50px; }
+
+        /* 아바타 걸어들어가는 애니메이션 (스크롤 시 작동) */
+        .moving-avatar { position: absolute; top: -100px; opacity: 0; }
+        .moving-girl { left: 50%; margin-left: -50px; }
+        .moving-boy { left: 50%; margin-left: 10px; }
+        
+        .scene.in-view .moving-girl { animation: walkDown 2s forwards; }
+        .scene.in-view .moving-boy { animation: walkDown 2s 0.8s forwards; /* 0.8초 늦게 출발 */ }
+        
+        @keyframes walkDown {
+            0% { transform: translateY(0); opacity: 0; }
+            20% { opacity: 1; }
+            80% { transform: translateY(90px); opacity: 1; }
+            100% { transform: translateY(110px); opacity: 0; }
+        }
+
+        /* 4. 내가 선배 말풍선 */
+        .speech-bubble { 
+            position: absolute; top: -45px; left: -30px; background: #fff; 
+            border: 1px solid #ddd; border-radius: 20px; padding: 6px 12px; 
+            font-size: 12px; color: #555; font-weight: 500; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            opacity: 0; transform: translateY(10px); z-index: 10;
+        }
+        .speech-bubble::after { content:''; position:absolute; bottom:-4px; left:20px; width:8px; height:8px; background:#fff; border-bottom:1px solid #ddd; border-right:1px solid #ddd; transform:rotate(45deg); }
+        
+        .scene.in-view .bubble-animate { animation: popBubble 3.5s 1.5s forwards; }
         @keyframes popBubble {
             0% { opacity: 0; transform: translateY(10px); }
             15% { opacity: 1; transform: translateY(0); }
@@ -145,19 +174,13 @@
             100% { opacity: 0; transform: translateY(-10px); }
         }
 
-        .scene-meet { flex-direction: row; justify-content: space-between; width: 85%; margin: 0 auto; align-items: center; }
-        .event-info { text-align: right; width: 80px; }
-        .event-title { font-weight: 700; font-size: 15px; }
-        .event-date { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: #888; }
-        .couple-stand { display: flex; gap: 10px; }
-        .photo-box { width: 50px; height: 50px; border: 1.5px solid #ccc; background: #f9f9f9; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; font-family: 'Noto Sans KR', sans-serif; }
-        
-        .scene-date { flex-direction: row; justify-content: space-between; width: 85%; margin: 0 auto; align-items: center; }
-        .couple-hold { display: flex; gap: 0; position: relative; }
-        .couple-hold .girl { z-index: 4; transform: translateX(5px); }
-        .couple-hold .boy { z-index: 3; transform: translateX(-5px); }
-        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-        .photo-grid .photo-box { width: 40px; height: 40px; }
+        /* 5. 첫 만남 */
+        .photo-empty { width: 60px; height: 60px; border: 1px solid #eaeaea; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #ccc; background: #fafafa; }
+        .avatar-group { display: flex; gap: 5px; background: #fff; padding: 5px; border-radius: 30px; }
+
+        /* 6. 사귄 날 */
+        .photo-grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .photo-grid-4 .photo-empty { width: 45px; height: 45px; }
 
     </style>
 </head>
@@ -168,7 +191,7 @@
         
         <div class="page">
             <div class="main-cover">
-                <div class="main-img-placeholder">[일러스트 또는 사진]</div>
+                <div class="main-img-placeholder">[메인 일러스트]</div>
                 <div class="btn-wrap">
                     <button class="btn-story" onclick="goTimeline()">진아 · 형민 스토리 보러가기</button>
                 </div>
@@ -251,15 +274,11 @@
 
                 <div class="navi-btns">
                     <a href="https://map.naver.com/v5/search/서울대교수회관" class="navi-btn" target="_blank">
-                        <svg viewBox="0 0 24 24" style="background:#03C75A;">
-                            <path d="M16.5 11.5L9.5 2H4v20h5.5V13.5L16.5 23H22V2h-5.5v9.5z" fill="#fff" transform="scale(0.8) translate(3, 1.5)"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" style="background:#03C75A;"><path d="M16.5 11.5L9.5 2H4v20h5.5V13.5L16.5 23H22V2h-5.5v9.5z" fill="#fff" transform="scale(0.8) translate(3, 1.5)"/></svg>
                         <span>네이버지도</span>
                     </a>
                     <a href="https://map.kakao.com/link/to/서울대교수회관,37.4533,126.9508" class="navi-btn" target="_blank">
-                        <svg viewBox="0 0 24 24" style="background:#FEE500;">
-                            <path d="M12 5.5c-4.418 0-8 2.866-8 6.4 0 2.27 1.51 4.254 3.784 5.396-.16.586-.58 2.125-.6 2.213-.026.106.084.194.182.13.078-.05 2.32-1.504 3.233-2.138.52.072 1.065.11 1.625.11 4.418 0 8-2.866 8-6.4S16.418 5.5 12 5.5z" fill="#3C1E1E"/>
-                        </svg>
+                        <svg viewBox="0 0 24 24" style="background:#FEE500;"><path d="M12 5.5c-4.418 0-8 2.866-8 6.4 0 2.27 1.51 4.254 3.784 5.396-.16.586-.58 2.125-.6 2.213-.026.106.084.194.182.13.078-.05 2.32-1.504 3.233-2.138.52.072 1.065.11 1.625.11 4.418 0 8-2.866 8-6.4S16.418 5.5 12 5.5z" fill="#3C1E1E"/></svg>
                         <span>카카오내비</span>
                     </a>
                     <a href="tmap://search?name=서울대교수회관" class="navi-btn">
@@ -278,7 +297,6 @@
                         <p>2호선 서울대입구역 3번 출구<br>교내 셔틀버스 탑승 후 '행정관' 하차 (도보 5분)</p>
                     </div>
                 </div>
-
                 <div class="way-item">
                     <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M5 6h14v11H5zM5 17v2h2v-2M17 17v2h2v-2M8 13h8M7 9h10"/></svg></div>
                     <div class="way-desc">
@@ -286,7 +304,6 @@
                         <p>낙성대역 4번 출구<br>관악 02번 탑승 후 '교수회관' 정류장 하차</p>
                     </div>
                 </div>
-
                 <div class="way-item">
                     <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M4 11h16v6H4zM6 11l2-4h8l2 4M7 14h2M15 14h2"/></svg></div>
                     <div class="way-desc">
@@ -299,7 +316,6 @@
             <div class="account-wrap">
                 <div class="section-title" style="margin-bottom:20px;">마음 전하실 곳</div>
                 <p class="acc-desc">참석이 어려우신 분들을 위해<br>계좌번호를 기재하였습니다.</p>
-                
                 <div class="acc-box">
                     <div class="acc-btn" onclick="toggleAcc('acc1')">신랑측 계좌번호 확인 <span>+</span></div>
                     <div id="acc1" class="acc-content">
@@ -309,7 +325,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="acc-box">
                     <div class="acc-btn" onclick="toggleAcc('acc2')">신부측 계좌번호 확인 <span>+</span></div>
                     <div id="acc2" class="acc-content">
@@ -323,81 +338,119 @@
 
         </div>
 
-        <div class="page" id="storyPage" style="background:#fcfcfc; padding:20px 0;">
+        <div class="page" id="storyPage" style="background:#fff; padding:20px 0;">
             
-            <div onclick="goHome()" style="font-size:13px; color:#888; padding: 20px 24px; cursor:pointer; font-family:'Noto Sans KR', sans-serif;">← 돌아가기</div>
-            <h2 style="font-family:'Gowun Batang', serif; font-size:22px; font-weight:700; text-align:center; color:#222; margin-bottom: 40px;">Our Story</h2>
+            <div onclick="goHome()" style="font-size:13px; color:#888; padding: 20px 24px; cursor:pointer;">← 돌아가기</div>
+            <h2 style="font-family:'Gowun Batang', serif; font-size:24px; font-weight:700; text-align:center; color:#222; margin-bottom: 60px;">Our Story</h2>
             
             <div class="timeline-container">
                 <div class="timeline-line"></div>
 
-                <div class="scene scene-birth active">
-                    <div class="profile">
-                        <div class="char girl">👧🏻</div>
-                        <div class="profile-name">진아</div>
-                        <div class="profile-date">95.02.02</div>
-                    </div>
-                    <div class="profile">
-                        <div class="char boy">👦🏻</div>
-                        <div class="profile-name">형민</div>
-                        <div class="profile-date">92.07.16</div>
+                <div class="scene scene-birth in-view">
+                    <div class="birth-wrap">
+                        <div class="birth-col">
+                            <div class="avatar avatar-girl">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#e6a7a7"/></svg>
+                            </div>
+                            <div class="t-name">진아</div>
+                            <div class="t-date">95.02.02</div>
+                        </div>
+                        <div class="birth-col">
+                            <div class="avatar avatar-boy">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#a7badb"/></svg>
+                            </div>
+                            <div class="t-name">형민</div>
+                            <div class="t-date">92.07.16</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="scene scene-company">
-                    <div class="company-box">
-                        <div class="walk-container">
-                            <div style="position:relative;">
-                                <div class="enter-year enter-jina">19년 입사 ↘</div>
-                                <div class="char girl char-jina-walk">👩🏻‍💼</div>
-                            </div>
-                            <div style="position:relative;">
-                                <div class="enter-year enter-hm">↙ 20년 입사</div>
-                                <div class="char boy char-hm-walk">👨🏻‍💼</div>
+                <div class="scene scene-samsung" style="margin-top: 150px;">
+                    <div class="avatar avatar-girl moving-avatar moving-girl">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#e6a7a7"/></svg>
+                    </div>
+                    <div class="avatar avatar-boy moving-avatar moving-boy">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#a7badb"/></svg>
+                    </div>
+
+                    <div class="t-row">
+                        <div class="t-left">
+                            <div class="enter-text enter-girl">19년 입사 ↘</div>
+                        </div>
+                        <div class="t-center">
+                            <div class="samsung-box">Samsung</div>
+                        </div>
+                        <div class="t-right">
+                            <div class="enter-text enter-boy">↙ 20년 입사</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scene">
+                    <div class="t-row">
+                        <div class="t-left"></div>
+                        <div class="t-center">
+                            <div class="avatar-group">
+                                <div style="position:relative;">
+                                    <div class="speech-bubble bubble-animate">내가 선배</div>
+                                    <div class="avatar avatar-girl" style="width:40px; height:40px;">
+                                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#e6a7a7"/></svg>
+                                    </div>
+                                </div>
+                                <div class="avatar avatar-boy" style="width:40px; height:40px;">
+                                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#a7badb"/></svg>
+                                </div>
                             </div>
                         </div>
-                        Samsung
+                        <div class="t-right"></div>
                     </div>
                 </div>
 
-                <div class="scene scene-post-company">
-                    <div style="position:relative;">
-                        <div class="speech-bubble">내가 선배</div>
-                        <div class="char girl">👩🏻‍💼</div>
+                <div class="scene">
+                    <div class="t-row">
+                        <div class="t-left">
+                            <div class="t-title">첫만남</div>
+                            <div class="t-date">20.04.11</div>
+                        </div>
+                        <div class="t-center">
+                            <div class="avatar-group">
+                                <div class="avatar avatar-girl" style="width:45px; height:45px;">
+                                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#e6a7a7"/></svg>
+                                </div>
+                                <div class="avatar avatar-boy" style="width:45px; height:45px;">
+                                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#a7badb"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="t-right">
+                            <div class="photo-empty">사진</div>
+                        </div>
                     </div>
-                    <div class="char boy">👨🏻‍💼</div>
                 </div>
 
-                <div class="scene scene-meet">
-                    <div class="event-info">
-                        <div class="event-title">첫만남</div>
-                        <div class="event-date">20.04.11</div>
-                    </div>
-                    <div class="couple-stand">
-                        <div class="char girl">👩🏻‍💼</div>
-                        <div class="char boy">👨🏻‍💼</div>
-                    </div>
-                    <div class="photo-box">사진</div>
-                </div>
-
-                <div class="scene scene-date">
-                    <div class="event-info">
-                        <div class="event-title">사귄날</div>
-                        <div class="event-date">21.10.23</div>
-                    </div>
-                    <div class="couple-hold">
-                        <div class="char girl">👩🏻‍❤️‍👨🏻</div>
-                    </div>
-                    <div class="photo-grid">
-                        <div class="photo-box">사진</div>
-                        <div class="photo-box">사진</div>
-                        <div class="photo-box">사진</div>
-                        <div class="photo-box">사진</div>
+                <div class="scene">
+                    <div class="t-row">
+                        <div class="t-left">
+                            <div class="t-title">사귄날</div>
+                            <div class="t-date">21.10.23</div>
+                        </div>
+                        <div class="t-center">
+                            <div class="avatar avatar-couple">
+                                <svg class="svg-icon" viewBox="0 0 24 24" style="fill:#e6a7a7;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                            </div>
+                        </div>
+                        <div class="t-right">
+                            <div class="photo-grid-4">
+                                <div class="photo-empty">사진</div>
+                                <div class="photo-empty">사진</div>
+                                <div class="photo-empty">사진</div>
+                                <div class="photo-empty">사진</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
             </div>
-            
             <div style="height: 100px;"></div>
         </div>
 
@@ -405,30 +458,24 @@
 </div>
 
 <script>
+    // 페이지 슬라이드 이동
     function goTimeline() { document.getElementById('sliderTrack').classList.add('show-timeline'); window.scrollTo(0,0); }
     function goHome() { document.getElementById('sliderTrack').classList.remove('show-timeline'); window.scrollTo(0,0); }
     
+    // 계좌 아코디언 및 복사
     function toggleAcc(id) {
         const content = document.getElementById(id);
         const btnText = content.previousElementSibling.querySelector('span');
-        if (content.style.maxHeight) { 
-            content.style.maxHeight = null; 
-            btnText.innerText = '+';
-        } else { 
-            content.style.maxHeight = content.scrollHeight + "px"; 
-            btnText.innerText = '-';
-        }
+        if (content.style.maxHeight) { content.style.maxHeight = null; btnText.innerText = '+'; } 
+        else { content.style.maxHeight = content.scrollHeight + "px"; btnText.innerText = '-'; }
     }
-
     function copyText(text) {
-        const t = document.createElement("textarea");
-        document.body.appendChild(t);
-        t.value = text; t.select();
-        document.execCommand('copy');
-        document.body.removeChild(t);
+        const t = document.createElement("textarea"); document.body.appendChild(t);
+        t.value = text; t.select(); document.execCommand('copy'); document.body.removeChild(t);
         alert("계좌번호가 복사되었습니다.");
     }
 
+    // D-Day 계산
     function calculateDday() {
         const weddingDate = new Date("2026-10-11T00:00:00").getTime();
         const today = new Date().getTime();
@@ -441,18 +488,27 @@
     }
     calculateDday();
 
-    // 스크롤 시 스토리 애니메이션 작동
-    document.querySelector('#storyPage').addEventListener('scroll', function() {
-        const scenes = document.querySelectorAll('.scene');
-        const triggerBottom = window.innerHeight * 0.8;
+    // =========================================
+    // 스크롤 시 씬 감지 (Intersection Observer)
+    // =========================================
+    const storyPage = document.getElementById('storyPage');
+    const scenes = document.querySelectorAll('.scene');
 
-        scenes.forEach(scene => {
-            const sceneTop = scene.getBoundingClientRect().top;
-            if (sceneTop < triggerBottom) {
-                scene.classList.add('active');
+    // 스크롤 영역의 75% 지점에 도달했을 때 클래스 추가
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
             }
         });
+    }, {
+        root: null, // 브라우저 뷰포트 기준 (PC 테스트용)
+        threshold: 0.3, // 30% 정도 보이면 작동
+        rootMargin: "0px 0px -15% 0px" 
     });
+
+    scenes.forEach(scene => observer.observe(scene));
+
 </script>
 
 </body>
