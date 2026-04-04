@@ -6,133 +6,167 @@
     <title>진아 & 형민 결혼합니다</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* 기본 초기화 및 폰트 세팅 */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            background-color: #f6f5f5; /* PC 배경 */
-            font-family: 'Noto Sans KR', sans-serif; 
-            color: #333; 
-            display: flex; 
-            justify-content: center; 
-        }
+        body { background-color: #f6f5f5; font-family: 'Noto Sans KR', sans-serif; color: #333; display: flex; justify-content: center; }
         
-        /* 모바일 컨테이너 (URL 오리지널 너비) */
-        .phone-wrapper { 
-            width: 100%; max-width: 420px; 
-            background-color: #ffffff; 
-            min-height: 100vh; position: relative; 
-            overflow: hidden; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
-        }
-        
-        /* 타임라인 슬라이드 트랙 */
+        .phone-wrapper { width: 100%; max-width: 420px; background-color: #ffffff; min-height: 100vh; position: relative; overflow-x: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .slider-track { display: flex; width: 200%; min-height: 100vh; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1); }
-        .page { width: 50%; min-height: 100vh; overflow-y: auto; background-color: #fff; padding-bottom: 80px; }
+        .page { width: 50%; min-height: 100vh; overflow-y: auto; overflow-x: hidden; background-color: #fff; padding-bottom: 80px; }
+        .page::-webkit-scrollbar { display: none; }
 
-        /* https://blog.naver.com/design_mag/223729896970 */
-        .section { padding: 70px 24px; text-align: center; border-bottom: 1px solid #f9f9f9; }
-        .section-title { 
-            font-family: 'Nanum Myeongjo', serif; 
-            font-size: 13px; color: #8c8279; /* URL 특유의 뮤트된 베이지/브라운 */
-            letter-spacing: 0.25em; margin-bottom: 45px; 
-            text-transform: uppercase;
-        }
+        .section { padding: 70px 24px; text-align: center; }
+        .section-title { font-family: 'Gowun Batang', serif; font-size: 14px; font-weight: 700; color: #8c8279; letter-spacing: 0.25em; margin-bottom: 45px; }
 
-        /* 1. 메인 커버 */
+        /* --- [페이지 1: 청첩장 기본 정보] --- */
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
         .main-img-placeholder { width: 100%; height: 60vh; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; }
+        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; }
+        .btn-story { width: 100%; padding: 15px 0; background-color: #fff; border: 1px solid #e1dfdc; color: #555; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; cursor: pointer; border-radius: 4px; }
+        .main-text { padding: 40px 0 30px 0; text-align: center; }
+        .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
+        .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; letter-spacing: 0.5px; }
         
-        /* 추가된 스토리 버튼 (URL 디자인 톤앤매너 적용) */
-        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; }
-        .btn-story { 
-            width: 100%; padding: 15px 0; background-color: #fff; 
-            border: 1px solid #e1dfdc; color: #555; 
-            font-size: 13px; font-weight: 400; letter-spacing: 1px; cursor: pointer;
-            border-radius: 2px; transition: background 0.2s;
-        }
-        .btn-story:active { background-color: #fbfbfb; }
-
-        .main-text { padding: 40px 0 30px 0; }
-        .main-text h1 { font-family: 'Nanum Myeongjo', serif; font-size: 26px; font-weight: 400; color: #222; margin-bottom: 25px; letter-spacing: 2px; }
-        .main-text p { font-size: 14px; color: #777; line-height: 1.8; font-weight: 300; letter-spacing: 0.5px; }
-
-        /* 2. 초대의 글 */
         .greeting-wrap { background-color: #faf9f8; padding: 80px 24px; text-align: center; }
-        .greeting-text { font-size: 15px; line-height: 2.2; color: #444; font-weight: 300; margin-bottom: 50px; }
-        .parents-info { font-size: 15px; color: #333; line-height: 2; font-weight: 300; }
-        .parents-info strong { font-weight: 500; font-size: 16px; margin-left: 6px; }
-
-        /* 3. 갤러리 (그리드) */
+        .greeting-text { font-family: 'Gowun Batang', serif; font-size: 16px; line-height: 2.2; color: #444; margin-bottom: 50px; }
+        .parents-info { font-family: 'Gowun Batang', serif; font-size: 16px; color: #333; line-height: 2; }
+        .parents-info strong { font-weight: 700; font-size: 17px; margin-left: 6px; }
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
         .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; }
-
-        /* 4. 달력 */
-        .cal-month { font-family: 'Nanum Myeongjo', serif; font-size: 18px; color: #333; margin-bottom: 30px; letter-spacing: 1px; }
+        .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; }
         .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
-        .cal-table th, .cal-table td { padding: 12px 0; font-size: 13px; font-weight: 300; color: #666; text-align: center; }
+        .cal-table th, .cal-table td { padding: 12px 0; font-size: 14px; color: #666; text-align: center; }
         .cal-table th { color: #a39c95; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .cal-table td.sun { color: #d67a7a; }
-        .cal-table td.d-day span { 
-            background-color: #8c8279; color: #fff; 
-            border-radius: 50%; width: 26px; height: 26px; 
-            display: inline-flex; align-items: center; justify-content: center; font-weight: 400; 
-        }
-
-        /* 5. 오시는 길 (지도 & 심플 아이콘) */
-        .map-section { text-align: left; padding: 60px 24px; border-bottom: none; }
-        .map-title { text-align: center; margin-bottom: 40px; }
-        .venue-name { font-family: 'Nanum Myeongjo', serif; font-size: 18px; color: #222; margin-bottom: 8px; }
-        .venue-addr { font-size: 14px; color: #777; font-weight: 300; margin-bottom: 25px; }
+        .cal-table td.d-day span { background-color: #8c8279; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-weight: 500; }
+        .d-day-counter { margin-top: 35px; font-family: 'Gowun Batang', serif; font-size: 16px; color: #555; text-align: center; }
+        .d-day-counter strong { color: #8c8279; font-weight: 700; font-size: 18px; }
         
+        .contact-section { padding: 20px 24px 60px 24px; text-align: center; }
+        .contact-wrap { margin-top: 10px; }
+        .contact-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #f1f1f1; }
+        .contact-label { font-family: 'Gowun Batang', serif; font-size: 16px; color: #555; }
+        .contact-label strong { font-weight: 700; color: #222; margin-left: 8px; font-size: 17px; }
+        .contact-actions { display: flex; gap: 18px; }
+        .contact-actions a { text-decoration: none; font-size: 18px; color: #8c8279; opacity: 0.8; }
+
+        .map-section { padding: 60px 24px; }
+        .venue-info { text-align: center; margin-bottom: 35px; }
+        .venue-name { font-family: 'Gowun Batang', serif; font-size: 22px; font-weight: 700; color: #222; margin-bottom: 10px; }
+        .venue-addr { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; margin-bottom: 25px; line-height: 1.6; }
         .map-embed { width: 100%; height: 240px; background-color: #eee; margin-bottom: 15px; }
-        
-        /* 내비게이션 (URL 스타일의 둥근 모서리 버튼) */
         .navi-btns { display: flex; gap: 8px; margin-bottom: 50px; }
-        .navi-btn { 
-            flex: 1; padding: 12px 0; background-color: #f9f9f9; 
-            border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; 
-            display: flex; justify-content: center; align-items: center; gap: 6px; 
-        }
-        .navi-btn span { font-size: 12px; color: #555; font-weight: 400; }
-        .navi-btn svg { width: 14px; height: 14px; border-radius: 3px; }
-
-        /* 심플한 교통안내 아이콘 및 텍스트 */
-        .way-item { display: flex; margin-bottom: 30px; align-items: flex-start; }
+        .navi-btn { flex: 1; padding: 12px 0; background-color: #f9f9f9; border: 1px solid #eaeaea; border-radius: 4px; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .navi-btn span { font-size: 12px; color: #555; }
+        .navi-btn svg { width: 20px; height: 20px; border-radius: 4px; }
+        
+        .way-item { display: flex; margin-bottom: 30px; align-items: flex-start; text-align: left; }
         .way-icon { width: 40px; }
-        /* URL 느낌의 극도로 얇고 심플한 선형 아이콘 */
         .way-icon svg { width: 20px; height: 20px; stroke: #8c8279; fill: none; stroke-width: 1.2; }
-        .way-desc h4 { font-size: 14.5px; font-weight: 500; color: #333; margin-bottom: 6px; letter-spacing: -0.3px; }
-        .way-desc p { font-size: 14px; color: #666; font-weight: 300; line-height: 1.7; }
-
-        /* 6. 마음 전하실 곳 (URL 스타일 아코디언) */
+        .way-desc h4 { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; }
+        .way-desc p { font-size: 14px; color: #666; line-height: 1.7; }
+        
         .account-wrap { background-color: #faf9f8; padding: 70px 24px; text-align: center; }
-        .acc-desc { font-size: 14px; color: #777; line-height: 1.8; font-weight: 300; margin-bottom: 40px; }
-        
+        .acc-desc { font-family: 'Gowun Batang', serif; font-size: 15px; color: #777; line-height: 1.8; margin-bottom: 40px; }
         .acc-box { margin-bottom: 10px; }
-        .acc-btn { 
-            width: 100%; background-color: #fff; border: 1px solid #e1dfdc; 
-            padding: 16px 20px; display: flex; justify-content: space-between; 
-            align-items: center; font-size: 14px; color: #444; font-weight: 400; cursor: pointer;
-            border-radius: 2px;
-        }
-        .acc-btn:focus { outline: none; }
-        
-        .acc-content { 
-            background-color: #fcfbfb; border: 1px solid #e1dfdc; border-top: none; 
-            padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; 
-            border-radius: 0 0 2px 2px;
-        }
+        .acc-btn { width: 100%; background-color: #fff; border: 1px solid #e1dfdc; padding: 16px 20px; display: flex; justify-content: space-between; font-size: 14px; color: #444; cursor: pointer; border-radius: 4px; }
+        .acc-content { background-color: #fcfbfb; border: 1px solid #e1dfdc; border-top: none; padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .acc-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px dashed #e1dfdc; }
-        .acc-row:last-child { border-bottom: none; }
-        .acc-info { text-align: left; font-size: 13.5px; color: #555; line-height: 1.6; font-weight: 300; }
-        .acc-info strong { font-weight: 500; color: #333; }
-        .copy-btn { padding: 6px 12px; background-color: #fff; border: 1px solid #ccc; font-size: 11px; color: #666; border-radius: 2px; cursor: pointer; }
-        .copy-btn:active { background-color: #f4f4f4; }
+        .acc-info { text-align: left; font-size: 13.5px; color: #555; line-height: 1.6; }
+        .copy-btn { padding: 6px 12px; background-color: #fff; border: 1px solid #ccc; font-size: 11px; color: #666; cursor: pointer; border-radius: 2px;}
 
         .show-timeline { transform: translateX(-50%); }
+
+        /* =========================================
+           [페이지 2: 타임라인 (진짜 요청하신 버전)]
+           ========================================= */
+        .timeline-container { position: relative; padding: 0 20px 100px 20px; width: 100%; }
+        
+        /* 씬 공통 스타일 */
+        .scene { position: relative; margin-bottom: 100px; width: 100%; opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; display: flex; flex-direction: column; align-items: center; }
+        .scene.in-view { opacity: 1; transform: translateY(0); }
+
+        /* 1. 포대기에 쌓인 아기 씬 */
+        .baby-wrap { display: flex; justify-content: center; gap: 50px; }
+        .baby-box { display: flex; flex-direction: column; align-items: center; }
+        
+        /* 아기 SVG 일러스트 (포대기 느낌) */
+        .baby-svg { width: 50px; height: 60px; margin-bottom: 10px; }
+        .baby-text { text-align: center; font-family: 'Gowun Batang', serif; }
+        .baby-name { font-weight: 700; font-size: 16px; color: #333; margin-bottom: 3px; }
+        .baby-date { font-size: 12px; color: #888; font-family: 'Noto Sans KR', sans-serif; }
+
+        /* 2. 삼성 캠퍼스와 걷는 일러스트 */
+        .campus-scene { position: relative; width: 100%; display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+        
+        /* 삼성 캠퍼스 일러스트 (건물 형태) */
+        .campus-svg { width: 180px; height: auto; z-index: 2; margin-top: 50px; }
+
+        /* 걷는 사람 아바타 */
+        .walker { position: absolute; width: 35px; height: 50px; z-index: 3; opacity: 0; display: flex; flex-direction: column; align-items: center; }
+        .walker-text { font-size: 11px; font-family: 'Noto Sans KR', sans-serif; color: #666; white-space: nowrap; margin-bottom: 5px; font-weight: 500; }
+        
+        .walker-girl { left: 20%; top: -30px; }
+        .walker-boy { right: 20%; top: -30px; }
+
+        /* 스크롤 시 캠퍼스로 걸어 들어가는 애니메이션 */
+        .scene.in-view .walker-girl { animation: walkToCampus 2.5s forwards; }
+        .scene.in-view .walker-boy { animation: walkToCampus 2.5s 1s forwards; /* 남자는 1초 늦게 출발 */ }
+
+        @keyframes walkToCampus {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            80% { transform: translateY(60px) scale(0.8); opacity: 1; }
+            100% { transform: translateY(80px) scale(0.5); opacity: 0; } /* 건물로 들어가며 작어짐 */
+        }
+
+        /* 3. 내가 선배 말풍선 씬 */
+        .post-campus-scene { display: flex; justify-content: center; gap: 40px; margin-top: -20px; position: relative; }
+        .adult-svg { width: 40px; height: 80px; }
+        
+        .bubble-wrap { position: relative; }
+        .speech-bubble { 
+            position: absolute; top: -35px; left: -15px; background: #fff; border: 1.5px solid #333; 
+            border-radius: 12px; padding: 5px 10px; font-size: 12px; font-weight: 700; color: #333; 
+            white-space: nowrap; opacity: 0; transform: translateY(10px); z-index: 10;
+        }
+        .speech-bubble::after { 
+            content:''; position:absolute; bottom:-4.5px; left:20px; width:7px; height:7px; 
+            background:#fff; border-bottom:1.5px solid #333; border-right:1.5px solid #333; transform:rotate(45deg); 
+        }
+        
+        .scene.in-view .speech-bubble { animation: popBubble 3s 1.5s forwards; }
+        @keyframes popBubble {
+            0% { opacity: 0; transform: translateY(10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* 공통 이벤트 레이아웃 (좌측텍스트 - 중앙일러스트 - 우측사진) */
+        .event-row { display: flex; width: 100%; align-items: center; justify-content: space-between; }
+        .event-text { width: 25%; text-align: left; }
+        .event-center { width: 40%; display: flex; justify-content: center; }
+        .event-photo { width: 35%; display: flex; justify-content: flex-end; }
+        
+        .e-title { font-family: 'Gowun Batang', serif; font-size: 16px; font-weight: 700; color: #222; }
+        .e-date { font-size: 12px; color: #888; font-family: 'Noto Sans KR', sans-serif; margin-top: 4px; }
+
+        .photo-frame-large { width: 80px; height: 100px; border: 1px solid #ddd; background: #fafafa; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #bbb; border-radius: 4px; }
+        .photo-grid-small { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .photo-frame-small { width: 45px; height: 45px; border: 1px solid #ddd; background: #fafafa; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; border-radius: 4px; }
+
+        /* 4. 첫 만남 (가깝지 않게 떨어져서 걷는 모습) */
+        .walking-together { display: flex; gap: 20px; }
+
+        /* 5. 사귄 날 (매우 가깝게 붙어서 손 잡은 모습) */
+        .holding-hands { display: flex; gap: 0; position: relative; align-items: center; }
+        /* 손 잡는 디테일 연결선 */
+        .hand-link { position: absolute; left: 50%; top: 55%; width: 15px; height: 3px; background-color: #fcd5ce; transform: translateX(-50%); z-index: 1; }
+        .couple-char { z-index: 2; position: relative; }
+
     </style>
 </head>
 <body>
@@ -141,16 +175,13 @@
     <div class="slider-track" id="sliderTrack">
         
         <div class="page">
-            
             <div class="main-cover">
                 <div class="main-img-placeholder">[일러스트 또는 사진]</div>
-                
                 <div class="btn-wrap">
                     <button class="btn-story" onclick="goTimeline()">진아 · 형민 스토리 보러가기</button>
                 </div>
-
                 <div class="main-text">
-                    <h1>형민 & 진아</h1>
+                    <h1>진아 & 형민</h1>
                     <p>2026. 10. 11. SUN. PM 3:00<br>서울대학교 교수회관</p>
                 </div>
             </div>
@@ -177,3 +208,325 @@
                     <div class="gallery-item"></div><div class="gallery-item"></div><div class="gallery-item"></div>
                     <div class="gallery-item"></div><div class="gallery-item"></div><div class="gallery-item"></div>
                 </div>
+            </div>
+
+            <div class="section" style="padding-bottom: 20px;">
+                <div class="section-title">Date</div>
+                <div class="cal-month">2026. 10</div>
+                <table class="cal-table">
+                    <thead><tr><th class="sun">S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead>
+                    <tbody>
+                        <tr><td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr>
+                        <tr><td class="sun">4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+                        <tr><td class="sun d-day"><span>11</span></td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
+                        <tr><td class="sun">18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr>
+                        <tr><td class="sun">25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td></tr>
+                    </tbody>
+                </table>
+                <div class="d-day-counter" id="dDayText"></div>
+            </div>
+
+            <div class="contact-section">
+                <div class="section-title" style="margin-bottom: 20px;">Contact</div>
+                <div class="contact-wrap">
+                    <div class="contact-row">
+                        <span class="contact-label">신랑 <strong>형민</strong></span>
+                        <div class="contact-actions">
+                            <a href="tel:01000000000">📞</a>
+                            <a href="sms:01000000000">✉️</a>
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <span class="contact-label">신부 <strong>진아</strong></span>
+                        <div class="contact-actions">
+                            <a href="tel:01000000000">📞</a>
+                            <a href="sms:01000000000">✉️</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-section">
+                <div class="section-title map-title">Location</div>
+                <div class="venue-info">
+                    <div class="venue-name">서울대학교 교수회관</div>
+                    <div class="venue-addr">서울 관악구 관악로 1 서울대학교 65동<br>02-880-5241</div>
+                </div>
+                <div class="map-embed">
+                    <iframe src="https://maps.google.com/maps?q=서울대%20교수회관&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen></iframe>
+                </div>
+                <div class="navi-btns">
+                    <a href="https://map.naver.com/v5/search/서울대교수회관" class="navi-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" style="background:#03C75A;"><path d="M16.5 11.5L9.5 2H4v20h5.5V13.5L16.5 23H22V2h-5.5v9.5z" fill="#fff" transform="scale(0.8) translate(3, 1.5)"/></svg>
+                        <span>네이버지도</span>
+                    </a>
+                    <a href="https://map.kakao.com/link/to/서울대교수회관,37.4533,126.9508" class="navi-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" style="background:#FEE500;"><path d="M12 5.5c-4.418 0-8 2.866-8 6.4 0 2.27 1.51 4.254 3.784 5.396-.16.586-.58 2.125-.6 2.213-.026.106.084.194.182.13.078-.05 2.32-1.504 3.233-2.138.52.072 1.065.11 1.625.11 4.418 0 8-2.866 8-6.4S16.418 5.5 12 5.5z" fill="#3C1E1E"/></svg>
+                        <span>카카오내비</span>
+                    </a>
+                    <a href="tmap://search?name=서울대교수회관" class="navi-btn">
+                        <svg viewBox="0 0 24 24" style="background:#fff; border: 1px solid #eaeaea;">
+                            <defs><linearGradient id="tmapGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00E676" /><stop offset="50%" stop-color="#2979FF" /><stop offset="100%" stop-color="#D500F9" /></linearGradient></defs>
+                            <path d="M7 8h10v2.5h-3.5v7h-3v-7H7z" fill="url(#tmapGrad)"/>
+                        </svg>
+                        <span>티맵</span>
+                    </a>
+                </div>
+                <div class="way-item">
+                    <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M6 4h12v11H6zM6 15l-2 5M18 15l2 5M9 11h6M10 18h4"/></svg></div>
+                    <div class="way-desc">
+                        <h4>지하철 및 셔틀버스</h4>
+                        <p>2호선 서울대입구역 3번 출구<br>교내 셔틀버스 탑승 후 '행정관' 하차 (도보 5분)</p>
+                    </div>
+                </div>
+                <div class="way-item">
+                    <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M5 6h14v11H5zM5 17v2h2v-2M17 17v2h2v-2M8 13h8M7 9h10"/></svg></div>
+                    <div class="way-desc">
+                        <h4>마을버스</h4>
+                        <p>낙성대역 4번 출구<br>관악 02번 탑승 후 '교수회관' 정류장 하차</p>
+                    </div>
+                </div>
+                <div class="way-item">
+                    <div class="way-icon"><svg viewBox="0 0 24 24"><path d="M4 11h16v6H4zM6 11l2-4h8l2 4M7 14h2M15 14h2"/></svg></div>
+                    <div class="way-desc">
+                        <h4>자가용 주차</h4>
+                        <p>서울대학교 정문 통과 후 우회전하여 1.5km 직진<br>하객 무료 주차 2시간 지원</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="account-wrap">
+                <div class="section-title" style="margin-bottom:20px;">마음 전하실 곳</div>
+                <p class="acc-desc">참석이 어려우신 분들을 위해<br>계좌번호를 기재하였습니다.</p>
+                <div class="acc-box">
+                    <div class="acc-btn" onclick="toggleAcc('acc1')">신랑측 계좌번호 확인 <span>+</span></div>
+                    <div id="acc1" class="acc-content">
+                        <div class="acc-row">
+                            <div class="acc-info"><strong>OO은행</strong> 1002-123-456789<br>예금주 : 형민</div>
+                            <button class="copy-btn" onclick="copyText('1002123456789')">복사</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="acc-box">
+                    <div class="acc-btn" onclick="toggleAcc('acc2')">신부측 계좌번호 확인 <span>+</span></div>
+                    <div id="acc2" class="acc-content">
+                        <div class="acc-row">
+                            <div class="acc-info"><strong>OO은행</strong> 110-123-456789<br>예금주 : 진아</div>
+                            <button class="copy-btn" onclick="copyText('110123456789')">복사</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="page" id="storyPage" style="background:#fdfcfb; padding:20px 0;">
+            
+            <div onclick="goHome()" style="font-size:13px; color:#888; padding: 20px 24px; cursor:pointer;">← 돌아가기</div>
+            <h2 style="font-family:'Gowun Batang', serif; font-size:24px; font-weight:700; text-align:center; color:#222; margin-bottom: 60px;">Our Journey</h2>
+            
+            <div class="timeline-container">
+
+                <div class="scene in-view" style="margin-bottom: 80px;">
+                    <div class="baby-wrap">
+                        <div class="baby-box">
+                            <svg class="baby-svg" viewBox="0 0 100 120">
+                                <circle cx="50" cy="35" r="25" fill="#ffe3e0"/>
+                                <path d="M 35 30 Q 50 40 65 30" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                <circle cx="42" cy="35" r="3" fill="#333"/>
+                                <circle cx="58" cy="35" r="3" fill="#333"/>
+                                <path d="M 25 50 C 15 80 30 115 50 115 C 70 115 85 80 75 50 Z" fill="#ffb5a7"/>
+                                <path d="M 25 50 Q 50 70 75 50" stroke="#fff" stroke-width="3" fill="none"/>
+                            </svg>
+                            <div class="baby-text">
+                                <div class="baby-name">진아</div>
+                                <div class="baby-date">95.02.02</div>
+                            </div>
+                        </div>
+                        
+                        <div class="baby-box">
+                            <svg class="baby-svg" viewBox="0 0 100 120">
+                                <circle cx="50" cy="35" r="25" fill="#e8f0fe"/>
+                                <path d="M 35 30 Q 50 25 65 30" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/>
+                                <circle cx="42" cy="35" r="3" fill="#333"/>
+                                <circle cx="58" cy="35" r="3" fill="#333"/>
+                                <path d="M 25 50 C 15 80 30 115 50 115 C 70 115 85 80 75 50 Z" fill="#a0c4ff"/>
+                                <path d="M 25 50 Q 50 70 75 50" stroke="#fff" stroke-width="3" fill="none"/>
+                            </svg>
+                            <div class="baby-text">
+                                <div class="baby-name">형민</div>
+                                <div class="baby-date">92.07.16</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scene campus-scene" style="margin-bottom: 60px;">
+                    
+                    <div class="walker walker-girl">
+                        <div class="walker-text">19년 입사 ↘</div>
+                        <svg width="30" height="50" viewBox="0 0 30 50">
+                            <circle cx="15" cy="10" r="8" fill="#ffb5a7"/>
+                            <rect x="10" y="20" width="10" height="20" rx="4" fill="#ffb5a7"/>
+                            <line x1="12" y1="40" x2="12" y2="50" stroke="#ffb5a7" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="18" y1="40" x2="18" y2="50" stroke="#ffb5a7" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+
+                    <div class="walker walker-boy">
+                        <div class="walker-text">↙ 20년 입사</div>
+                        <svg width="30" height="50" viewBox="0 0 30 50">
+                            <circle cx="15" cy="10" r="8" fill="#a0c4ff"/>
+                            <rect x="10" y="20" width="10" height="20" rx="4" fill="#a0c4ff"/>
+                            <line x1="12" y1="40" x2="12" y2="50" stroke="#a0c4ff" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="18" y1="40" x2="18" y2="50" stroke="#a0c4ff" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+
+                    <svg class="campus-svg" viewBox="0 0 200 100">
+                        <rect x="20" y="40" width="160" height="60" fill="#f0f0f0" rx="4"/>
+                        <rect x="40" y="20" width="120" height="20" fill="#1428A0" rx="2"/>
+                        <rect x="30" y="50" width="20" height="15" fill="#fff"/><rect x="60" y="50" width="20" height="15" fill="#fff"/><rect x="90" y="50" width="20" height="15" fill="#fff"/><rect x="120" y="50" width="20" height="15" fill="#fff"/><rect x="150" y="50" width="20" height="15" fill="#fff"/>
+                        <rect x="30" y="75" width="20" height="15" fill="#fff"/><rect x="60" y="75" width="20" height="15" fill="#fff"/><rect x="90" y="75" width="20" height="15" fill="#fff"/><rect x="120" y="75" width="20" height="15" fill="#fff"/><rect x="150" y="75" width="20" height="15" fill="#fff"/>
+                        <text x="100" y="34" fill="#fff" font-family="Arial, sans-serif" font-weight="bold" font-size="12" text-anchor="middle">SAMSUNG</text>
+                    </svg>
+                </div>
+
+                <div class="scene" style="margin-bottom: 100px;">
+                    <div class="post-campus-scene">
+                        <div class="bubble-wrap">
+                            <div class="speech-bubble">내가 선배</div>
+                            <svg class="adult-svg" viewBox="0 0 30 70">
+                                <circle cx="15" cy="15" r="10" fill="#ffb5a7"/>
+                                <path d="M 5 30 C 5 25 25 25 25 30 L 22 55 L 8 55 Z" fill="#ffb5a7"/>
+                                <line x1="12" y1="55" x2="12" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                <line x1="18" y1="55" x2="18" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <svg class="adult-svg" viewBox="0 0 30 70">
+                            <circle cx="15" cy="15" r="10" fill="#a0c4ff"/>
+                            <rect x="5" y="30" width="20" height="25" rx="4" fill="#a0c4ff"/>
+                            <line x1="10" y1="55" x2="10" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="20" y1="55" x2="20" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="scene" style="margin-bottom: 120px;">
+                    <div class="event-row" style="padding: 0 20px;">
+                        <div class="event-text">
+                            <div class="e-title">첫만남</div>
+                            <div class="e-date">20.04.11</div>
+                        </div>
+                        <div class="event-center">
+                            <div class="walking-together">
+                                <svg width="25" height="55" viewBox="0 0 30 70">
+                                    <circle cx="15" cy="15" r="10" fill="#ffb5a7"/>
+                                    <path d="M 5 30 C 5 25 25 25 25 30 L 22 55 L 8 55 Z" fill="#ffb5a7"/>
+                                    <line x1="12" y1="55" x2="10" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="18" y1="55" x2="20" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                                <svg width="25" height="55" viewBox="0 0 30 70">
+                                    <circle cx="15" cy="15" r="10" fill="#a0c4ff"/>
+                                    <rect x="5" y="30" width="20" height="25" rx="4" fill="#a0c4ff"/>
+                                    <line x1="10" y1="55" x2="8" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="20" y1="55" x2="22" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="event-photo">
+                            <div class="photo-frame-large">사진</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scene">
+                    <div class="event-row" style="padding: 0 20px;">
+                        <div class="event-text">
+                            <div class="e-title">사귄날</div>
+                            <div class="e-date">21.10.23</div>
+                        </div>
+                        <div class="event-center">
+                            <div class="holding-hands">
+                                <svg class="couple-char" width="30" height="60" viewBox="0 0 30 70">
+                                    <circle cx="15" cy="15" r="10" fill="#ffb5a7"/>
+                                    <path d="M 5 30 C 5 25 25 25 25 30 L 22 55 L 8 55 Z" fill="#ffb5a7"/>
+                                    <line x1="12" y1="55" x2="12" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="18" y1="55" x2="18" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                                <div class="hand-link"></div>
+                                <svg class="couple-char" width="30" height="60" viewBox="0 0 30 70">
+                                    <circle cx="15" cy="15" r="10" fill="#a0c4ff"/>
+                                    <rect x="5" y="30" width="20" height="25" rx="4" fill="#a0c4ff"/>
+                                    <line x1="10" y1="55" x2="10" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="20" y1="55" x2="20" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="event-photo">
+                            <div class="photo-grid-small">
+                                <div class="photo-frame-small">사진</div>
+                                <div class="photo-frame-small">사진</div>
+                                <div class="photo-frame-small">사진</div>
+                                <div class="photo-frame-small">사진</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div style="height: 100px;"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function goTimeline() { document.getElementById('sliderTrack').classList.add('show-timeline'); window.scrollTo(0,0); }
+    function goHome() { document.getElementById('sliderTrack').classList.remove('show-timeline'); window.scrollTo(0,0); }
+    
+    function toggleAcc(id) {
+        const content = document.getElementById(id);
+        const btnText = content.previousElementSibling.querySelector('span');
+        if (content.style.maxHeight) { content.style.maxHeight = null; btnText.innerText = '+'; } 
+        else { content.style.maxHeight = content.scrollHeight + "px"; btnText.innerText = '-'; }
+    }
+    function copyText(text) {
+        const t = document.createElement("textarea"); document.body.appendChild(t);
+        t.value = text; t.select(); document.execCommand('copy'); document.body.removeChild(t);
+        alert("계좌번호가 복사되었습니다.");
+    }
+
+    function calculateDday() {
+        const weddingDate = new Date("2026-10-11T00:00:00").getTime();
+        const today = new Date().getTime();
+        const gap = weddingDate - today;
+        const dDay = Math.ceil(gap / (1000 * 60 * 60 * 24));
+        const dDayElement = document.getElementById('dDayText');
+        if (dDay > 0) dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${dDay}일</strong> 남았습니다.`;
+        else if (dDay === 0) dDayElement.innerHTML = `<strong>오늘</strong>은 진아와 형민의 예식일입니다!`;
+        else dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${Math.abs(dDay)}일</strong> 지났습니다.`;
+    }
+    calculateDday();
+
+    // 스크롤 감지 애니메이션 (화면의 80% 지점에 오면 작동)
+    const storyPage = document.getElementById('storyPage');
+    const scenes = document.querySelectorAll('.scene');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+            }
+        });
+    }, {
+        root: storyPage, // 스크롤이 발생하는 컨테이너 기준
+        threshold: 0.1, 
+        rootMargin: "0px 0px -20% 0px" 
+    });
+
+    scenes.forEach(scene => observer.observe(scene));
+</script>
+
+</body>
+</html>
