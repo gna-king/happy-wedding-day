@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta property="og:title" content="형민 & 진아 결혼합니다 💍">
+    <meta property="og:description" content="2026년 10월 11일 일요일 오후 3시, 서울대학교 교수회관">
+    <meta property="og:image" content="https://gna-king.github.io/happy-wedding-day/main.jpg">
+    <meta property="og:url" content="https://gna-king.github.io/happy-wedding-day/">
+
     <title>형민 & 진아 결혼합니다</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,31 +32,19 @@
 
         /* --- [메인 커버 및 버튼] --- */
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
-        
-        /* 사진이 들어갈 자리 스타일 수정 */
         .main-img-placeholder { width: 100%; aspect-ratio: 4/5; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
-        .main-img-placeholder img { width: 100%; height: 100%; object-fit: cover; } /* 실제 사진이 들어갔을 때 꽉 차게 */
+        .main-img-placeholder img { width: 100%; height: 100%; object-fit: cover; } 
 
         .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; }
         
-        /* 1. 픽셀 느낌 버튼 스타일 */
+        /* 픽셀 느낌 버튼 스타일 */
         .btn-story { 
-            width: 100%; 
-            padding: 16px 0; 
-            background-color: #fff; 
-            border: 3px solid #333; 
-            box-shadow: 4px 4px 0 #333;
-            color: #333; 
-            font-family: 'DungGeunMo', sans-serif; 
-            font-size: 16px; 
-            cursor: pointer; 
-            transition: all 0.1s; 
-            letter-spacing: 1px;
+            width: 100%; padding: 16px 0; background-color: #fff; border: 3px solid #333; 
+            box-shadow: 4px 4px 0 #333; color: #333; font-family: 'DungGeunMo', sans-serif; 
+            font-size: 24px; 
+            cursor: pointer; transition: all 0.1s; letter-spacing: 1px;
         }
-        .btn-story:active { 
-            box-shadow: 0 0 0 #333; 
-            transform: translate(4px, 4px); 
-        }
+        .btn-story:active { box-shadow: 0 0 0 #333; transform: translate(4px, 4px); }
         
         .main-text { padding: 40px 0 30px 0; text-align: center; }
         .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
@@ -62,10 +55,34 @@
         .parents-info { font-family: 'Gowun Batang', serif; font-size: 16px; color: #333; line-height: 2; }
         .parents-info strong { font-weight: 700; font-size: 17px; margin-left: 6px; }
         
-        /* 갤러리 이미지 영역 (사진 넣었을 때 꽉 차게) */
+        /* --- [갤러리 스타일 추가] --- */
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
-        .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        /* 핵심! 7번째 사진부터는 메인 화면에서 숨깁니다. */
+        .gallery-item:nth-child(n+7) { display: none; }
+
+        /* 사진 확대 라이트박스 스타일 */
+        .lightbox {
+            display: none; /* 평소엔 숨김 */
+            position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            align-items: center; justify-content: center; flex-direction: column;
+        }
+        .lightbox-content { max-width: 100%; max-height: 80vh; object-fit: contain; }
+        .lightbox-close {
+            position: absolute; top: 20px; right: 20px; color: white;
+            font-size: 35px; cursor: pointer; padding: 10px; font-weight: bold;
+        }
+        .lightbox-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            color: white; font-size: 30px; background: none; border: none; padding: 15px; cursor: pointer;
+        }
+        .lightbox-prev { left: 10px; }
+        .lightbox-next { right: 10px; }
+        .lightbox-counter {
+            position: absolute; bottom: 30px; color: white; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; letter-spacing: 2px;
+        }
 
         .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; }
         .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
@@ -116,7 +133,7 @@
     
     <div class="main-cover">
         <div class="main-img-placeholder">
-            <img src="main-photo.jpg" alt="메인 사진">
+            [일러스트 또는 사진]
             </div>
         <div class="btn-wrap">
             <button class="btn-story" onclick="location.href='https://gna-king.github.io/pixel_road/'">진아 · 형민 스토리 보러가기</button>
@@ -146,15 +163,26 @@
 
     <div class="section" style="padding-bottom: 40px;">
         <div class="section-title">Gallery</div>
-        <div class="gallery-grid">
-            <div class="gallery-item"><img src="gallery1.jpg" alt="갤러리 사진"></div>
-            <div class="gallery-item"><img src="gallery2.jpg" alt="갤러리 사진"></div>
-            <div class="gallery-item"><img src="gallery3.jpg" alt="갤러리 사진"></div>
-            <div class="gallery-item"><img src="gallery4.jpg" alt="갤러리 사진"></div>
-            <div class="gallery-item"><img src="gallery5.jpg" alt="갤러리 사진"></div>
-            <div class="gallery-item"><img src="gallery6.jpg" alt="갤러리 사진"></div>
-
+        <div class="gallery-grid" id="galleryGrid">
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
+            <div class="gallery-item"><img src="https://via.placeholder.com/400" alt="갤러리사진"></div>
         </div>
+    </div>
+
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">✕</div>
+        <button class="lightbox-btn lightbox-prev" onclick="changeImage(-1)">❮</button>
+        <img id="lightbox-img" class="lightbox-content" src="">
+        <button class="lightbox-btn lightbox-next" onclick="changeImage(1)">❯</button>
+        <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
     </div>
 
     <div class="section" style="padding-bottom: 20px;">
@@ -286,6 +314,7 @@
 </div>
 
 <script>
+    /* --- 기존 스크립트 --- */
     function toggleAcc(id) {
         const content = document.getElementById(id);
         const btnText = content.previousElementSibling.querySelector('span');
@@ -320,6 +349,74 @@
         else dDayElement.innerHTML = `진아와 형민의 예식이 <strong>${Math.abs(dDay)}일</strong> 지났습니다.`;
     }
     calculateDday();
+
+    /* --- [새로 추가된 라이트박스 갤러리 로직] --- */
+    let currentImageIndex = 0;
+    let imagesList = [];
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const items = document.querySelectorAll('.gallery-item img');
+        
+        // 페이지 로드 시 갤러리의 모든 이미지 주소를 수집
+        items.forEach((img, index) => {
+            imagesList.push(img.src);
+            
+            // 이미지 클릭 시 라이트박스 열기 이벤트 연결
+            img.parentElement.onclick = function() {
+                openLightbox(index);
+            };
+        });
+    });
+
+    function openLightbox(index) {
+        currentImageIndex = index;
+        updateLightbox();
+        document.getElementById('lightbox').style.display = 'flex';
+        // 뒷배경 스크롤 방지
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        // 스크롤 방지 해제
+        document.body.style.overflow = 'auto'; 
+    }
+
+    function changeImage(direction) {
+        currentImageIndex += direction;
+        
+        // 첫 사진에서 이전 누르면 마지막 사진으로, 마지막에서 다음 누르면 첫 사진으로
+        if (currentImageIndex < 0) currentImageIndex = imagesList.length - 1;
+        else if (currentImageIndex >= imagesList.length) currentImageIndex = 0;
+        
+        updateLightbox();
+    }
+
+    function updateLightbox() {
+        document.getElementById('lightbox-img').src = imagesList[currentImageIndex];
+        document.getElementById('lightbox-counter').innerText = (currentImageIndex + 1) + " / " + imagesList.length;
+    }
+
+    /* --- 모바일 스와이프 기능 --- */
+    let touchstartX = 0;
+    let touchendX = 0;
+    const lightboxContainer = document.getElementById('lightbox');
+
+    lightboxContainer.addEventListener('touchstart', e => {
+        touchstartX = e.changedTouches[0].screenX;
+    });
+
+    lightboxContainer.addEventListener('touchend', e => {
+        touchendX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        // 왼쪽으로 스와이프 (다음 사진)
+        if (touchendX < touchstartX - 50) changeImage(1);
+        // 오른쪽으로 스와이프 (이전 사진)
+        if (touchendX > touchstartX + 50) changeImage(-1);
+    }
 </script>
 
 </body>
