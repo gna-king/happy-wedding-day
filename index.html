@@ -29,16 +29,18 @@
         .phone-wrapper { width: 100%; max-width: 420px; background-color: #ffffff; min-height: 100vh; position: relative; overflow-x: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.03); padding-bottom: 80px; }
 
         .section { padding: 70px 24px; text-align: center; }
-        .section-title { font-family: 'Gowun Batang', serif; font-size: 14px; font-weight: 700; color: #8c8279; letter-spacing: 0.25em; margin-bottom: 45px; }
+        
+        /* [변경] Invitation 등 섹션 타이틀 크기 2배 (14px -> 28px) */
+        .section-title { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #8c8279; letter-spacing: 0.25em; margin-bottom: 45px; }
 
         /* --- [메인 커버 및 버튼] --- */
-        .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; }
+        /* [변경] 메인 이미지 하단 배경색과 동일하게 설정하여 색상 연장 */
+        .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; background-color: #f2f0ed; }
         .main-img-placeholder { width: 100%; aspect-ratio: 4/5; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
         .main-img-placeholder img { width: 100%; height: 100%; object-fit: cover; } 
 
-        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; }
+        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; background-color: #f2f0ed; }
         
-        /* 픽셀 느낌 버튼 스타일 */
         .btn-story { 
             width: 100%; padding: 16px 0; background-color: #fc9; border: 3px solid #333; 
             box-shadow: 4px 4px 0 #333; color: #333; font-family: 'DungGeunMo', sans-serif; 
@@ -47,7 +49,9 @@
         }
         .btn-story:active { box-shadow: 0 0 0 #333; transform: translate(4px, 4px); }
         
-        .main-text { padding: 40px 0 30px 0; text-align: center; }
+        /* [변경] 버튼과 텍스트 사이 간격을 위해 padding-top을 40px에서 80px로 수정 */
+        /* 하단 흰색 배경으로 돌아가기 위해 배경색을 흰색으로 재설정 */
+        .main-text { padding: 80px 0 30px 0; text-align: center; background-color: #ffffff; width: 100%; }
         .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
         .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; letter-spacing: 0.5px; }
         
@@ -60,30 +64,19 @@
         .gallery-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; padding: 0 10px; }
         .gallery-item { aspect-ratio: 1/1; background-color: #f2f0ed; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        /* 핵심! 7번째 사진부터는 메인 화면에서 숨깁니다. */
         .gallery-item:nth-child(n+7) { display: none; }
 
-        /* 사진 확대 라이트박스 스타일 */
         .lightbox {
-            display: none; /* 평소엔 숨김 */
-            position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.95);
             align-items: center; justify-content: center; flex-direction: column;
         }
         .lightbox-content { max-width: 100%; max-height: 80vh; object-fit: contain; }
-        .lightbox-close {
-            position: absolute; top: 20px; right: 20px; color: white;
-            font-size: 35px; cursor: pointer; padding: 10px; font-weight: bold;
-        }
-        .lightbox-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            color: white; font-size: 30px; background: none; border: none; padding: 15px; cursor: pointer;
-        }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 35px; cursor: pointer; padding: 10px; font-weight: bold; }
+        .lightbox-btn { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 30px; background: none; border: none; padding: 15px; cursor: pointer; }
         .lightbox-prev { left: 10px; }
         .lightbox-next { right: 10px; }
-        .lightbox-counter {
-            position: absolute; bottom: 30px; color: white; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; letter-spacing: 2px;
-        }
+        .lightbox-counter { position: absolute; bottom: 30px; color: white; font-family: 'Noto Sans KR', sans-serif; font-size: 14px; letter-spacing: 2px; }
 
         .cal-month { font-family: 'Gowun Batang', serif; font-size: 20px; font-weight: 700; color: #333; margin-bottom: 30px; }
         .cal-table { width: 100%; max-width: 280px; margin: 0 auto; border-collapse: collapse; }
@@ -315,7 +308,6 @@
 </div>
 
 <script>
-    /* --- 기존 스크립트 --- */
     function toggleAcc(id) {
         const content = document.getElementById(id);
         const btnText = content.previousElementSibling.querySelector('span');
@@ -351,18 +343,13 @@
     }
     calculateDday();
 
-    /* --- [새로 추가된 라이트박스 갤러리 로직] --- */
     let currentImageIndex = 0;
     let imagesList = [];
 
     document.addEventListener("DOMContentLoaded", function() {
         const items = document.querySelectorAll('.gallery-item img');
-        
-        // 페이지 로드 시 갤러리의 모든 이미지 주소를 수집
         items.forEach((img, index) => {
             imagesList.push(img.src);
-            
-            // 이미지 클릭 시 라이트박스 열기 이벤트 연결
             img.parentElement.onclick = function() {
                 openLightbox(index);
             };
@@ -373,23 +360,18 @@
         currentImageIndex = index;
         updateLightbox();
         document.getElementById('lightbox').style.display = 'flex';
-        // 뒷배경 스크롤 방지
         document.body.style.overflow = 'hidden'; 
     }
 
     function closeLightbox() {
         document.getElementById('lightbox').style.display = 'none';
-        // 스크롤 방지 해제
         document.body.style.overflow = 'auto'; 
     }
 
     function changeImage(direction) {
         currentImageIndex += direction;
-        
-        // 첫 사진에서 이전 누르면 마지막 사진으로, 마지막에서 다음 누르면 첫 사진으로
         if (currentImageIndex < 0) currentImageIndex = imagesList.length - 1;
         else if (currentImageIndex >= imagesList.length) currentImageIndex = 0;
-        
         updateLightbox();
     }
 
@@ -398,7 +380,6 @@
         document.getElementById('lightbox-counter').innerText = (currentImageIndex + 1) + " / " + imagesList.length;
     }
 
-    /* --- 모바일 스와이프 기능 --- */
     let touchstartX = 0;
     let touchendX = 0;
     const lightboxContainer = document.getElementById('lightbox');
@@ -413,9 +394,7 @@
     });
 
     function handleSwipe() {
-        // 왼쪽으로 스와이프 (다음 사진)
         if (touchendX < touchstartX - 50) changeImage(1);
-        // 오른쪽으로 스와이프 (이전 사진)
         if (touchendX > touchstartX + 50) changeImage(-1);
     }
 </script>
