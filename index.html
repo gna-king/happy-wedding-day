@@ -12,7 +12,8 @@
     <title>형민 & 진아 결혼합니다</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- [변경] Great Vibes (필기체) 폰트 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Great+Vibes&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         /* 픽셀 폰트 추가 */
@@ -30,16 +31,16 @@
 
         .section { padding: 70px 24px; text-align: center; }
         
-        /* [변경] Invitation 등 섹션 타이틀 크기 2배 (14px -> 28px) */
         .section-title { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #8c8279; letter-spacing: 0.25em; margin-bottom: 45px; }
 
         /* --- [메인 커버 및 버튼] --- */
-        /* [변경] 메인 이미지 하단 배경색과 동일하게 설정하여 색상 연장 */
+        /* [변경] 배경색 #c1b29e 로 변경 */
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; background-color: #c1b29e; }
-        .main-img-placeholder { width: 100%; aspect-ratio: 4/5; background-color: #f2f0ed; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
+        .main-img-placeholder { width: 100%; aspect-ratio: 4/5; background-color: #c1b29e; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
         .main-img-placeholder img { width: 100%; height: 100%; object-fit: cover; } 
 
-        .btn-wrap { padding: 30px 24px 0 24px; width: 100%; text-align: center; background-color: #f2f0ed; }
+        /* [변경] 버튼 아래까지 색상이 덮이도록 padding-bottom을 40px로 지정 */
+        .btn-wrap { padding: 30px 24px 40px 24px; width: 100%; text-align: center; background-color: #c1b29e; }
         
         .btn-story { 
             width: 100%; padding: 16px 0; background-color: #fc9; border: 3px solid #333; 
@@ -49,9 +50,12 @@
         }
         .btn-story:active { box-shadow: 0 0 0 #333; transform: translate(4px, 4px); }
         
-        /* [변경] 버튼과 텍스트 사이 간격을 위해 padding-top을 40px에서 80px로 수정 */
-        /* 하단 흰색 배경으로 돌아가기 위해 배경색을 흰색으로 재설정 */
-        .main-text { padding: 80px 0 30px 0; text-align: center; background-color: #ffffff; width: 100%; }
+        /* [변경] 메인 텍스트 영역 간격 조정 */
+        .main-text { padding: 70px 0 40px 0; text-align: center; background-color: #ffffff; width: 100%; }
+        
+        /* [추가] 결혼합니다 영문 필기체 스타일 */
+        .wedding-subtitle { font-family: 'Great Vibes', cursive; font-size: 32px; color: #8c8279; margin-bottom: 25px; }
+        
         .main-text h1 { font-family: 'Gowun Batang', serif; font-size: 28px; font-weight: 700; color: #222; margin-bottom: 25px; letter-spacing: 3px; }
         .main-text p { font-family: 'Gowun Batang', serif; font-size: 16px; color: #666; line-height: 1.8; letter-spacing: 0.5px; }
         
@@ -133,6 +137,8 @@
             <button class="btn-story" onclick="location.href='https://gna-king.github.io/pixel_road/'">💍진아 · 형민 결혼 스토리 보러가기</button>
         </div>
         <div class="main-text">
+            <!-- [추가] 영문 필기체 문구 추가 -->
+            <div class="wedding-subtitle">We Are Getting Married</div>
             <h1>기형민 & 김진아</h1>
             <p>2026. 10. 11. SUN. PM 3:00<br>서울대학교 교수회관</p>
         </div>
