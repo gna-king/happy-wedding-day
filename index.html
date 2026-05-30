@@ -393,6 +393,12 @@
         if (touchendX > touchstartX + 50) changeImage(-1);
     }
 </script>
-
+<div id="lightbox" class="lightbox">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <button class="lightbox-btn lightbox-prev" onclick="changeImage(-1)">&#10094;</button>
+    <img id="lightbox-img" class="lightbox-content" src="">
+    <button class="lightbox-btn lightbox-next" onclick="changeImage(1)">&#10095;</button>
+    <div id="lightbox-counter" class="lightbox-counter"></div>
+</div>
 </body>
 </html>
