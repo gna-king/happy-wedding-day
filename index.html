@@ -39,54 +39,52 @@
         .main-img-placeholder { position: relative; width: 100%; aspect-ratio: 4/5; background-color: #c1b29e; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
         .main-img-placeholder img { width: 100%; height: 100%; object-fit: cover; } 
 
-        /* 사진 하단 그라데이션 효과 (경계선 지우기) */
+        /* 사진 하단 그라데이션 효과 (10% 높이) */
         .main-img-placeholder::after {
             content: '';
             position: absolute;
             left: 0;
             bottom: 0;
             width: 100%;
-            height: 10%;
+            height: 10%; 
             background: linear-gradient(to bottom, rgba(193, 178, 158, 0) 0%, #c1b29e 100%);
             pointer-events: none;
         }
 
         .btn-wrap { padding: 80px 24px 50px 24px; width: 100%; text-align: center; background-color: #c1b29e; }
         
+        /* 둥둥 떠다니는 애니메이션 (그림자도 함께 움직이게) */
+        @keyframes float-btn {
+            0%, 100% { transform: translateY(0); box-shadow: inset -4px -4px 0px rgba(0,0,0,0.15), 4px 4px 0px #333; }
+            50% { transform: translateY(-4px); box-shadow: inset -4px -4px 0px rgba(0,0,0,0.15), 6px 8px 0px #333; }
+        }
+
         /* 픽셀 감성 버튼: 두꺼운 외곽선과 입체적인 음영 적용 */
         .btn-story { 
             width: 100%; 
             padding: 16px 0; 
             background-color: #ffffff; 
             border: 4px solid #333; 
-            border-radius: 0; /* 네모 반듯한 픽셀 형태 */
-            /* 안쪽 음영(inset)과 바깥쪽 그림자로 리얼한 버튼 느낌 부여 */
-            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.15), 4px 4px 0px #333; 
+            border-radius: 0; 
             color: #333; 
             font-family: 'DungGeunMo', sans-serif; 
-            font-size: 19px; 
+            
+            /* ▼ 글씨 크기 조절하는 곳 ▼ */
+            font-size: 15px; 
+            
             font-weight: bold;
             cursor: pointer; 
             transition: all 0.1s; 
             letter-spacing: 1px;
+            /* 둥둥 떠다니는 애니메이션 다시 추가 */
+            animation: float-btn 1.5s infinite ease-in-out;
         }
         
-        /* 클릭 시 실제로 눌리는 듯한 물리적인 효과 */
+        /* 클릭 시 실제로 딸깍 눌리는 듯한 물리적인 효과 */
         .btn-story:active { 
+            animation: none; /* 누를 때는 떠다니는 효과를 멈춤 */
             box-shadow: inset -2px -2px 0px rgba(0,0,0,0.15), 0px 0px 0px #333; 
             transform: translate(4px, 4px); 
-        }
-
-        /* 하단 대각선 화살표 스타일 */
-        .arrow-box {
-            display: flex;
-            justify-content: center;
-            gap: 120px; /* 화살표 사이 간격 */
-            margin-top: 15px;
-            font-size: 26px;
-            font-family: 'DungGeunMo', sans-serif;
-            font-weight: bold;
-            color: #333;
         }
         
         .main-text { padding: 70px 0 40px 0; text-align: center; background-color: #ffffff; width: 100%; }
@@ -173,11 +171,6 @@
         <div class="btn-wrap">
             <!-- 픽셀 감성 버튼 -->
             <button class="btn-story" onclick="location.href='https://gna-king.github.io/pixel_road/'">💍 진아 · 형민 결혼 스토리 보러가기</button>
-            <!-- 대각선 화살표 -->
-            <div class="arrow-box">
-                <span>↗</span>
-                <span>↖</span>
-            </div>
         </div>
         <div class="main-text">
             <div class="wedding-subtitle">We Are Getting Married</div>
