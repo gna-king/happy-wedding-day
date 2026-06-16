@@ -27,28 +27,39 @@
 
         /* --- [메인 커버 및 버튼] --- */
         .main-cover { width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; background-color: #c1b29e; }
-        .main-img-placeholder { width: 100%; aspect-ratio: 4/5; background-color: #c1b29e; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
+        
+        /* [변경] position: relative 추가하여 그라데이션 레이어의 기준점으로 설정 */
+        .main-img-placeholder { position: relative; width: 100%; aspect-ratio: 4/5; background-color: #c1b29e; display: flex; align-items: center; justify-content: center; color: #aaa; font-weight: 300; overflow: hidden; }
         .main-img-placeholder img { width: 100%; height: 100%; object-fit: cover; } 
 
-        /* 영역을 1.5배 늘리고 버튼을 아래로 내리기 위해 상단 패딩을 대폭 증가 */
+        /* [변경] 사진 하단에 그라데이션 효과를 주는 가상 요소 추가 */
+        .main-img-placeholder::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 25%; /* 그라데이션이 적용되는 높이 비율 */
+            /* 투명한 색에서 배경색(#c1b29e)으로 자연스럽게 전환 (경계선 지우기) */
+            background: linear-gradient(to bottom, rgba(193, 178, 158, 0) 0%, #c1b29e 100%);
+            pointer-events: none;
+        }
+
         .btn-wrap { padding: 80px 24px 50px 24px; width: 100%; text-align: center; background-color: #c1b29e; }
         
-        /* 고급스러운 부드러운 애니메이션 */
         @keyframes float-btn {
             0%, 100% { transform: translateY(0); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
             50% { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
         }
 
-        /* 손가락 통통 튀는 애니메이션 */
         @keyframes point-up {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-6px); }
         }
 
-        /* 청첩장에 어울리는 우아한 스타일로 버튼 수정 */
         .btn-story { 
             width: 100%; padding: 18px 0; background-color: #ffffff; border: 1px solid #e1dfdc; 
-            border-radius: 30px; /* 둥근 모서리로 부드러운 느낌 강조 */
+            border-radius: 30px; 
             color: #555; font-family: 'Gowun Batang', serif; font-weight: 700;
             font-size: 16px; 
             cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
@@ -56,7 +67,6 @@
         }
         .btn-story:active { animation: none; transform: translateY(2px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* 바깥으로 분리된 손가락 아이콘 스타일 */
         .finger-box {
             margin-top: 16px;
             font-size: 24px;
