@@ -13,4 +13,4 @@ window.WEDDING_FIREBASE_CONFIG = {
     storageBucket: "whoiscoming-8b749.firebasestorage.app",
     messagingSenderId: "820733045882",
     appId: "1:820733045882:web:675b02c1cdedfde44a5fc3"
-}; by
+};
