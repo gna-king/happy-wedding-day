@@ -85,7 +85,7 @@ function addRequestedLayoutStyle() {
         }
 
         .couple-layer .pixel-char:first-child {
-            margin-right: -7px !important;
+            margin-right: -14px !important;
         }
 
         .side-guests,
@@ -193,8 +193,8 @@ function getSeatStyle(seat, side) {
     /*
      * position 0 is closest to the bride or groom.
      */
-    const firstDistance = 7.2;
-    const horizontalStep = 7;
+    const firstDistance = 12.5;
+    const horizontalStep = 6.4;
     const distance =
         firstDistance + seat.position * horizontalStep;
 
