@@ -13,7 +13,7 @@
  * - Guests fill rows in the requested order.
  * - Name and phone last 4 digits are placed on one row.
  * - Phone label is shortened to "전화번호 뒷4자리".
- * - The gender question label is hidden; only the choices remain.
+ * - The gender question is shown again.
  * - Extra spacing is added above the male/female choices.
  * - A copy of the currently displayed wedding guest scene is shown
  *   directly below the RSVP submit button.
@@ -28,15 +28,50 @@ const LAYOUT_STYLE_ID = 'weddingRsvpRequestedLayoutStyle';
 const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
- * ===== 여기 숫자만 바꾸면 글자 크기 수정 가능 =====
- * 아래 숫자만 바꾸면 됩니다.
+ * ============================================================
+ * Wedding RSVP v2 - 여기만 수정하면 대부분의 디자인 변경 가능
+ * ============================================================
  */
 const UI = {
-    questionSize: 13,      // 어느 쪽 하객 / 참석 여부 / 성별 등 질문
-    guideSize: 11,         // "참석 버튼을 누르면..." 안내문
-    inputLabelSize: 13,    // 이름 / 전화번호 뒷4자리
-    bottomNoteSize: 12     // 맨 아래 안내문
+    titleSize: 20,          // "참석 의사를 알려주세요"
+    guideSize: 11,          // "참석 버튼을 누르면..."
+    questionSize: 13,       // 각 질문
+    inputLabelSize: 13,     // 이름 / 전화번호 뒷4자리
+    inputTextSize: 14,      // 입력칸 안 글자
+    optionSize: 14,         // 신랑측/신부측, 참석/불참, 남성/여성
+    submitButtonSize: 15,   // 참석 의사 전달하기
+    laterButtonSize: 15,    // 나중에 답할게요
+    previewTitleSize: 12,   // 함께하고 있는 하객들
+    bottomNoteSize: 12      // 하단 안내문
 };
+
+const LAYOUT = {
+    coupleGap: -24,         // 더 음수일수록 신랑/신부가 가까워짐
+    coupleScale: 0.66,      // 신랑/신부 크기
+    coupleBottom: 7,        // 신랑/신부 세로 위치(%)
+
+    firstGuestDistance: 12.5,
+    guestGap: 6.4,
+    rowGap: 12.5,
+    rowInset: 1.8
+};
+
+const TEXT = {
+    popupTitle: '참석 의사를 알려주세요',
+    popupGuide: '참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄',
+    genderQuestion: '성별을 알려주세요',
+    phoneLabel: '전화번호 뒷4자리',
+    previewTitle: '함께하고 있는 하객들',
+    bottomNote: '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.'
+};
+
+const DEBUG = false;
+
+function debugLog(...args) {
+    if (DEBUG) {
+        console.log('[Wedding RSVP]', ...args);
+    }
+}
 
 function loadOriginalScript() {
     return new Promise((resolve, reject) => {
@@ -91,7 +126,7 @@ function addRequestedLayoutStyle() {
         .couple-layer {
             position: absolute !important;
             left: 50% !important;
-            bottom: 7% !important;
+            bottom: ${LAYOUT.coupleBottom}% !important;
             transform: translateX(-50%) !important;
             display: flex !important;
             align-items: flex-end !important;
@@ -100,12 +135,12 @@ function addRequestedLayoutStyle() {
         }
 
         .couple-layer .pixel-char {
-            transform: scale(.66) !important;
+            transform: scale(${LAYOUT.coupleScale}) !important;
             transform-origin: bottom center !important;
         }
 
         .couple-layer .pixel-char:first-child {
-            margin-right: -14px !important;
+            margin-right: ${LAYOUT.coupleGap}px !important;
         }
 
         .side-guests,
@@ -224,7 +259,7 @@ function addRequestedFormStyle() {
             margin-bottom: 10px !important;
             text-align: center !important;
             font-family: 'DungGeunMo', monospace !important;
-            font-size: 12px !important;
+            font-size: ${UI.previewTitleSize}px !important;
             color: #756c65 !important;
         }
 
@@ -257,6 +292,29 @@ function addRequestedFormStyle() {
             font-size: ${UI.bottomNoteSize}px !important;
             line-height: 1.7 !important;
             color: #9a6d62 !important;
+        }
+
+
+        /* RSVP v2 - 제목/입력/선택지/버튼 크기 */
+        .rsvp-v2-title {
+            font-size: ${UI.titleSize}px !important;
+        }
+
+        .rsvp-v2-input {
+            font-size: ${UI.inputTextSize}px !important;
+        }
+
+        .rsvp-v2-option,
+        .rsvp-v2-option * {
+            font-size: ${UI.optionSize}px !important;
+        }
+
+        .rsvp-v2-submit {
+            font-size: ${UI.submitButtonSize}px !important;
+        }
+
+        .rsvp-v2-later {
+            font-size: ${UI.laterButtonSize}px !important;
         }
 
         @media (max-width: 350px) {
@@ -340,15 +398,15 @@ function createSeatOrder(count) {
 }
 
 function getSeatStyle(seat, side) {
-    const firstDistance = 12.5;
-    const horizontalStep = 6.4;
+    const firstDistance = LAYOUT.firstGuestDistance;
+    const horizontalStep = LAYOUT.guestGap;
     const distance =
         firstDistance + seat.position * horizontalStep;
 
-    const bottom = 7 + seat.row * 12.5;
+    const bottom = LAYOUT.coupleBottom + seat.row * LAYOUT.rowGap;
 
     const rowInset = Math.min(
-        seat.row * 1.8,
+        seat.row * LAYOUT.rowInset,
         9
     );
 
@@ -482,7 +540,7 @@ function patchNameAndPhone() {
 
     if (phoneLabel) {
         phoneLabel.innerHTML =
-            '전화번호 뒷4자리<span class="required">*</span>';
+            `${TEXT.phoneLabel}<span class="required">*</span>`;
     }
 
     nameInput.placeholder = '예: 홍길동';
@@ -493,8 +551,7 @@ function patchNameAndPhone() {
 
 
 function patchAttendanceGuide() {
-    const guideText =
-        '참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄';
+    const guideText = TEXT.popupGuide;
 
     /*
      * 반드시 RSVP 팝업 내부에서만 찾는다.
@@ -528,8 +585,8 @@ function patchAttendanceGuide() {
             .trim();
 
         return (
-            text === '참석 의사를 알려주세요' ||
-            text === '참석의사를 알려주세요'
+            text === TEXT.popupTitle ||
+            text === TEXT.popupTitle.replace(/\s+/g, '')
         );
     });
 
@@ -606,8 +663,90 @@ function patchGender() {
         genderGroup.insertBefore(label, genderGroup.firstChild);
     }
 
-    label.textContent = '성별을 알려주세요';
+    label.textContent = TEXT.genderQuestion;
 
+    return true;
+}
+
+
+function patchPopupControls() {
+    const nameInput = document.getElementById('guestName');
+    if (!nameInput) return false;
+
+    const modal =
+        nameInput.closest('.rsvp-modal') ||
+        nameInput.closest('.modal') ||
+        nameInput.closest('.popup') ||
+        nameInput.closest('[role="dialog"]') ||
+        nameInput.closest('.modal-content') ||
+        nameInput.closest('.popup-content') ||
+        nameInput.parentElement;
+
+    if (!modal) return false;
+
+    /*
+     * 제목
+     */
+    const titleCandidates = Array.from(
+        modal.querySelectorAll('h1, h2, h3, h4, p, div, span')
+    );
+
+    const title = titleCandidates.find((el) => {
+        const text = el.textContent.replace(/\s+/g, ' ').trim();
+        return text === TEXT.popupTitle;
+    });
+
+    if (title) {
+        title.classList.add('rsvp-v2-title');
+    }
+
+    /*
+     * 입력칸
+     */
+    modal.querySelectorAll('input[type="text"], input[type="tel"], input[type="number"]')
+        .forEach((input) => {
+            input.classList.add('rsvp-v2-input');
+        });
+
+    /*
+     * 선택지
+     */
+    modal.querySelectorAll(
+        'label, .choice-btn, .option-btn, .radio-option, .choice-option'
+    ).forEach((el) => {
+        const text = el.textContent.replace(/\s+/g, ' ').trim();
+
+        if (
+            text.includes('신랑') ||
+            text.includes('신부') ||
+            text.includes('참석할게요') ||
+            text.includes('참석이 어려워요') ||
+            text === '남성' ||
+            text === '여성'
+        ) {
+            el.classList.add('rsvp-v2-option');
+        }
+    });
+
+    /*
+     * 버튼
+     */
+    modal.querySelectorAll('button').forEach((button) => {
+        const text = button.textContent.replace(/\s+/g, ' ').trim();
+
+        if (
+            text.includes('참석의사 전달하기') ||
+            text.includes('참석 의사 전달하기')
+        ) {
+            button.classList.add('rsvp-v2-submit');
+        }
+
+        if (text.includes('나중에 답할게요')) {
+            button.classList.add('rsvp-v2-later');
+        }
+    });
+
+    debugLog('popup controls patched');
     return true;
 }
 
@@ -666,7 +805,7 @@ function patchLiveScene() {
 
         wrap.innerHTML = `
             <div class="rsvp-live-scene-title">
-                함께하고 있는 하객들
+                ${TEXT.previewTitle}
             </div>
             <div
                 id="rsvpLiveScene"
@@ -694,8 +833,7 @@ function findElementContainingText(text) {
 }
 
 function patchBottomMessage() {
-    const messageText =
-        '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.';
+    const messageText = TEXT.bottomNote;
 
     const privacyKeywords = [
         '공개되지 않습니다',
@@ -756,6 +894,7 @@ function patchBottomMessage() {
 
 function patchRsvpForm() {
     const namePhoneDone = patchNameAndPhone();
+    const controlsDone = patchPopupControls();
     const attendanceGuideDone = patchAttendanceGuide();
     const genderDone = patchGender();
     const liveSceneDone = patchLiveScene();
@@ -763,6 +902,7 @@ function patchRsvpForm() {
 
     return (
         namePhoneDone &&
+        controlsDone &&
         attendanceGuideDone &&
         genderDone &&
         liveSceneDone &&
@@ -782,6 +922,7 @@ async function initialize() {
 
     try {
         await loadOriginalScript();
+        debugLog('original RSVP loaded');
         waitForGuestLayers();
         waitForRsvpForm();
     } catch (error) {
