@@ -102,7 +102,7 @@ const TEXT = {
     genderQuestion: '성별을 알려주세요',
     phoneLabel: '전화번호 뒷4자리',
     previewTitle: '함께하고 있는 하객들',
-    guestSectionTitle: '우리와 함께하는 소중한 사람들', 
+    guestSectionTitle: '함께하는 소중한 사람들', 
     bottomNote: '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.'
 };
 
