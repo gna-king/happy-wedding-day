@@ -28,7 +28,7 @@ const LAYOUT_STYLE_ID = 'weddingRsvpRequestedLayoutStyle';
 const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
- * ===== 글자 크기 쉽게 수정하는 곳 =====
+ * ===== 여기 숫자만 바꾸면 글자 크기 수정 가능 =====
  * 아래 숫자만 바꾸면 됩니다.
  */
 const UI = {
@@ -152,12 +152,18 @@ function addRequestedFormStyle() {
 
         /* 참석 질문 바로 아래 캐릭터 생성 안내 */
         .rsvp-character-guide {
-            margin: 8px 0 20px 0 !important;
+            display: block !important;
+            width: 100% !important;
+            margin: 8px 0 0 0 !important;
+            padding: 0 !important;
             font-family: 'DungGeunMo', monospace !important;
             font-size: ${UI.guideSize}px !important;
             line-height: 1.55 !important;
             color: #9a6d62 !important;
             text-align: center !important;
+            position: static !important;
+            transform: none !important;
+            white-space: normal !important;
         }
 
         /* 이름 + 전화번호 뒷4자리 한 줄 */
@@ -491,33 +497,72 @@ function patchAttendanceGuide() {
         '참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄';
 
     /*
-     * 페이지 전체에서 제목을 찾지 않는다.
-     * RSVP 팝업 안에 확실히 존재하는 이름 입력칸을 기준으로
-     * 실제 RSVP 폼 영역을 먼저 찾는다.
+     * 반드시 RSVP 팝업 내부에서만 찾는다.
      */
     const nameInput = document.getElementById('guestName');
-
     if (!nameInput) return false;
 
-    const form =
-        nameInput.closest('form') ||
-        nameInput.closest('.rsvp-form') ||
+    const modal =
+        nameInput.closest('.rsvp-modal') ||
+        nameInput.closest('.modal') ||
+        nameInput.closest('.popup') ||
+        nameInput.closest('[role="dialog"]') ||
         nameInput.closest('.modal-content') ||
         nameInput.closest('.popup-content') ||
         nameInput.parentElement;
 
-    if (!form) return false;
+    if (!modal) return false;
 
     /*
-     * 이전 버전에서 잘못 삽입된 안내문이 남아 있으면 제거한다.
+     * 팝업 안의 정확한 머리말 "참석 의사를 알려주세요"를 찾는다.
+     */
+    const headingCandidates = Array.from(
+        modal.querySelectorAll('h1, h2, h3, h4, p, div, span')
+    );
+
+    const heading = headingCandidates.find((el) => {
+        if (el.id === 'rsvpCharacterGuide') return false;
+
+        const text = el.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        return (
+            text === '참석 의사를 알려주세요' ||
+            text === '참석의사를 알려주세요'
+        );
+    });
+
+    if (!heading) return false;
+
+    /*
+     * 머리말이 들어있는 네모 박스(header)를 찾는다.
+     * 알려진 header class가 있으면 그걸 우선 사용하고,
+     * 없으면 제목의 부모 요소를 머리말 박스로 사용한다.
+     */
+    const headerBox =
+        heading.closest(
+            '.rsvp-header, ' +
+            '.rsvp-modal-header, ' +
+            '.modal-header, ' +
+            '.popup-header, ' +
+            '.form-header, ' +
+            '.rsvp-head'
+        ) ||
+        heading.parentElement;
+
+    if (!headerBox) return false;
+
+    /*
+     * 예전 버전에서 팝업 바깥이나 폼 본문에 잘못 들어간 안내문 제거.
      */
     const oldGuide = document.getElementById('rsvpCharacterGuide');
 
-    if (oldGuide && !form.contains(oldGuide)) {
+    if (oldGuide && oldGuide.parentElement !== headerBox) {
         oldGuide.remove();
     }
 
-    let guide = form.querySelector('#rsvpCharacterGuide');
+    let guide = headerBox.querySelector('#rsvpCharacterGuide');
 
     if (!guide) {
         guide = document.createElement('div');
@@ -527,20 +572,14 @@ function patchAttendanceGuide() {
     }
 
     /*
-     * 첫 번째 질문(form-group) 바로 앞에 넣는다.
-     * 결과:
+     * 제목 바로 다음 형제로 넣는다.
+     * 따라서 네모 머리말 박스 내부 구조는:
      *
      * 참석 의사를 알려주세요
      * 참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄
-     * 어느 쪽 하객이신가요?
      */
-    const firstFormGroup =
-        form.querySelector('.form-group');
-
-    if (!firstFormGroup) return false;
-
-    if (guide.nextElementSibling !== firstFormGroup) {
-        firstFormGroup.insertAdjacentElement('beforebegin', guide);
+    if (heading.nextElementSibling !== guide) {
+        heading.insertAdjacentElement('afterend', guide);
     }
 
     return true;
