@@ -29,7 +29,7 @@ const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
  * ============================================================
- * Wedding RSVP v2.4 - Bride Bun Fix + Section Title / 여기만 수정하면 대부분 변경 가능
+ * Wedding RSVP v2.3 - Smart Crowd + Guest Name Bubble / 여기만 수정하면 대부분 변경 가능
  * ============================================================
  */
 const UI = {
@@ -102,7 +102,7 @@ const TEXT = {
     genderQuestion: '성별을 알려주세요',
     phoneLabel: '전화번호 뒷4자리',
     previewTitle: '함께하고 있는 하객들',
-    guestSectionTitle: '함께하는 소중한 사람들', 
+    guestSectionTitle: '함께해주시는 소중한 분들', 
     bottomNote: '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.'
 };
 
@@ -828,51 +828,11 @@ function decorateGroom(character) {
     );
 }
 
-
-function removeBrideLongHair(svg) {
-    if (!svg) return;
-
-    /*
-     * Original bride is generated with long hair.
-     * Remove only the four side-hair rectangles so the lower long hair
-     * does not remain under the bun/veil.
-     */
-    const longHairRects = [
-        ['2', '8', '6', '16'],
-        ['16', '8', '6', '16'],
-        ['3', '9', '5', '14'],
-        ['16', '9', '5', '14']
-    ];
-
-    Array.from(svg.querySelectorAll('rect')).forEach((rect) => {
-        const signature = [
-            rect.getAttribute('x'),
-            rect.getAttribute('y'),
-            rect.getAttribute('width'),
-            rect.getAttribute('height')
-        ];
-
-        const isLongHair = longHairRects.some((target) =>
-            target.every((value, index) => value === signature[index])
-        );
-
-        if (isLongHair) {
-            rect.remove();
-        }
-    });
-}
-
 function decorateBride(character) {
     if (!character) return;
 
     const svg = character.querySelector('svg');
     if (!svg) return;
-
-    /*
-     * Remove the original long-hair side pieces first.
-     * Keep the top hair, then add bun + veil.
-     */
-    removeBrideLongHair(svg);
 
     /*
      * 기존 신부 머리 위에 웨딩 번(똥머리)을 덧그린다.
@@ -1901,24 +1861,6 @@ function findElementContainingText(text) {
     }) || null;
 }
 
-
-function patchGuestSectionTitle() {
-    const section =
-        document.getElementById('pixelGuestsSection');
-
-    if (!section) return false;
-
-    const title =
-        section.querySelector('.pixel-title');
-
-    if (!title) return false;
-
-    title.textContent =
-        TEXT.guestSectionTitle;
-
-    return true;
-}
-
 function patchBottomMessage() {
     const messageText = TEXT.bottomNote;
 
@@ -1985,7 +1927,6 @@ function patchRsvpForm() {
     const attendanceGuideDone = patchAttendanceGuide();
     const genderDone = patchGender();
     const liveSceneDone = patchLiveScene();
-    const guestSectionTitleDone = patchGuestSectionTitle();
     const bottomMessageDone = patchBottomMessage();
 
     return (
@@ -1994,7 +1935,6 @@ function patchRsvpForm() {
         attendanceGuideDone &&
         genderDone &&
         liveSceneDone &&
-        guestSectionTitleDone &&
         bottomMessageDone
     );
 }
