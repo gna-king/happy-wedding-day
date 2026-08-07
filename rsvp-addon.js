@@ -29,7 +29,7 @@ const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
  * ============================================================
- * Wedding RSVP v2.5 - Story Guide + Smart Crowd + Guest Name Bubble / 여기만 수정하면 대부분 변경 가능
+ * Wedding RSVP v2.6 - No Bottom Toast + Story Guide / 여기만 수정하면 대부분 변경 가능
  * ============================================================
  */
 const UI = {
@@ -406,6 +406,15 @@ function addRequestedFormStyle() {
 
         .rsvp-v2-later {
             font-size: ${UI.laterButtonSize}px !important;
+        }
+
+        /* 원본 RSVP 하단 검은 토스트 완전 숨김 */
+        #toast,
+        .toast {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
         /* RSVP 제출 후 맨 위 스토리 버튼 유도 */
