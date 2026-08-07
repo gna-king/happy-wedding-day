@@ -29,7 +29,7 @@ const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
  * ============================================================
- * Wedding RSVP v2.3 - Smart Crowd + Guest Name Bubble / 여기만 수정하면 대부분 변경 가능
+ * Wedding RSVP v2.5 - Story Guide + Smart Crowd + Guest Name Bubble / 여기만 수정하면 대부분 변경 가능
  * ============================================================
  */
 const UI = {
@@ -406,6 +406,52 @@ function addRequestedFormStyle() {
 
         .rsvp-v2-later {
             font-size: ${UI.laterButtonSize}px !important;
+        }
+
+        /* RSVP 제출 후 맨 위 스토리 버튼 유도 */
+        .story-button-rsvp-focus {
+            position: relative !important;
+            z-index: 9999 !important;
+            animation: rsvp-story-pulse .8s ease-in-out 3 !important;
+            box-shadow: 0 0 0 0 rgba(154, 109, 98, .35) !important;
+        }
+
+        @keyframes rsvp-story-pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(154, 109, 98, 0);
+            }
+            50% {
+                transform: scale(1.035);
+                box-shadow: 0 0 0 9px rgba(154, 109, 98, .16);
+            }
+        }
+
+        .rsvp-story-guide {
+            position: fixed !important;
+            top: max(12px, env(safe-area-inset-top)) !important;
+            left: 50% !important;
+            transform: translateX(-50%) translateY(-8px) !important;
+            z-index: 30000 !important;
+            width: min(calc(100% - 32px), 390px) !important;
+            padding: 12px 14px !important;
+            border: 2px solid #8f7a70 !important;
+            border-radius: 12px !important;
+            background: rgba(255, 252, 248, .98) !important;
+            color: #5c5049 !important;
+            font-family: 'DungGeunMo', monospace !important;
+            font-size: 12px !important;
+            line-height: 1.55 !important;
+            text-align: center !important;
+            box-shadow: 4px 4px 0 rgba(93, 84, 77, .18) !important;
+            opacity: 0;
+            pointer-events: none !important;
+            transition: opacity .2s ease, transform .2s ease !important;
+        }
+
+        .rsvp-story-guide.is-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) !important;
         }
 
         @media (max-width: 350px) {
@@ -828,11 +874,42 @@ function decorateGroom(character) {
     );
 }
 
+
+function removeBrideLongHair(svg) {
+    if (!svg) return;
+
+    const longHairRects = [
+        ['2', '8', '6', '16'],
+        ['16', '8', '6', '16'],
+        ['3', '9', '5', '14'],
+        ['16', '9', '5', '14']
+    ];
+
+    Array.from(svg.querySelectorAll('rect')).forEach((rect) => {
+        const signature = [
+            rect.getAttribute('x'),
+            rect.getAttribute('y'),
+            rect.getAttribute('width'),
+            rect.getAttribute('height')
+        ];
+
+        const isLongHair = longHairRects.some((target) =>
+            target.every((value, index) => value === signature[index])
+        );
+
+        if (isLongHair) {
+            rect.remove();
+        }
+    });
+}
+
 function decorateBride(character) {
     if (!character) return;
 
     const svg = character.querySelector('svg');
     if (!svg) return;
+
+    removeBrideLongHair(svg);
 
     /*
      * 기존 신부 머리 위에 웨딩 번(똥머리)을 덧그린다.
@@ -1939,11 +2016,122 @@ function patchRsvpForm() {
     );
 }
 
+
+function findStoryButton() {
+    const buttons = Array.from(
+        document.querySelectorAll('button, a, [role="button"]')
+    );
+
+    return buttons.find((element) => {
+        const text = element.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        return (
+            text.includes('진아') &&
+            text.includes('형민') &&
+            text.includes('스토리 보러가기')
+        );
+    }) || null;
+}
+
+let storyGuideTimer = null;
+
+function showStoryGuide() {
+    const storyButton = findStoryButton();
+
+    /*
+     * RSVP 팝업이 닫힌 뒤 메인 페이지 최상단으로 이동.
+     */
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+
+    let guide =
+        document.getElementById('rsvpStoryGuide');
+
+    if (!guide) {
+        guide = document.createElement('div');
+        guide.id = 'rsvpStoryGuide';
+        guide.className = 'rsvp-story-guide';
+        guide.textContent =
+            '참석 의사를 알려주셔서 감사합니다 💌  진아 · 형민의 결혼 스토리도 구경해보세요!';
+        document.body.appendChild(guide);
+    }
+
+    if (storyGuideTimer) {
+        clearTimeout(storyGuideTimer);
+    }
+
+    window.setTimeout(() => {
+        guide.classList.add('is-visible');
+
+        if (storyButton) {
+            storyButton.classList.add(
+                'story-button-rsvp-focus'
+            );
+        }
+    }, 450);
+
+    storyGuideTimer =
+        window.setTimeout(() => {
+            guide.classList.remove('is-visible');
+
+            if (storyButton) {
+                storyButton.classList.remove(
+                    'story-button-rsvp-focus'
+                );
+            }
+        }, 4300);
+}
+
+function bindPostSubmitStoryGuide() {
+    const form =
+        document.getElementById('rsvpForm');
+
+    if (
+        !form ||
+        form.dataset.storyGuideBound === 'true'
+    ) {
+        return false;
+    }
+
+    form.dataset.storyGuideBound = 'true';
+
+    form.addEventListener(
+        'submit',
+        () => {
+            const attendance =
+                document.querySelector(
+                    'input[name="attendance"]:checked'
+                )?.value;
+
+            /*
+             * 참석/불참 모두 '참석 의사 전달하기'를 완료한 뒤
+             * 스토리 버튼을 보도록 유도.
+             *
+             * 원본 Firebase 저장 및 팝업 종료 시간을 고려해
+             * 1.5초 뒤 실행한다.
+             */
+            if (attendance) {
+                window.setTimeout(
+                    showStoryGuide,
+                    1500
+                );
+            }
+        }
+    );
+
+    return true;
+}
+
 function waitForRsvpForm() {
     const patched =
         patchRsvpForm();
 
     bindMaskedNameSave();
+    bindPostSubmitStoryGuide();
 
     if (patched) return;
 
