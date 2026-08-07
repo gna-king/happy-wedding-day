@@ -2160,4 +2160,39 @@ async function initialize() {
 }
 
 initialize();
+    // 하단 검은 토스트 제거
+(function () {
+    const observer = new MutationObserver(() => {
+        document.querySelectorAll(
+            '.toast, .toast-message, .snackbar, .MuiSnackbar-root'
+        ).forEach(el => {
+            el.remove();
+        });
+
+        document.querySelectorAll('div').forEach(el => {
+            const text = (el.textContent || '').trim();
+
+            if (
+                text === '참석의사가 전달되었습니다.' ||
+                text === '참석 의사가 전달되었습니다.' ||
+                text === '참석의사가 전달되었습니다' ||
+                text === '참석 의사가 전달되었습니다'
+            ) {
+                const style = getComputedStyle(el);
+
+                if (
+                    style.position === 'fixed' ||
+                    style.position === 'absolute'
+                ) {
+                    el.remove();
+                }
+            }
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+})();
 })();
