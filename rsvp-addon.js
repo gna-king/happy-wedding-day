@@ -131,6 +131,23 @@ function addRequestedFormStyle() {
     style.id = FORM_STYLE_ID;
 
     style.textContent = `
+        /* 모든 질문 문구 크기 통일
+           기존 큰 질문 글자의 절반 정도 크기로 표시 */
+        .form-group > .form-label {
+            font-size: 8px !important;
+            line-height: 1.45 !important;
+            letter-spacing: 0 !important;
+        }
+
+        /* 참석 질문 바로 아래 캐릭터 생성 안내 */
+        .rsvp-character-guide {
+            margin: 7px 0 12px 0 !important;
+            font-family: 'DungGeunMo', monospace !important;
+            font-size: 10px !important;
+            line-height: 1.55 !important;
+            color: #9a6d62 !important;
+        }
+
         /* 이름 + 전화번호 뒷4자리 한 줄 */
         .rsvp-name-phone-row {
             display: grid !important;
@@ -148,8 +165,8 @@ function addRequestedFormStyle() {
 
         .rsvp-name-phone-row .form-label {
             white-space: nowrap !important;
-            font-size: 13px !important;
-            line-height: 1.35 !important;
+            font-size: 8px !important;
+            line-height: 1.45 !important;
         }
 
         .rsvp-name-phone-row .text-input,
@@ -158,13 +175,15 @@ function addRequestedFormStyle() {
             min-width: 0 !important;
         }
 
-        /* 성별 질문 문구 숨김 */
+        /* 성별 질문 다시 표시 + 윗 항목과 간격 */
         .rsvp-gender-group > .form-label,
         .rsvp-gender-group > label.form-label {
-            display: none !important;
+            display: block !important;
+            font-size: 8px !important;
+            line-height: 1.45 !important;
+            margin-bottom: 9px !important;
         }
 
-        /* 남성/여성 버튼이 윗줄에 너무 붙지 않도록 간격 추가 */
         .rsvp-gender-group {
             margin-top: 22px !important;
         }
@@ -229,7 +248,7 @@ function addRequestedFormStyle() {
             }
 
             .rsvp-name-phone-row .form-label {
-                font-size: 12px !important;
+                font-size: 8px !important;
             }
         }
     `;
@@ -454,6 +473,38 @@ function patchNameAndPhone() {
     return true;
 }
 
+
+function patchAttendanceGuide() {
+    const guideText =
+        '참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄';
+
+    if (document.getElementById('rsvpCharacterGuide')) {
+        return true;
+    }
+
+    const candidates = Array.from(
+        document.querySelectorAll('.form-label, label, p, div, span')
+    );
+
+    const attendanceQuestion = candidates.find((el) => {
+        const text = el.textContent.replace(/\s+/g, ' ').trim();
+        return (
+            text.includes('참석의사를 알려주세요') ||
+            text.includes('참석 의사를 알려주세요')
+        );
+    });
+
+    if (!attendanceQuestion) return false;
+
+    const guide = document.createElement('div');
+    guide.id = 'rsvpCharacterGuide';
+    guide.className = 'rsvp-character-guide';
+    guide.textContent = guideText;
+
+    attendanceQuestion.insertAdjacentElement('afterend', guide);
+    return true;
+}
+
 function patchGender() {
     const genderInput =
         document.querySelector('input[name="gender"]');
@@ -466,6 +517,16 @@ function patchGender() {
     if (!genderGroup) return false;
 
     genderGroup.classList.add('rsvp-gender-group');
+
+    let label = genderGroup.querySelector('.form-label');
+
+    if (!label) {
+        label = document.createElement('div');
+        label.className = 'form-label';
+        genderGroup.insertBefore(label, genderGroup.firstChild);
+    }
+
+    label.textContent = '성별을 알려주세요';
 
     return true;
 }
@@ -615,12 +676,14 @@ function patchBottomMessage() {
 
 function patchRsvpForm() {
     const namePhoneDone = patchNameAndPhone();
+    const attendanceGuideDone = patchAttendanceGuide();
     const genderDone = patchGender();
     const liveSceneDone = patchLiveScene();
     const bottomMessageDone = patchBottomMessage();
 
     return (
         namePhoneDone &&
+        attendanceGuideDone &&
         genderDone &&
         liveSceneDone &&
         bottomMessageDone
