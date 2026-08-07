@@ -19,6 +19,9 @@
  *   directly below the RSVP submit button.
  * - "남겨주신 답변은 예식 준비에 소중히 사용하겠습니다." is moved
  *   to the bottom, directly above the privacy notice.
+ * - v2.4: Bride side/back long-hair remnants are covered so the bun hairstyle reads cleanly.
+ * - v2.4: Legacy public guest records can derive masked names from existing name fields when available.
+ * - v2.4: Guest-facing section copy is refined.
  */
 
 const ORIGINAL_SCRIPT_URL =
@@ -29,7 +32,7 @@ const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
  * ============================================================
- * Wedding RSVP v2.3 - Smart Crowd + Guest Name Bubble / 여기만 수정하면 대부분 변경 가능
+ * Wedding RSVP v2.4 - Smart Crowd + Legacy Guest Name + Bride Hair Fix / 여기만 수정하면 대부분 변경 가능
  * ============================================================
  */
 const UI = {
@@ -101,8 +104,8 @@ const TEXT = {
     popupGuide: '참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄',
     genderQuestion: '성별을 알려주세요',
     phoneLabel: '전화번호 뒷4자리',
-    previewTitle: '함께하고 있는 하객들',
-    guestSectionTitle: '우리와 함께하는 소중한 사람들', 
+    previewTitle: '함께해주시는 소중한 하객들',
+    guestSectionTitle: '우리의 결혼식을 함께 채워주시는 분들', 
     bottomNote: '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.'
 };
 
@@ -836,8 +839,50 @@ function decorateBride(character) {
 
     /*
      * 기존 신부 머리 위에 웨딩 번(똥머리)을 덧그린다.
-     * 머리 뒤쪽의 베일을 먼저 그리고, 번을 위에 올린다.
+     * v2.4에서는 기존 캐릭터의 양옆/아래쪽 긴머리 픽셀이
+     * 똥머리 아래로 남아 보이지 않도록 드레스/베일 톤으로 먼저 덮는다.
      */
+
+    /* v2.4 - 기존 긴머리 잔상 가리기 */
+    svgRect(
+        svg,
+        4,
+        10,
+        4,
+        9,
+        TEAM.brideVeil,
+        'wedding-v2-decoration'
+    );
+
+    svgRect(
+        svg,
+        16,
+        10,
+        4,
+        9,
+        TEAM.brideVeil,
+        'wedding-v2-decoration'
+    );
+
+    svgRect(
+        svg,
+        6,
+        14,
+        3,
+        4,
+        '#F7F3EF',
+        'wedding-v2-decoration'
+    );
+
+    svgRect(
+        svg,
+        15,
+        14,
+        3,
+        4,
+        '#F7F3EF',
+        'wedding-v2-decoration'
+    );
 
     /* veil - 머리 뒤에서 양쪽으로 살짝 떨어지는 형태 */
     svgRect(
@@ -1462,7 +1507,12 @@ async function connectPublicMaskedNames() {
                         .map(
                             (guest) =>
                                 guest.maskedName ||
-                                ''
+                                maskGuestName(
+                                    guest.name ||
+                                    guest.guestName ||
+                                    guest.displayName ||
+                                    ''
+                                )
                         );
 
                 PUBLIC_NAME_STATE.bride =
@@ -1475,7 +1525,12 @@ async function connectPublicMaskedNames() {
                         .map(
                             (guest) =>
                                 guest.maskedName ||
-                                ''
+                                maskGuestName(
+                                    guest.name ||
+                                    guest.guestName ||
+                                    guest.displayName ||
+                                    ''
+                                )
                         );
 
                 applyMaskedNamesToCharacters();
@@ -1921,7 +1976,37 @@ function patchBottomMessage() {
     return true;
 }
 
+function patchGuestSectionCopy() {
+    const oldCandidates = [
+        '함께 채워지는 결혼식',
+        '우리와 함께하는 소중한 사람들'
+    ];
+
+    const candidates = Array.from(
+        document.querySelectorAll('h1, h2, h3, h4, p, div, span')
+    );
+
+    let changed = false;
+
+    candidates.forEach((el) => {
+        if (el.children.length > 0) return;
+
+        const current = el.textContent
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        if (oldCandidates.includes(current)) {
+            el.textContent = TEXT.guestSectionTitle;
+            changed = true;
+        }
+    });
+
+    return changed;
+}
+
 function patchRsvpForm() {
+    patchGuestSectionCopy();
+
     const namePhoneDone = patchNameAndPhone();
     const controlsDone = patchPopupControls();
     const attendanceGuideDone = patchAttendanceGuide();
@@ -1963,6 +2048,16 @@ async function initialize() {
         waitForGuestLayers();
         waitForRsvpForm();
         initializeGuestNameFeature();
+
+        let copyPatchRetry = 0;
+        const copyPatchTimer = window.setInterval(() => {
+            patchGuestSectionCopy();
+            copyPatchRetry += 1;
+
+            if (copyPatchRetry >= 40) {
+                window.clearInterval(copyPatchTimer);
+            }
+        }, 250);
     } catch (error) {
         console.error(
             'RSVP addon original script could not be loaded.',
