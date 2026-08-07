@@ -29,7 +29,7 @@ const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
  * ============================================================
- * Wedding RSVP v2.1 - Character Edition / 여기만 수정하면 대부분 변경 가능
+ * Wedding RSVP v2.2 - Character + Smart Crowd / 여기만 수정하면 대부분 변경 가능
  * ============================================================
  */
 const UI = {
@@ -54,6 +54,28 @@ const LAYOUT = {
     guestGap: 6.4,
     rowGap: 12.5,
     rowInset: 1.8
+};
+
+const CROWD = {
+    // 한쪽에 우선적으로 유지할 인원
+    preferredSideCapacity: 60,
+
+    // 인원 증가에 따른 자동 축소 기준
+    normalUntil: 30,
+    compactUntil: 60,
+
+    normalScaleMultiplier: 1.00,
+    compactScaleMultiplier: 0.90,
+    denseScaleMultiplier: 0.80,
+
+    // 캐릭터가 너무 작아지지 않도록 제한
+    minimumCharacterScale: 0.38,
+
+    // 가장 뒤쪽 하객이 올라갈 수 있는 최대 높이(%)
+    maxBackPosition: 88,
+
+    // 한쪽 초과 시 반대쪽 빈자리 사용
+    overflowToOtherSide: true
 };
 
 const TEAM = {
@@ -417,13 +439,75 @@ function createSeatOrder(count) {
     return seats;
 }
 
-function getSeatStyle(seat, side) {
-    const firstDistance = LAYOUT.firstGuestDistance;
-    const horizontalStep = LAYOUT.guestGap;
-    const distance =
-        firstDistance + seat.position * horizontalStep;
+function getCrowdMetrics(count, seats) {
+    let scaleMultiplier = CROWD.normalScaleMultiplier;
 
-    const bottom = LAYOUT.coupleBottom + seat.row * LAYOUT.rowGap;
+    if (count > CROWD.compactUntil) {
+        scaleMultiplier = CROWD.denseScaleMultiplier;
+    } else if (count > CROWD.normalUntil) {
+        const ratio =
+            (count - CROWD.normalUntil) /
+            (CROWD.compactUntil - CROWD.normalUntil);
+
+        scaleMultiplier =
+            CROWD.normalScaleMultiplier -
+            (
+                CROWD.normalScaleMultiplier -
+                CROWD.compactScaleMultiplier
+            ) * ratio;
+    }
+
+    const maxRow = seats.length
+        ? Math.max(...seats.map((seat) => seat.row))
+        : 0;
+
+    /*
+     * 하객 수가 늘어서 뒷줄이 많아지면 rowGap을 자동으로 압축.
+     * 가장 뒤쪽 하객이 maxBackPosition을 넘지 않게 한다.
+     */
+    let rowGap = LAYOUT.rowGap;
+
+    if (maxRow > 0) {
+        rowGap = Math.min(
+            LAYOUT.rowGap,
+            (
+                CROWD.maxBackPosition -
+                LAYOUT.coupleBottom
+            ) / maxRow
+        );
+    }
+
+    /*
+     * 인원이 많아지면 가로 간격도 살짝 줄여
+     * 화면 밖으로 퍼지는 것을 방지.
+     */
+    let guestGap = LAYOUT.guestGap;
+
+    if (count > CROWD.compactUntil) {
+        guestGap *= 0.88;
+    } else if (count > CROWD.normalUntil) {
+        guestGap *= 0.94;
+    }
+
+    return {
+        scaleMultiplier,
+        rowGap,
+        guestGap
+    };
+}
+
+function getSeatStyle(
+    seat,
+    side,
+    metrics
+) {
+    const distance =
+        LAYOUT.firstGuestDistance +
+        seat.position * metrics.guestGap;
+
+    const bottom =
+        LAYOUT.coupleBottom +
+        seat.row * metrics.rowGap;
 
     const rowInset = Math.min(
         seat.row * LAYOUT.rowInset,
@@ -434,9 +518,19 @@ function getSeatStyle(seat, side) {
         ? 50 - distance + rowInset
         : 50 + distance - rowInset;
 
-    const scale = Math.max(
+    /*
+     * 뒤로 갈수록 작아지는 기존 원근감 +
+     * 전체 인원 수에 따른 추가 자동 축소.
+     */
+    const perspectiveScale = Math.max(
         0.46,
         0.64 - seat.row * 0.025
+    );
+
+    const scale = Math.max(
+        CROWD.minimumCharacterScale,
+        perspectiveScale *
+            metrics.scaleMultiplier
     );
 
     return {
@@ -447,22 +541,31 @@ function getSeatStyle(seat, side) {
     };
 }
 
-function arrangeLayer(layer, side) {
-    if (!layer) return;
+function arrangeVisualSide(
+    guests,
+    side
+) {
+    if (!guests.length) return;
 
-    const guests = Array.from(
-        layer.querySelectorAll(':scope > .pixel-char')
-    );
+    const seats =
+        createSeatOrder(guests.length);
 
-    const seats = createSeatOrder(guests.length);
+    const metrics =
+        getCrowdMetrics(
+            guests.length,
+            seats
+        );
 
     guests.forEach((guest, index) => {
         const style = getSeatStyle(
             seats[index],
-            side
+            side,
+            metrics
         );
 
         guest.classList.remove('back');
+
+        guest.dataset.visualSide = side;
 
         guest.style.setProperty(
             'left',
@@ -490,6 +593,82 @@ function arrangeLayer(layer, side) {
     });
 }
 
+function buildVisualGuestLists(
+    groomGuests,
+    brideGuests
+) {
+    const groomVisual = [...groomGuests];
+    const brideVisual = [...brideGuests];
+
+    if (!CROWD.overflowToOtherSide) {
+        return {
+            groomVisual,
+            brideVisual
+        };
+    }
+
+    const capacity =
+        CROWD.preferredSideCapacity;
+
+    /*
+     * 신부측이 capacity를 넘고 신랑측 자리가 남으면,
+     * 초과한 신부 하객만 화면상 신랑측 빈자리로 보낸다.
+     *
+     * DOM/Firebase 소속은 바꾸지 않기 때문에
+     * 핑크 목리본도 그대로 유지된다.
+     */
+    if (
+        brideVisual.length > capacity &&
+        groomVisual.length < capacity
+    ) {
+        const excess =
+            brideVisual.length - capacity;
+
+        const available =
+            capacity - groomVisual.length;
+
+        const moveCount =
+            Math.min(excess, available);
+
+        const movedGuests =
+            brideVisual.splice(
+                brideVisual.length - moveCount,
+                moveCount
+            );
+
+        groomVisual.push(...movedGuests);
+    }
+
+    /*
+     * 신랑측이 많은 경우도 동일하게 처리.
+     */
+    if (
+        groomVisual.length > capacity &&
+        brideVisual.length < capacity
+    ) {
+        const excess =
+            groomVisual.length - capacity;
+
+        const available =
+            capacity - brideVisual.length;
+
+        const moveCount =
+            Math.min(excess, available);
+
+        const movedGuests =
+            groomVisual.splice(
+                groomVisual.length - moveCount,
+                moveCount
+            );
+
+        brideVisual.push(...movedGuests);
+    }
+
+    return {
+        groomVisual,
+        brideVisual
+    };
+}
 
 function svgRect(svg, x, y, width, height, fill, className = '') {
     if (!svg) return null;
@@ -773,17 +952,61 @@ function decorateWeddingCharacters() {
 }
 
 function arrangeAllGuests() {
-    arrangeLayer(
-        document.getElementById('groomGuestLayer'),
+    const groomLayer =
+        document.getElementById('groomGuestLayer');
+
+    const brideLayer =
+        document.getElementById('brideGuestLayer');
+
+    if (!groomLayer || !brideLayer) return;
+
+    const groomGuests = Array.from(
+        groomLayer.querySelectorAll(
+            ':scope > .pixel-char'
+        )
+    );
+
+    const brideGuests = Array.from(
+        brideLayer.querySelectorAll(
+            ':scope > .pixel-char'
+        )
+    );
+
+    /*
+     * 실제 소속은 그대로 유지하고
+     * 화면에 어디 배치할지만 재분배한다.
+     */
+    const {
+        groomVisual,
+        brideVisual
+    } = buildVisualGuestLists(
+        groomGuests,
+        brideGuests
+    );
+
+    arrangeVisualSide(
+        groomVisual,
         'groom'
     );
 
-    arrangeLayer(
-        document.getElementById('brideGuestLayer'),
+    arrangeVisualSide(
+        brideVisual,
         'bride'
     );
 
+    /*
+     * 목리본은 원래 DOM 소속 기준으로 그리므로
+     * overflow 되어도 원래 색상이 유지된다.
+     */
     decorateWeddingCharacters();
+
+    debugLog('Smart Crowd', {
+        realGroom: groomGuests.length,
+        realBride: brideGuests.length,
+        visualGroom: groomVisual.length,
+        visualBride: brideVisual.length
+    });
+
     syncLiveScene();
 }
 
