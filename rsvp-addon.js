@@ -11,12 +11,17 @@
  * - whoiscoming.PNG is used by the pinned original.
  * - Bride and groom are placed closer together.
  * - Guests fill rows in the requested order.
+ * - Name and phone last 4 digits are placed on one row.
+ * - The gender question label is hidden; only the choices remain.
+ * - A copy of the currently displayed wedding guest scene is shown
+ *   directly below the RSVP submit button.
  */
 
 const ORIGINAL_SCRIPT_URL =
     'https://cdn.jsdelivr.net/gh/gna-king/happy-wedding-day@94966407f843a8951c35d98dd19d168faf33a5ab/rsvp-addon.js';
 
 const LAYOUT_STYLE_ID = 'weddingRsvpRequestedLayoutStyle';
+const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 function loadOriginalScript() {
     return new Promise((resolve, reject) => {
@@ -115,6 +120,76 @@ function addRequestedLayoutStyle() {
     document.head.appendChild(style);
 }
 
+function addRequestedFormStyle() {
+    if (document.getElementById(FORM_STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = FORM_STYLE_ID;
+
+    style.textContent = `
+        .rsvp-name-phone-row {
+            display: grid !important;
+            grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important;
+            gap: 10px !important;
+            align-items: end !important;
+            width: 100% !important;
+        }
+
+        .rsvp-name-phone-row .form-group {
+            min-width: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .rsvp-name-phone-row .text-input,
+        .rsvp-name-phone-row input {
+            width: 100% !important;
+            min-width: 0 !important;
+        }
+
+        .rsvp-gender-group > .form-label,
+        .rsvp-gender-group > label.form-label {
+            display: none !important;
+        }
+
+        .rsvp-live-scene-wrap {
+            margin-top: 18px !important;
+            padding-top: 16px !important;
+            border-top: 2px dashed #d8d0c8 !important;
+        }
+
+        .rsvp-live-scene-title {
+            margin-bottom: 10px !important;
+            text-align: center !important;
+            font-family: 'DungGeunMo', monospace !important;
+            font-size: 12px !important;
+            color: #756c65 !important;
+        }
+
+        .rsvp-live-scene {
+            width: 100% !important;
+            overflow: hidden !important;
+        }
+
+        .rsvp-live-scene .pixel-scene {
+            width: 100% !important;
+            margin: 0 !important;
+        }
+
+        .rsvp-live-scene .pixel-empty {
+            display: none !important;
+        }
+
+        @media (max-width: 350px) {
+            .rsvp-name-phone-row {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 7px !important;
+            }
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+
 /*
  * One-side seating order:
  *
@@ -138,9 +213,6 @@ function createSeatOrder(count) {
     let groupStartRow = 0;
 
     while (seats.length < count) {
-        /*
-         * First, place four guests in each of the three rows.
-         */
         for (
             let rowOffset = 0;
             rowOffset < rowsPerGroup && seats.length < count;
@@ -159,9 +231,6 @@ function createSeatOrder(count) {
             }
         }
 
-        /*
-         * Then add two guests to each row.
-         */
         for (
             let rowOffset = 0;
             rowOffset < rowsPerGroup && seats.length < count;
@@ -180,9 +249,6 @@ function createSeatOrder(count) {
             }
         }
 
-        /*
-         * Move to the next three rows.
-         */
         groupStartRow += rowsPerGroup;
     }
 
@@ -190,23 +256,13 @@ function createSeatOrder(count) {
 }
 
 function getSeatStyle(seat, side) {
-    /*
-     * position 0 is closest to the bride or groom.
-     */
     const firstDistance = 12.5;
     const horizontalStep = 6.4;
     const distance =
         firstDistance + seat.position * horizontalStep;
 
-    /*
-     * Row 1 stays at the couple's level.
-     * Higher rows move upward.
-     */
     const bottom = 7 + seat.row * 12.5;
 
-    /*
-     * Higher rows move slightly inward.
-     */
     const rowInset = Math.min(
         seat.row * 1.8,
         9
@@ -282,6 +338,8 @@ function arrangeAllGuests() {
         document.getElementById('brideGuestLayer'),
         'bride'
     );
+
+    syncLiveScene();
 }
 
 function waitForGuestLayers() {
@@ -311,12 +369,137 @@ function waitForGuestLayers() {
     });
 }
 
+function patchNameAndPhone() {
+    const nameInput = document.getElementById('guestName');
+    const phoneInput = document.getElementById('phoneLast4');
+
+    if (!nameInput || !phoneInput) return false;
+
+    const nameGroup = nameInput.closest('.form-group');
+    const phoneGroup = phoneInput.closest('.form-group');
+
+    if (!nameGroup || !phoneGroup) return false;
+
+    if (!document.querySelector('.rsvp-name-phone-row')) {
+        const row = document.createElement('div');
+        row.className = 'rsvp-name-phone-row';
+
+        nameGroup.parentNode.insertBefore(row, nameGroup);
+        row.appendChild(nameGroup);
+        row.appendChild(phoneGroup);
+    }
+
+    return true;
+}
+
+function patchGender() {
+    const genderInput =
+        document.querySelector('input[name="gender"]');
+
+    if (!genderInput) return false;
+
+    const genderGroup =
+        genderInput.closest('.form-group');
+
+    if (!genderGroup) return false;
+
+    genderGroup.classList.add('rsvp-gender-group');
+    return true;
+}
+
+function findSubmitButton() {
+    return (
+        document.getElementById('rsvpSubmit') ||
+        Array.from(document.querySelectorAll('button')).find((button) => {
+            return button.textContent.trim().includes('참석의사 전달하기');
+        }) ||
+        Array.from(document.querySelectorAll('button')).find((button) => {
+            return button.textContent.trim().includes('참석 의사 전달하기');
+        })
+    );
+}
+
+function findPixelScene() {
+    return (
+        document.querySelector('#pixelGuestsSection .pixel-scene') ||
+        document.querySelector('.pixel-section .pixel-scene') ||
+        document.querySelector('.pixel-scene')
+    );
+}
+
+function syncLiveScene() {
+    const target =
+        document.getElementById('rsvpLiveScene');
+
+    const source = findPixelScene();
+
+    if (!target || !source) return;
+
+    const clone = source.cloneNode(true);
+
+    clone.querySelectorAll('[id]').forEach((el) => {
+        el.removeAttribute('id');
+    });
+
+    clone.removeAttribute('id');
+
+    clone.querySelectorAll('.is-new').forEach((el) => {
+        el.classList.remove('is-new');
+    });
+
+    target.replaceChildren(clone);
+}
+
+function patchLiveScene() {
+    const submitButton = findSubmitButton();
+
+    if (!submitButton) return false;
+
+    if (!document.getElementById('rsvpLiveSceneWrap')) {
+        const wrap = document.createElement('div');
+        wrap.id = 'rsvpLiveSceneWrap';
+        wrap.className = 'rsvp-live-scene-wrap';
+
+        wrap.innerHTML = `
+            <div class="rsvp-live-scene-title">
+                함께하고 있는 하객들
+            </div>
+            <div
+                id="rsvpLiveScene"
+                class="rsvp-live-scene"
+                aria-hidden="true"
+            ></div>
+        `;
+
+        submitButton.insertAdjacentElement('afterend', wrap);
+    }
+
+    syncLiveScene();
+    return true;
+}
+
+function patchRsvpForm() {
+    const namePhoneDone = patchNameAndPhone();
+    const genderDone = patchGender();
+    const liveSceneDone = patchLiveScene();
+
+    return namePhoneDone && genderDone && liveSceneDone;
+}
+
+function waitForRsvpForm() {
+    if (patchRsvpForm()) return;
+
+    window.setTimeout(waitForRsvpForm, 100);
+}
+
 async function initialize() {
     addRequestedLayoutStyle();
+    addRequestedFormStyle();
 
     try {
         await loadOriginalScript();
         waitForGuestLayers();
+        waitForRsvpForm();
     } catch (error) {
         console.error(
             'RSVP addon original script could not be loaded.',
