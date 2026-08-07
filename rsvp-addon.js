@@ -129,10 +129,11 @@ function addRequestedFormStyle() {
     style.textContent = `
         .rsvp-name-phone-row {
             display: grid !important;
-            grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important;
+            grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr) !important;
             gap: 10px !important;
             align-items: end !important;
             width: 100% !important;
+            margin-bottom: 18px !important;
         }
 
         .rsvp-name-phone-row .form-group {
@@ -144,6 +145,15 @@ function addRequestedFormStyle() {
         .rsvp-name-phone-row input {
             width: 100% !important;
             min-width: 0 !important;
+        }
+
+        .rsvp-name-phone-row .form-label {
+            white-space: nowrap !important;
+            font-size: 13px !important;
+        }
+
+        .rsvp-gender-group {
+            margin-top: 14px !important;
         }
 
         .rsvp-gender-group > .form-label,
@@ -389,6 +399,17 @@ function patchNameAndPhone() {
         row.appendChild(phoneGroup);
     }
 
+    const nameLabel = nameGroup.querySelector('.form-label');
+    const phoneLabel = phoneGroup.querySelector('.form-label');
+
+    if (nameLabel) {
+        nameLabel.innerHTML = '성함<span class="required">*</span>';
+    }
+
+    if (phoneLabel) {
+        phoneLabel.innerHTML = '전화번호 뒷4자리<span class="required">*</span>';
+    }
+
     return true;
 }
 
@@ -478,10 +499,57 @@ function patchLiveScene() {
     return true;
 }
 
+
+function moveAnswerUseNotice() {
+    const all = Array.from(document.querySelectorAll('p, div, span'));
+
+    const notice = all.find((el) => {
+        const text = el.textContent.trim();
+        return (
+            text === '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.' ||
+            text.includes('남겨주신 답변은 예식 준비에 소중히 사용하겠습니다')
+        );
+    });
+
+    if (!notice) return false;
+
+    /*
+     * Find the privacy notice near the bottom of the RSVP form.
+     * Wording may differ slightly in the pinned original, so search
+     * using the key words "이름", "전화번호", and "공개".
+     */
+    const privacy = all.find((el) => {
+        const text = el.textContent.trim();
+        return (
+            text.includes('이름') &&
+            text.includes('전화번호') &&
+            (
+                text.includes('공개') ||
+                text.includes('노출') ||
+                text.includes('보이지')
+            )
+        );
+    });
+
+    if (!privacy) return false;
+
+    if (notice === privacy || notice.contains(privacy) || privacy.contains(notice)) {
+        return false;
+    }
+
+    notice.style.marginTop = '24px';
+    notice.style.marginBottom = '10px';
+    notice.style.textAlign = 'center';
+
+    privacy.parentNode.insertBefore(notice, privacy);
+    return true;
+}
+
 function patchRsvpForm() {
     const namePhoneDone = patchNameAndPhone();
     const genderDone = patchGender();
     const liveSceneDone = patchLiveScene();
+    moveAnswerUseNotice();
 
     return namePhoneDone && genderDone && liveSceneDone;
 }
