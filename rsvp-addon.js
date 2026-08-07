@@ -27,6 +27,17 @@ const ORIGINAL_SCRIPT_URL =
 const LAYOUT_STYLE_ID = 'weddingRsvpRequestedLayoutStyle';
 const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
+/*
+ * ===== 글자 크기 쉽게 수정하는 곳 =====
+ * 아래 숫자만 바꾸면 됩니다.
+ */
+const UI = {
+    questionSize: 13,      // 어느 쪽 하객 / 참석 여부 / 성별 등 질문
+    guideSize: 11,         // "참석 버튼을 누르면..." 안내문
+    inputLabelSize: 13,    // 이름 / 전화번호 뒷4자리
+    bottomNoteSize: 12     // 맨 아래 안내문
+};
+
 function loadOriginalScript() {
     return new Promise((resolve, reject) => {
         const existing = document.querySelector(
@@ -134,18 +145,19 @@ function addRequestedFormStyle() {
         /* 모든 질문 문구 크기 통일
            기존 큰 질문 글자의 절반 정도 크기로 표시 */
         .form-group > .form-label {
-            font-size: 8px !important;
+            font-size: ${UI.questionSize}px !important;
             line-height: 1.45 !important;
             letter-spacing: 0 !important;
         }
 
         /* 참석 질문 바로 아래 캐릭터 생성 안내 */
         .rsvp-character-guide {
-            margin: 7px 0 12px 0 !important;
+            margin: 8px 0 22px 0 !important;
             font-family: 'DungGeunMo', monospace !important;
-            font-size: 10px !important;
+            font-size: ${UI.guideSize}px !important;
             line-height: 1.55 !important;
             color: #9a6d62 !important;
+            text-align: center !important;
         }
 
         /* 이름 + 전화번호 뒷4자리 한 줄 */
@@ -165,7 +177,7 @@ function addRequestedFormStyle() {
 
         .rsvp-name-phone-row .form-label {
             white-space: nowrap !important;
-            font-size: 8px !important;
+            font-size: ${UI.inputLabelSize}px !important;
             line-height: 1.45 !important;
         }
 
@@ -179,7 +191,7 @@ function addRequestedFormStyle() {
         .rsvp-gender-group > .form-label,
         .rsvp-gender-group > label.form-label {
             display: block !important;
-            font-size: 8px !important;
+            font-size: ${UI.questionSize}px !important;
             line-height: 1.45 !important;
             margin-bottom: 9px !important;
         }
@@ -236,7 +248,7 @@ function addRequestedFormStyle() {
             display: block !important;
             margin: 16px 0 8px 0 !important;
             text-align: center !important;
-            font-size: 12px !important;
+            font-size: ${UI.bottomNoteSize}px !important;
             line-height: 1.7 !important;
             color: #9a6d62 !important;
         }
@@ -248,7 +260,7 @@ function addRequestedFormStyle() {
             }
 
             .rsvp-name-phone-row .form-label {
-                font-size: 8px !important;
+                font-size: ${UI.inputLabelSize}px !important;
             }
         }
     `;
@@ -482,26 +494,30 @@ function patchAttendanceGuide() {
         return true;
     }
 
+    /*
+     * 머리말인 "참석 의사를 알려주세요"를 찾아
+     * 그 바로 아래, 첫 질문("어느 쪽 하객이신가요?")보다 위에 넣는다.
+     */
     const candidates = Array.from(
-        document.querySelectorAll('.form-label, label, p, div, span')
+        document.querySelectorAll('h1, h2, h3, p, div, span')
     );
 
-    const attendanceQuestion = candidates.find((el) => {
+    const heading = candidates.find((el) => {
         const text = el.textContent.replace(/\s+/g, ' ').trim();
         return (
-            text.includes('참석의사를 알려주세요') ||
-            text.includes('참석 의사를 알려주세요')
+            text === '참석 의사를 알려주세요' ||
+            text === '참석의사를 알려주세요'
         );
     });
 
-    if (!attendanceQuestion) return false;
+    if (!heading) return false;
 
     const guide = document.createElement('div');
     guide.id = 'rsvpCharacterGuide';
     guide.className = 'rsvp-character-guide';
     guide.textContent = guideText;
 
-    attendanceQuestion.insertAdjacentElement('afterend', guide);
+    heading.insertAdjacentElement('afterend', guide);
     return true;
 }
 
