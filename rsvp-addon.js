@@ -152,7 +152,7 @@ function addRequestedFormStyle() {
 
         /* 참석 질문 바로 아래 캐릭터 생성 안내 */
         .rsvp-character-guide {
-            margin: 8px 0 22px 0 !important;
+            margin: 8px 0 20px 0 !important;
             font-family: 'DungGeunMo', monospace !important;
             font-size: ${UI.guideSize}px !important;
             line-height: 1.55 !important;
@@ -490,34 +490,59 @@ function patchAttendanceGuide() {
     const guideText =
         '참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄';
 
-    if (document.getElementById('rsvpCharacterGuide')) {
-        return true;
+    /*
+     * 페이지 전체에서 제목을 찾지 않는다.
+     * RSVP 팝업 안에 확실히 존재하는 이름 입력칸을 기준으로
+     * 실제 RSVP 폼 영역을 먼저 찾는다.
+     */
+    const nameInput = document.getElementById('guestName');
+
+    if (!nameInput) return false;
+
+    const form =
+        nameInput.closest('form') ||
+        nameInput.closest('.rsvp-form') ||
+        nameInput.closest('.modal-content') ||
+        nameInput.closest('.popup-content') ||
+        nameInput.parentElement;
+
+    if (!form) return false;
+
+    /*
+     * 이전 버전에서 잘못 삽입된 안내문이 남아 있으면 제거한다.
+     */
+    const oldGuide = document.getElementById('rsvpCharacterGuide');
+
+    if (oldGuide && !form.contains(oldGuide)) {
+        oldGuide.remove();
+    }
+
+    let guide = form.querySelector('#rsvpCharacterGuide');
+
+    if (!guide) {
+        guide = document.createElement('div');
+        guide.id = 'rsvpCharacterGuide';
+        guide.className = 'rsvp-character-guide';
+        guide.textContent = guideText;
     }
 
     /*
-     * 머리말인 "참석 의사를 알려주세요"를 찾아
-     * 그 바로 아래, 첫 질문("어느 쪽 하객이신가요?")보다 위에 넣는다.
+     * 첫 번째 질문(form-group) 바로 앞에 넣는다.
+     * 결과:
+     *
+     * 참석 의사를 알려주세요
+     * 참석 버튼을 누르면 개인 캐릭터를 생성할 수 있습니다 😄
+     * 어느 쪽 하객이신가요?
      */
-    const candidates = Array.from(
-        document.querySelectorAll('h1, h2, h3, p, div, span')
-    );
+    const firstFormGroup =
+        form.querySelector('.form-group');
 
-    const heading = candidates.find((el) => {
-        const text = el.textContent.replace(/\s+/g, ' ').trim();
-        return (
-            text === '참석 의사를 알려주세요' ||
-            text === '참석의사를 알려주세요'
-        );
-    });
+    if (!firstFormGroup) return false;
 
-    if (!heading) return false;
+    if (guide.nextElementSibling !== firstFormGroup) {
+        firstFormGroup.insertAdjacentElement('beforebegin', guide);
+    }
 
-    const guide = document.createElement('div');
-    guide.id = 'rsvpCharacterGuide';
-    guide.className = 'rsvp-character-guide';
-    guide.textContent = guideText;
-
-    heading.insertAdjacentElement('afterend', guide);
     return true;
 }
 
