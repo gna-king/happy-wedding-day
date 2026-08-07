@@ -12,9 +12,13 @@
  * - Bride and groom are placed closer together.
  * - Guests fill rows in the requested order.
  * - Name and phone last 4 digits are placed on one row.
+ * - Phone label is shortened to "전화번호 뒷4자리".
  * - The gender question label is hidden; only the choices remain.
+ * - Extra spacing is added above the male/female choices.
  * - A copy of the currently displayed wedding guest scene is shown
  *   directly below the RSVP submit button.
+ * - "남겨주신 답변은 예식 준비에 소중히 사용하겠습니다." is moved
+ *   to the bottom, directly above the privacy notice.
  */
 
 const ORIGINAL_SCRIPT_URL =
@@ -127,18 +131,25 @@ function addRequestedFormStyle() {
     style.id = FORM_STYLE_ID;
 
     style.textContent = `
+        /* 이름 + 전화번호 뒷4자리 한 줄 */
         .rsvp-name-phone-row {
             display: grid !important;
-            grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr) !important;
+            grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr) !important;
             gap: 10px !important;
             align-items: end !important;
             width: 100% !important;
-            margin-bottom: 18px !important;
+            margin-bottom: 0 !important;
         }
 
         .rsvp-name-phone-row .form-group {
             min-width: 0 !important;
             margin-bottom: 0 !important;
+        }
+
+        .rsvp-name-phone-row .form-label {
+            white-space: nowrap !important;
+            font-size: 13px !important;
+            line-height: 1.35 !important;
         }
 
         .rsvp-name-phone-row .text-input,
@@ -147,20 +158,25 @@ function addRequestedFormStyle() {
             min-width: 0 !important;
         }
 
-        .rsvp-name-phone-row .form-label {
-            white-space: nowrap !important;
-            font-size: 13px !important;
-        }
-
-        .rsvp-gender-group {
-            margin-top: 14px !important;
-        }
-
+        /* 성별 질문 문구 숨김 */
         .rsvp-gender-group > .form-label,
         .rsvp-gender-group > label.form-label {
             display: none !important;
         }
 
+        /* 남성/여성 버튼이 윗줄에 너무 붙지 않도록 간격 추가 */
+        .rsvp-gender-group {
+            margin-top: 22px !important;
+        }
+
+        .rsvp-gender-group .choice-row,
+        .rsvp-gender-group .option-row,
+        .rsvp-gender-group .radio-row,
+        .rsvp-gender-group > div {
+            margin-top: 0 !important;
+        }
+
+        /* 제출 버튼 아래 현재 참여 캐릭터 장면 */
         .rsvp-live-scene-wrap {
             margin-top: 18px !important;
             padding-top: 16px !important;
@@ -189,10 +205,29 @@ function addRequestedFormStyle() {
             display: none !important;
         }
 
+        /* 하단 안내문 */
+        .rsvp-bottom-note-wrap {
+            margin-top: 18px !important;
+            padding-top: 16px !important;
+            text-align: center !important;
+            border-top: 1px solid #e4ddd7 !important;
+        }
+
+        .rsvp-bottom-note {
+            margin: 0 0 8px 0 !important;
+            font-size: 12px !important;
+            line-height: 1.7 !important;
+            color: #9a6d62 !important;
+        }
+
         @media (max-width: 350px) {
             .rsvp-name-phone-row {
                 grid-template-columns: 1fr 1fr !important;
                 gap: 7px !important;
+            }
+
+            .rsvp-name-phone-row .form-label {
+                font-size: 12px !important;
             }
         }
     `;
@@ -403,12 +438,16 @@ function patchNameAndPhone() {
     const phoneLabel = phoneGroup.querySelector('.form-label');
 
     if (nameLabel) {
-        nameLabel.innerHTML = '성함<span class="required">*</span>';
+        nameLabel.innerHTML = '이름<span class="required">*</span>';
     }
 
     if (phoneLabel) {
-        phoneLabel.innerHTML = '전화번호 뒷4자리<span class="required">*</span>';
+        phoneLabel.innerHTML =
+            '전화번호 뒷4자리<span class="required">*</span>';
     }
+
+    nameInput.placeholder = '예: 홍길동';
+    phoneInput.placeholder = '예: 1234';
 
     return true;
 }
@@ -425,6 +464,7 @@ function patchGender() {
     if (!genderGroup) return false;
 
     genderGroup.classList.add('rsvp-gender-group');
+
     return true;
 }
 
@@ -499,49 +539,65 @@ function patchLiveScene() {
     return true;
 }
 
+function findElementContainingText(text) {
+    const candidates = Array.from(
+        document.querySelectorAll('p, div, span')
+    );
 
-function moveAnswerUseNotice() {
-    const all = Array.from(document.querySelectorAll('p, div, span'));
+    return candidates.find((el) => {
+        if (el.children.length > 0) return false;
+        return el.textContent.trim().includes(text);
+    }) || null;
+}
 
-    const notice = all.find((el) => {
-        const text = el.textContent.trim();
-        return (
-            text === '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.' ||
-            text.includes('남겨주신 답변은 예식 준비에 소중히 사용하겠습니다')
-        );
-    });
+function patchBottomMessage() {
+    const messageText =
+        '남겨주신 답변은 예식 준비에 소중히 사용하겠습니다.';
 
-    if (!notice) return false;
+    const privacyKeywords = [
+        '공개되지 않습니다',
+        '신랑, 신부 외에는 공개되지 않습니다',
+        '신랑 신부 외에는 공개되지 않습니다'
+    ];
 
-    /*
-     * Find the privacy notice near the bottom of the RSVP form.
-     * Wording may differ slightly in the pinned original, so search
-     * using the key words "이름", "전화번호", and "공개".
-     */
-    const privacy = all.find((el) => {
-        const text = el.textContent.trim();
-        return (
-            text.includes('이름') &&
-            text.includes('전화번호') &&
-            (
-                text.includes('공개') ||
-                text.includes('노출') ||
-                text.includes('보이지')
-            )
-        );
-    });
+    const messageEl = findElementContainingText(messageText);
 
-    if (!privacy) return false;
+    let privacyEl = null;
 
-    if (notice === privacy || notice.contains(privacy) || privacy.contains(notice)) {
-        return false;
+    for (const keyword of privacyKeywords) {
+        privacyEl = findElementContainingText(keyword);
+        if (privacyEl) break;
     }
 
-    notice.style.marginTop = '24px';
-    notice.style.marginBottom = '10px';
-    notice.style.textAlign = 'center';
+    /*
+     * 위쪽에 있는 기존 안내문은 재사용해서 아래로 이동한다.
+     * 아직 privacy 문구가 생성되지 않았다면 다음 재시도 때 처리한다.
+     */
+    if (!messageEl || !privacyEl) return false;
 
-    privacy.parentNode.insertBefore(notice, privacy);
+    let wrap = document.getElementById('rsvpBottomNoteWrap');
+
+    if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.id = 'rsvpBottomNoteWrap';
+        wrap.className = 'rsvp-bottom-note-wrap';
+
+        privacyEl.parentNode.insertBefore(wrap, privacyEl);
+    }
+
+    messageEl.classList.add('rsvp-bottom-note');
+
+    if (messageEl.parentNode !== wrap) {
+        wrap.appendChild(messageEl);
+    }
+
+    /*
+     * 개인정보 문구가 wrap 바로 다음에 오도록 위치를 보정한다.
+     */
+    if (wrap.nextSibling !== privacyEl) {
+        wrap.parentNode.insertBefore(privacyEl, wrap.nextSibling);
+    }
+
     return true;
 }
 
@@ -549,9 +605,14 @@ function patchRsvpForm() {
     const namePhoneDone = patchNameAndPhone();
     const genderDone = patchGender();
     const liveSceneDone = patchLiveScene();
-    moveAnswerUseNotice();
+    const bottomMessageDone = patchBottomMessage();
 
-    return namePhoneDone && genderDone && liveSceneDone;
+    return (
+        namePhoneDone &&
+        genderDone &&
+        liveSceneDone &&
+        bottomMessageDone
+    );
 }
 
 function waitForRsvpForm() {
