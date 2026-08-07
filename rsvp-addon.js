@@ -29,7 +29,7 @@ const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
 
 /*
  * ============================================================
- * Wedding RSVP v2.2 - Character + Smart Crowd / 여기만 수정하면 대부분 변경 가능
+ * Wedding RSVP v2.3 - Smart Crowd + Guest Name Bubble / 여기만 수정하면 대부분 변경 가능
  * ============================================================
  */
 const UI = {
@@ -42,7 +42,10 @@ const UI = {
     submitButtonSize: 15,   // 참석 의사 전달하기
     laterButtonSize: 15,    // 나중에 답할게요
     previewTitleSize: 12,   // 함께하고 있는 하객들
-    bottomNoteSize: 12      // 하단 안내문
+    bottomNoteSize: 12,     // 하단 안내문
+
+    nameBubbleSize: 11,     // 캐릭터 클릭 시 이름
+    nameBubbleDuration: 1500 // 이름 표시 시간(ms)
 };
 
 const LAYOUT = {
@@ -201,6 +204,51 @@ function addRequestedLayoutStyle() {
 
         .side-guests .pixel-char.back {
             margin-bottom: 0 !important;
+        }
+
+        /* 하객 캐릭터 클릭 가능 */
+        .side-guests .pixel-char {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            touch-action: manipulation !important;
+        }
+
+        /* 캐릭터 클릭 시 이름 말풍선 */
+        .guest-name-bubble {
+            position: fixed !important;
+            z-index: 20000 !important;
+            transform: translate(-50%, -100%) scale(.92);
+            padding: 7px 10px !important;
+            background: rgba(255, 253, 249, .98) !important;
+            border: 2px solid #5d544d !important;
+            box-shadow: 3px 3px 0 rgba(0,0,0,.18) !important;
+            font-family: 'DungGeunMo', monospace !important;
+            font-size: ${UI.nameBubbleSize}px !important;
+            line-height: 1 !important;
+            color: #4d4540 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            pointer-events: none !important;
+            opacity: 0;
+            transition: opacity .14s ease, transform .14s ease;
+        }
+
+        .guest-name-bubble.is-visible {
+            opacity: 1;
+            transform: translate(-50%, -100%) scale(1);
+        }
+
+        .guest-name-bubble::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 7px;
+            height: 7px;
+            background: #fffdf9;
+            border-right: 2px solid #5d544d;
+            border-bottom: 2px solid #5d544d;
+            transform: translate(-50%, -4px) rotate(45deg);
         }
 
         /* 신랑측/신부측 구역 글자는 표시하지 않음 */
@@ -999,6 +1047,7 @@ function arrangeAllGuests() {
      * overflow 되어도 원래 색상이 유지된다.
      */
     decorateWeddingCharacters();
+    applyMaskedNamesToCharacters();
 
     debugLog('Smart Crowd', {
         realGroom: groomGuests.length,
@@ -1008,6 +1057,450 @@ function arrangeAllGuests() {
     });
 
     syncLiveScene();
+}
+
+
+/* ============================================================
+ * Guest Name Bubble
+ * - 원래 이름은 공개하지 않음
+ * - publicGuests에는 maskedName만 저장
+ * - 2글자: 김철 -> 김*
+ * - 3글자: 김진아 -> 김*아
+ * - 4글자: 남궁민수 -> 남**수
+ * ============================================================ */
+function maskGuestName(name) {
+    const value = String(name || '').trim();
+
+    if (!value) return '';
+    if (value.length === 1) return value;
+    if (value.length === 2) return value[0] + '*';
+
+    return (
+        value[0] +
+        '*'.repeat(value.length - 2) +
+        value[value.length - 1]
+    );
+}
+
+const PUBLIC_NAME_STATE = {
+    groom: [],
+    bride: [],
+    connected: false
+};
+
+let guestNameBubbleTimer = null;
+
+function removeGuestNameBubble() {
+    const oldBubble =
+        document.getElementById('guestNameBubble');
+
+    if (oldBubble) {
+        oldBubble.remove();
+    }
+
+    if (guestNameBubbleTimer) {
+        clearTimeout(guestNameBubbleTimer);
+        guestNameBubbleTimer = null;
+    }
+}
+
+function showGuestNameBubble(character) {
+    const maskedName =
+        character?.dataset?.maskedName || '';
+
+    if (!maskedName) return;
+
+    removeGuestNameBubble();
+
+    const rect =
+        character.getBoundingClientRect();
+
+    const bubble =
+        document.createElement('div');
+
+    bubble.id = 'guestNameBubble';
+    bubble.className = 'guest-name-bubble';
+    bubble.textContent = maskedName;
+
+    /*
+     * 화면 기준으로 캐릭터 머리 바로 위에 표시.
+     */
+    bubble.style.left =
+        `${rect.left + rect.width / 2}px`;
+
+    bubble.style.top =
+        `${Math.max(10, rect.top - 4)}px`;
+
+    document.body.appendChild(bubble);
+
+    requestAnimationFrame(() => {
+        bubble.classList.add('is-visible');
+    });
+
+    guestNameBubbleTimer =
+        window.setTimeout(() => {
+            bubble.classList.remove('is-visible');
+
+            window.setTimeout(() => {
+                if (bubble.isConnected) {
+                    bubble.remove();
+                }
+            }, 170);
+        }, UI.nameBubbleDuration);
+}
+
+function applyMaskedNamesToCharacters() {
+    const groomCharacters = Array.from(
+        document.querySelectorAll(
+            '#groomGuestLayer > .pixel-char'
+        )
+    );
+
+    const brideCharacters = Array.from(
+        document.querySelectorAll(
+            '#brideGuestLayer > .pixel-char'
+        )
+    );
+
+    groomCharacters.forEach(
+        (character, index) => {
+            const maskedName =
+                PUBLIC_NAME_STATE.groom[index] || '';
+
+            if (maskedName) {
+                character.dataset.maskedName =
+                    maskedName;
+            } else {
+                delete character.dataset.maskedName;
+            }
+        }
+    );
+
+    brideCharacters.forEach(
+        (character, index) => {
+            const maskedName =
+                PUBLIC_NAME_STATE.bride[index] || '';
+
+            if (maskedName) {
+                character.dataset.maskedName =
+                    maskedName;
+            } else {
+                delete character.dataset.maskedName;
+            }
+        }
+    );
+}
+
+function setupGuestClickDelegation() {
+    if (
+        document.documentElement.dataset
+            .guestNameClickBound === 'true'
+    ) {
+        return;
+    }
+
+    document.documentElement.dataset
+        .guestNameClickBound = 'true';
+
+    /*
+     * 메인 단체사진뿐 아니라 RSVP 팝업에 복제된 장면에서도
+     * data-masked-name이 있으면 동일하게 동작.
+     */
+    document.addEventListener(
+        'click',
+        (event) => {
+            const character =
+                event.target.closest(
+                    '.pixel-char[data-masked-name]'
+                );
+
+            if (!character) return;
+
+            const insideGuestScene =
+                character.closest(
+                    '#groomGuestLayer, ' +
+                    '#brideGuestLayer, ' +
+                    '.rsvp-live-scene'
+                );
+
+            if (!insideGuestScene) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            showGuestNameBubble(character);
+        },
+        true
+    );
+}
+
+async function getExistingFirebaseContext() {
+    const version = '11.10.0';
+
+    const [
+        appModule,
+        authModule,
+        databaseModule
+    ] = await Promise.all([
+        import(
+            `https://www.gstatic.com/firebasejs/${version}/firebase-app.js`
+        ),
+        import(
+            `https://www.gstatic.com/firebasejs/${version}/firebase-auth.js`
+        ),
+        import(
+            `https://www.gstatic.com/firebasejs/${version}/firebase-database.js`
+        )
+    ]);
+
+    const apps =
+        appModule.getApps();
+
+    if (!apps.length) {
+        return null;
+    }
+
+    const app =
+        apps[0];
+
+    const auth =
+        authModule.getAuth(app);
+
+    const database =
+        databaseModule.getDatabase(app);
+
+    return {
+        appModule,
+        authModule,
+        databaseModule,
+        app,
+        auth,
+        database
+    };
+}
+
+async function saveCurrentMaskedName() {
+    const attendance =
+        document.querySelector(
+            'input[name="attendance"]:checked'
+        )?.value;
+
+    /*
+     * 불참이면 publicGuests 자체가 삭제되므로
+     * 이름도 저장할 필요 없음.
+     */
+    if (attendance !== 'yes') return;
+
+    const name =
+        document.getElementById('guestName')
+            ?.value
+            ?.trim();
+
+    const maskedName =
+        maskGuestName(name);
+
+    if (!maskedName) return;
+
+    try {
+        let context = null;
+
+        /*
+         * 원본 Firebase 초기화/저장이 끝날 시간을 줌.
+         */
+        for (let retry = 0; retry < 10; retry++) {
+            context =
+                await getExistingFirebaseContext();
+
+            if (
+                context?.auth?.currentUser
+            ) {
+                break;
+            }
+
+            await new Promise(
+                (resolve) =>
+                    window.setTimeout(
+                        resolve,
+                        150
+                    )
+            );
+        }
+
+        if (
+            !context ||
+            !context.auth.currentUser
+        ) {
+            return;
+        }
+
+        const uid =
+            context.auth.currentUser.uid;
+
+        await context.databaseModule.update(
+            context.databaseModule.ref(
+                context.database,
+                `publicGuests/${uid}`
+            ),
+            {
+                maskedName
+            }
+        );
+
+        debugLog(
+            'masked name saved',
+            maskedName
+        );
+    } catch (error) {
+        console.warn(
+            'Masked guest name save failed.',
+            error
+        );
+    }
+}
+
+function bindMaskedNameSave() {
+    const form =
+        document.getElementById('rsvpForm');
+
+    if (
+        !form ||
+        form.dataset.maskedNameSaveBound ===
+            'true'
+    ) {
+        return false;
+    }
+
+    form.dataset.maskedNameSaveBound =
+        'true';
+
+    /*
+     * 원본 submit handler가 publicGuest를 먼저 저장한 뒤
+     * maskedName만 같은 publicGuests/{uid}에 추가한다.
+     */
+    form.addEventListener(
+        'submit',
+        () => {
+            window.setTimeout(
+                saveCurrentMaskedName,
+                900
+            );
+        }
+    );
+
+    return true;
+}
+
+async function connectPublicMaskedNames() {
+    if (PUBLIC_NAME_STATE.connected) {
+        return;
+    }
+
+    try {
+        let context = null;
+
+        for (let retry = 0; retry < 20; retry++) {
+            context =
+                await getExistingFirebaseContext();
+
+            if (context) break;
+
+            await new Promise(
+                (resolve) =>
+                    window.setTimeout(
+                        resolve,
+                        150
+                    )
+            );
+        }
+
+        if (!context) return;
+
+        PUBLIC_NAME_STATE.connected = true;
+
+        const publicRef =
+            context.databaseModule.ref(
+                context.database,
+                'publicGuests'
+            );
+
+        context.databaseModule.onValue(
+            publicRef,
+            (snapshot) => {
+                const raw =
+                    snapshot.val() || {};
+
+                const guests =
+                    Object.entries(raw)
+                        .map(([id, guest]) => ({
+                            id,
+                            ...guest
+                        }))
+                        .filter(
+                            (guest) =>
+                                guest &&
+                                guest.side &&
+                                guest.gender
+                        )
+                        .sort(
+                            (a, b) =>
+                                Number(
+                                    a.joinedAt || 0
+                                ) -
+                                Number(
+                                    b.joinedAt || 0
+                                )
+                        );
+
+                PUBLIC_NAME_STATE.groom =
+                    guests
+                        .filter(
+                            (guest) =>
+                                guest.side ===
+                                'groom'
+                        )
+                        .map(
+                            (guest) =>
+                                guest.maskedName ||
+                                ''
+                        );
+
+                PUBLIC_NAME_STATE.bride =
+                    guests
+                        .filter(
+                            (guest) =>
+                                guest.side ===
+                                'bride'
+                        )
+                        .map(
+                            (guest) =>
+                                guest.maskedName ||
+                                ''
+                        );
+
+                applyMaskedNamesToCharacters();
+
+                /*
+                 * data 속성이 포함된 상태로 팝업 미리보기도 갱신.
+                 */
+                syncLiveScene();
+            }
+        );
+
+        debugLog(
+            'public masked-name listener connected'
+        );
+    } catch (error) {
+        console.warn(
+            'Public masked-name listener failed.',
+            error
+        );
+    }
+}
+
+function initializeGuestNameFeature() {
+    setupGuestClickDelegation();
+    bindMaskedNameSave();
+    connectPublicMaskedNames();
 }
 
 function waitForGuestLayers() {
@@ -1446,9 +1939,17 @@ function patchRsvpForm() {
 }
 
 function waitForRsvpForm() {
-    if (patchRsvpForm()) return;
+    const patched =
+        patchRsvpForm();
 
-    window.setTimeout(waitForRsvpForm, 100);
+    bindMaskedNameSave();
+
+    if (patched) return;
+
+    window.setTimeout(
+        waitForRsvpForm,
+        100
+    );
 }
 
 async function initialize() {
@@ -1460,6 +1961,7 @@ async function initialize() {
         debugLog('original RSVP loaded');
         waitForGuestLayers();
         waitForRsvpForm();
+        initializeGuestNameFeature();
     } catch (error) {
         console.error(
             'RSVP addon original script could not be loaded.',
