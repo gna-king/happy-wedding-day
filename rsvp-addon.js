@@ -214,7 +214,9 @@ function addRequestedFormStyle() {
         }
 
         .rsvp-bottom-note {
-            margin: 0 0 8px 0 !important;
+            display: block !important;
+            margin: 16px 0 8px 0 !important;
+            text-align: center !important;
             font-size: 12px !important;
             line-height: 1.7 !important;
             color: #9a6d62 !important;
@@ -560,7 +562,23 @@ function patchBottomMessage() {
         '신랑 신부 외에는 공개되지 않습니다'
     ];
 
-    const messageEl = findElementContainingText(messageText);
+    /*
+     * 기존 위쪽 안내문은 위치 이동에 의존하지 않고 아예 숨긴다.
+     * 원본 DOM 구조나 생성 시점이 달라도 확실히 위에서 사라지게 한다.
+     */
+    const allElements = Array.from(
+        document.querySelectorAll('p, div, span')
+    );
+
+    allElements.forEach((el) => {
+        if (
+            el.children.length === 0 &&
+            el.textContent.trim() === messageText &&
+            el.id !== 'rsvpBottomMovedMessage'
+        ) {
+            el.style.setProperty('display', 'none', 'important');
+        }
+    });
 
     let privacyEl = null;
 
@@ -569,33 +587,27 @@ function patchBottomMessage() {
         if (privacyEl) break;
     }
 
-    /*
-     * 위쪽에 있는 기존 안내문은 재사용해서 아래로 이동한다.
-     * 아직 privacy 문구가 생성되지 않았다면 다음 재시도 때 처리한다.
-     */
-    if (!messageEl || !privacyEl) return false;
-
-    let wrap = document.getElementById('rsvpBottomNoteWrap');
-
-    if (!wrap) {
-        wrap = document.createElement('div');
-        wrap.id = 'rsvpBottomNoteWrap';
-        wrap.className = 'rsvp-bottom-note-wrap';
-
-        privacyEl.parentNode.insertBefore(wrap, privacyEl);
-    }
-
-    messageEl.classList.add('rsvp-bottom-note');
-
-    if (messageEl.parentNode !== wrap) {
-        wrap.appendChild(messageEl);
-    }
+    if (!privacyEl) return false;
 
     /*
-     * 개인정보 문구가 wrap 바로 다음에 오도록 위치를 보정한다.
+     * 아래쪽에는 새 안내문을 직접 생성해서 개인정보 문구 바로 위에 넣는다.
+     * 이렇게 하면 기존 안내문을 실제로 이동시키지 못하는 경우에도
+     * 원하는 위치가 항상 보장된다.
      */
-    if (wrap.nextSibling !== privacyEl) {
-        wrap.parentNode.insertBefore(privacyEl, wrap.nextSibling);
+    let bottomMessage =
+        document.getElementById('rsvpBottomMovedMessage');
+
+    if (!bottomMessage) {
+        bottomMessage = document.createElement('div');
+        bottomMessage.id = 'rsvpBottomMovedMessage';
+        bottomMessage.className = 'rsvp-bottom-note';
+        bottomMessage.textContent = messageText;
+    }
+
+    if (bottomMessage.parentNode !== privacyEl.parentNode) {
+        privacyEl.parentNode.insertBefore(bottomMessage, privacyEl);
+    } else if (bottomMessage.nextSibling !== privacyEl) {
+        privacyEl.parentNode.insertBefore(bottomMessage, privacyEl);
     }
 
     return true;
