@@ -502,7 +502,8 @@ function addRequestedFormStyle() {
             .rsvp-dialog {
                 width: min(100%, 390px) !important;
                 max-height: calc(83.333dvh - 30px) !important;
-                zoom: 1.2;
+                transform: scale(1.2) !important;
+                transform-origin: center center !important;
             }
         }
 
