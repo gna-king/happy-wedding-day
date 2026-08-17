@@ -497,6 +497,51 @@ function addRequestedFormStyle() {
             transform: translateX(-50%) translateY(0) !important;
         }
 
+        /* 데스크톱에서는 RSVP 카드와 입력 글씨도 함께 확대 */
+        @media (min-width: 768px) {
+            .rsvp-dialog {
+                width: min(100%, 500px) !important;
+            }
+
+            .rsvp-dialog-header {
+                padding: 34px 30px 22px !important;
+            }
+
+            .rsvp-v2-title {
+                font-size: 26px !important;
+            }
+
+            .rsvp-character-guide {
+                font-size: 14px !important;
+            }
+
+            .form-group > .form-label,
+            .rsvp-name-phone-row .form-label,
+            .rsvp-gender-group > .form-label {
+                font-size: 16px !important;
+            }
+
+            .rsvp-v2-input,
+            .rsvp-name-phone-row input {
+                min-height: 54px !important;
+                font-size: 16px !important;
+            }
+
+            .rsvp-v2-option {
+                font-size: 16px !important;
+            }
+
+            .rsvp-v2-submit,
+            .rsvp-v2-later {
+                font-size: 18px !important;
+            }
+
+            .rsvp-live-scene-title,
+            .rsvp-bottom-note {
+                font-size: 14px !important;
+            }
+        }
+
         @media (max-width: 350px) {
             .rsvp-name-phone-row {
                 grid-template-columns: 1fr 1fr !important;
