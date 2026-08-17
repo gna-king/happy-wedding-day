@@ -268,6 +268,23 @@ function addRequestedFormStyle() {
     style.id = FORM_STYLE_ID;
 
     style.textContent = `
+        /*
+         * iOS Chrome의 주소창을 제외한 실제 화면 높이에 팝업을 맞춘다.
+         * 기존 100vh 중앙 정렬로 상단이 잘리는 현상을 방지한다.
+         */
+        .rsvp-modal {
+            height: 100dvh !important;
+            min-height: 100dvh !important;
+            padding-top: max(18px, env(safe-area-inset-top)) !important;
+            padding-bottom: max(18px, env(safe-area-inset-bottom)) !important;
+            box-sizing: border-box !important;
+        }
+
+        .rsvp-dialog {
+            max-height: 100% !important;
+            overscroll-behavior: contain !important;
+        }
+
         /* 모바일에서도 닫기 버튼이 잘 보이고 쉽게 눌리도록 터치 영역 확대 */
         #rsvpCloseX {
             width: 50px !important;
