@@ -270,14 +270,14 @@ function addRequestedFormStyle() {
     style.textContent = `
         /* 모바일에서도 닫기 버튼이 잘 보이고 쉽게 눌리도록 터치 영역 확대 */
         #rsvpCloseX {
-            width: 46px !important;
-            height: 46px !important;
-            min-width: 46px !important;
-            min-height: 46px !important;
+            width: 50px !important;
+            height: 50px !important;
+            min-width: 50px !important;
+            min-height: 50px !important;
             display: inline-flex !important;
             align-items: center !important;
             justify-content: center !important;
-            font-size: 32px !important;
+            font-size: 48px !important;
             line-height: 1 !important;
             font-weight: 700 !important;
             padding: 0 !important;
