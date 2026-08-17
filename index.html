@@ -158,46 +158,15 @@
         .copy-btn { padding: 6px 12px; background-color: #fff; border: 1px solid #ccc; font-size: 11px; color: #666; cursor: pointer; border-radius: 2px;}
 
 
-        /* 태블릿·데스크톱에서는 모바일 카드와 글씨를 함께 확대 */
+        /* 데스크톱에서는 모바일 레이아웃 전체를 같은 비율로 확대 */
         @media (min-width: 768px) {
-            .phone-wrapper { max-width: 560px; }
-
-            .section { padding: 84px 32px; }
-            .section-title { font-size: 34px; }
-            .section-title2 { font-size: 24px; }
-
-            .press-text { font-size: 21px; }
-            .btn-story { font-size: 18px; padding: 19px 0; }
-
-            .wedding-subtitle { font-size: 60px; }
-            .main-text h1 { font-size: 34px; }
-            .main-text p { font-size: 19px; }
-
-            .greeting-wrap { padding: 92px 32px; }
-            .greeting-text { font-size: 19px; }
-            .parents-info { font-size: 19px; }
-            .parents-info strong { font-size: 20px; }
-
-            .cal-month { font-size: 24px; }
-            .cal-table { max-width: 360px; }
-            .cal-table th,
-            .cal-table td { font-size: 17px; padding: 15px 0; }
-            .d-day-counter { font-size: 19px; }
-            .d-day-counter strong { font-size: 21px; }
-
-            .venue-name { font-size: 26px; }
-            .venue-addr { font-size: 17px; }
-            .map-embed { height: 300px; }
-            .navi-btn span { font-size: 14px; }
-            .way-desc h4 { font-size: 19px; }
-            .way-desc p { font-size: 16px; }
-
-            .account-wrap { padding: 84px 32px; }
-            .acc-desc { font-size: 18px; }
-            .acc-btn { font-size: 17px; padding: 19px 22px; }
-            .acc-info { font-size: 16px; }
-            .copy-btn { font-size: 13px; padding: 8px 14px; }
+            .phone-wrapper {
+                width: 420px;
+                max-width: 420px;
+                zoom: 1.25;
+            }
         }
+
     </style>
 </head>
 <body>
