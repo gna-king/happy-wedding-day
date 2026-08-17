@@ -55,7 +55,7 @@ const LAYOUT = {
 
     firstGuestDistance: 12.5,
     guestGap: 6.4,
-    rowGap: 12.5,
+    rowGap: 7.5,
     rowInset: 1.8
 };
 
