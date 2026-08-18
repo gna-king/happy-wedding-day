@@ -59,6 +59,8 @@ const LAYOUT = {
     rowInset: 1.8
 };
 
+const DECORATIVE_GROOM_GUEST_COUNT = 10;
+
 const CROWD = {
     // 한쪽에 우선적으로 유지할 인원
     preferredSideCapacity: 60,
@@ -1130,6 +1132,112 @@ function decorateWeddingCharacters() {
     }
 }
 
+/*
+ * 이름 없는 화면용 신랑 측 하객 10명.
+ * 실제 RSVP/Firebase 데이터에는 저장하지 않는다.
+ */
+function ensureDecorativeGroomGuests() {
+    const groomLayer =
+        document.getElementById('groomGuestLayer');
+
+    const brideLayer =
+        document.getElementById('brideGuestLayer');
+
+    if (!groomLayer || !brideLayer) return;
+
+    const existing = Array.from(
+        groomLayer.querySelectorAll(
+            ':scope > .pixel-char.is-placeholder-guest'
+        )
+    );
+
+    if (
+        existing.length ===
+        DECORATIVE_GROOM_GUEST_COUNT
+    ) {
+        return;
+    }
+
+    existing.forEach((character) => character.remove());
+
+    const templates = [
+        ...groomLayer.querySelectorAll(
+            ':scope > .pixel-char:not(.is-placeholder-guest)'
+        ),
+        ...brideLayer.querySelectorAll(
+            ':scope > .pixel-char:not(.is-placeholder-guest)'
+        )
+    ];
+
+    if (!templates.length) {
+        const coupleLayer =
+            document.getElementById('coupleLayer');
+
+        if (coupleLayer) {
+            templates.push(
+                ...coupleLayer.querySelectorAll(
+                    ':scope > .pixel-char'
+                )
+            );
+        }
+    }
+
+    if (!templates.length) return;
+
+    for (
+        let index = 0;
+        index < DECORATIVE_GROOM_GUEST_COUNT;
+        index++
+    ) {
+        const template =
+            templates[
+                Math.floor(
+                    Math.random() * templates.length
+                )
+            ];
+
+        const character =
+            template.cloneNode(true);
+
+        character.classList.remove(
+            'back',
+            'is-new'
+        );
+
+        character.classList.add(
+            'is-placeholder-guest'
+        );
+
+        delete character.dataset.maskedName;
+        character.removeAttribute('title');
+        character.removeAttribute('aria-label');
+
+        character
+            .querySelectorAll('[id]')
+            .forEach((element) => {
+                element.removeAttribute('id');
+            });
+
+        groomLayer.appendChild(character);
+    }
+}
+
+function updateDisplayedGuestCount() {
+    const countElement =
+        document.getElementById('guestCount');
+
+    if (!countElement) return;
+
+    const displayedGuests =
+        document.querySelectorAll(
+            '#groomGuestLayer > .pixel-char, ' +
+            '#brideGuestLayer > .pixel-char'
+        ).length;
+
+    countElement.textContent =
+        String(displayedGuests);
+}
+
 function arrangeAllGuests() {
     const groomLayer =
         document.getElementById('groomGuestLayer');
@@ -1138,6 +1246,8 @@ function arrangeAllGuests() {
         document.getElementById('brideGuestLayer');
 
     if (!groomLayer || !brideLayer) return;
+
+    ensureDecorativeGroomGuests();
 
     const groomGuests = Array.from(
         groomLayer.querySelectorAll(
@@ -1179,6 +1289,16 @@ function arrangeAllGuests() {
      */
     decorateWeddingCharacters();
     applyMaskedNamesToCharacters();
+
+    groomLayer
+        .querySelectorAll(
+            ':scope > .pixel-char.is-placeholder-guest'
+        )
+        .forEach((character) => {
+            delete character.dataset.maskedName;
+        });
+
+    updateDisplayedGuestCount();
 
     debugLog('Smart Crowd', {
         realGroom: groomGuests.length,
