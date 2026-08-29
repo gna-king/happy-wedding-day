@@ -117,7 +117,7 @@ function debugLog(...args) {
 }
 
 function loadOriginalScript() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const existing = document.querySelector(
             `script[data-rsvp-original="${ORIGINAL_SCRIPT_URL}"]`
         );
@@ -134,21 +134,52 @@ function loadOriginalScript() {
         }
 
         const script = document.createElement('script');
-        script.src = ORIGINAL_SCRIPT_URL;
         script.async = false;
         script.dataset.rsvpOriginal = ORIGINAL_SCRIPT_URL;
 
-        script.addEventListener(
-            'load',
-            () => {
-                script.dataset.loaded = 'true';
-                resolve();
-            },
-            { once: true }
-        );
+        try {
+            const response = await fetch(ORIGINAL_SCRIPT_URL, {
+                cache: 'force-cache'
+            });
 
-        script.addEventListener('error', reject, { once: true });
-        document.head.appendChild(script);
+            if (!response.ok) {
+                throw new Error(
+                    `Original RSVP request failed: ${response.status}`
+                );
+            }
+
+            const originalSource = await response.text();
+            const fasterSource = originalSource.replace(
+                'setTimeout(openRsvpModal,450)',
+                'setTimeout(openRsvpModal,80)'
+            );
+
+            script.textContent =
+                fasterSource +
+                '\n//# sourceURL=wedding-rsvp-original.js';
+
+            document.head.appendChild(script);
+            script.dataset.loaded = 'true';
+            resolve();
+        } catch (error) {
+            /*
+             * 인라인 로딩이 실패하면 기존 외부 스크립트 방식으로 복구한다.
+             * 이 경우에도 참석 기능 자체는 정상 동작한다.
+             */
+            script.src = ORIGINAL_SCRIPT_URL;
+
+            script.addEventListener(
+                'load',
+                () => {
+                    script.dataset.loaded = 'true';
+                    resolve();
+                },
+                { once: true }
+            );
+
+            script.addEventListener('error', reject, { once: true });
+            document.head.appendChild(script);
+        }
     });
 }
 
