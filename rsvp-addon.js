@@ -152,10 +152,23 @@ function loadOriginalScript() {
             }
 
             const originalSource = await response.text();
-            const fasterSource = originalSource.replace(
-                'setTimeout(openRsvpModal,450)',
-                'setTimeout(openRsvpModal,80)'
-            );
+            const fasterSource = originalSource
+                .replace(
+                    'setTimeout(openRsvpModal,450)',
+                    'setTimeout(openRsvpModal,20)'
+                )
+                .replace(
+                    "function maybeOpenFirstVisitModal(){if(appState.myRsvp||sessionStorage.getItem(SNOOZE_KEY)==='1'||document.getElementById('rsvpModal').classList.contains('is-open'))return;",
+                    "function maybeOpenFirstVisitModal(){if(appState.myRsvp||localStorage.getItem('jina_hyungmin_rsvp_submitted')==='1'||sessionStorage.getItem(SNOOZE_KEY)==='1'||document.getElementById('rsvpModal').classList.contains('is-open'))return;"
+                )
+                .replace(
+                    "await appState.backend.save(rsvp,publicGuest);appState.myRsvp=rsvp;",
+                    "await appState.backend.save(rsvp,publicGuest);localStorage.setItem('jina_hyungmin_rsvp_submitted','1');appState.myRsvp=rsvp;"
+                )
+                .replace(
+                    "    bindRsvpEvents();\n    initializeRsvpBackend();",
+                    "    bindRsvpEvents();\n    window.setTimeout(maybeOpenFirstVisitModal,20);\n    initializeRsvpBackend();"
+                );
 
             script.textContent =
                 fasterSource +
