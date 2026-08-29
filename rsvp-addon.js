@@ -148,9 +148,9 @@ function addRequestedLayoutStyle() {
                 ),
                 linear-gradient(
                     90deg,
-                    #b9857d 0 9%,
-                    #efc9c2 9% 91%,
-                    #b9857d 91% 100%
+                    #d7d7d7 0 9%,
+                    #ffffff 9% 91%,
+                    #d7d7d7 91% 100%
                 ) !important;
             box-shadow: none !important;
             image-rendering: pixelated !important;
@@ -164,7 +164,7 @@ function addRequestedLayoutStyle() {
             right: 0 !important;
             bottom: 0 !important;
             height: 3px !important;
-            background: #9d6e68 !important;
+            background: #c7c7c7 !important;
         }
 
         /* 신랑·신부 사이의 하트 말풍선 */
