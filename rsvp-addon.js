@@ -411,7 +411,7 @@ function addRequestedFormStyle() {
         /* 이름 + 전화번호 뒷4자리 한 줄 */
         .rsvp-name-phone-row {
             display: grid !important;
-            grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr) !important;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
             gap: 10px !important;
             align-items: end !important;
             width: 100% !important;
