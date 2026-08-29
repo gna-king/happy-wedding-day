@@ -2,10 +2,10 @@
 'use strict';
 
 /*
- * Drop-in rsvp-addon.js
+ * RSVP layout and guest-scene enhancements
  *
- * Original source is pinned to commit:
- * 94966407f843a8951c35d98dd19d168faf33a5ab
+ * The self-contained RSVP core now lives in rsvp-core.js.
+ * This file only handles layout, styling, guest seating and UI enhancements.
  *
  * Changes:
  * - whoiscoming.PNG is used by the pinned original.
@@ -20,9 +20,6 @@
  * - "남겨주신 답변은 예식 준비에 소중히 사용하겠습니다." is moved
  *   to the bottom, directly above the privacy notice.
  */
-
-const ORIGINAL_SCRIPT_URL =
-    'https://cdn.jsdelivr.net/gh/gna-king/happy-wedding-day@94966407f843a8951c35d98dd19d168faf33a5ab/rsvp-addon.js';
 
 const LAYOUT_STYLE_ID = 'weddingRsvpRequestedLayoutStyle';
 const FORM_STYLE_ID = 'weddingRsvpFormRequestedStyle';
@@ -117,86 +114,6 @@ function debugLog(...args) {
     if (DEBUG) {
         console.log('[Wedding RSVP]', ...args);
     }
-}
-
-function loadOriginalScript() {
-    return new Promise(async (resolve, reject) => {
-        const existing = document.querySelector(
-            `script[data-rsvp-original="${ORIGINAL_SCRIPT_URL}"]`
-        );
-
-        if (existing) {
-            if (existing.dataset.loaded === 'true') {
-                resolve();
-                return;
-            }
-
-            existing.addEventListener('load', resolve, { once: true });
-            existing.addEventListener('error', reject, { once: true });
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.async = false;
-        script.dataset.rsvpOriginal = ORIGINAL_SCRIPT_URL;
-
-        try {
-            const response = await fetch(ORIGINAL_SCRIPT_URL, {
-                cache: 'force-cache'
-            });
-
-            if (!response.ok) {
-                throw new Error(
-                    `Original RSVP request failed: ${response.status}`
-                );
-            }
-
-            const originalSource = await response.text();
-            const fasterSource = originalSource
-                .replace(
-                    'setTimeout(openRsvpModal,450)',
-                    'setTimeout(openRsvpModal,20)'
-                )
-                .replace(
-                    "function maybeOpenFirstVisitModal(){if(appState.myRsvp||sessionStorage.getItem(SNOOZE_KEY)==='1'||document.getElementById('rsvpModal').classList.contains('is-open'))return;",
-                    "function maybeOpenFirstVisitModal(){if(appState.myRsvp||localStorage.getItem('jina_hyungmin_rsvp_submitted')==='1'||sessionStorage.getItem(SNOOZE_KEY)==='1'||document.getElementById('rsvpModal').classList.contains('is-open'))return;"
-                )
-                .replace(
-                    "await appState.backend.save(rsvp,publicGuest);appState.myRsvp=rsvp;",
-                    "await appState.backend.save(rsvp,publicGuest);localStorage.setItem('jina_hyungmin_rsvp_submitted','1');appState.myRsvp=rsvp;"
-                )
-                .replace(
-                    "    bindRsvpEvents();\n    initializeRsvpBackend();",
-                    "    bindRsvpEvents();\n    window.setTimeout(maybeOpenFirstVisitModal,20);\n    initializeRsvpBackend();"
-                );
-
-            script.textContent =
-                fasterSource +
-                '\n//# sourceURL=wedding-rsvp-original.js';
-
-            document.head.appendChild(script);
-            script.dataset.loaded = 'true';
-            resolve();
-        } catch (error) {
-            /*
-             * 인라인 로딩이 실패하면 기존 외부 스크립트 방식으로 복구한다.
-             * 이 경우에도 참석 기능 자체는 정상 동작한다.
-             */
-            script.src = ORIGINAL_SCRIPT_URL;
-
-            script.addEventListener(
-                'load',
-                () => {
-                    script.dataset.loaded = 'true';
-                    resolve();
-                },
-                { once: true }
-            );
-
-            script.addEventListener('error', reject, { once: true });
-            document.head.appendChild(script);
-        }
-    });
 }
 
 function addRequestedLayoutStyle() {
@@ -2513,25 +2430,23 @@ function waitForRsvpForm() {
     );
 }
 
-async function initialize() {
+function initialize() {
     addRequestedLayoutStyle();
     addRequestedFormStyle();
-
-    try {
-        await loadOriginalScript();
-        debugLog('original RSVP loaded');
-        waitForGuestLayers();
-        waitForRsvpForm();
-        initializeGuestNameFeature();
-    } catch (error) {
-        console.error(
-            'RSVP addon original script could not be loaded.',
-            error
-        );
-    }
+    waitForGuestLayers();
+    waitForRsvpForm();
+    initializeGuestNameFeature();
 }
 
-initialize();
+if (document.readyState === 'loading') {
+    document.addEventListener(
+        'DOMContentLoaded',
+        initialize,
+        { once: true }
+    );
+} else {
+    initialize();
+}
     // 하단 검은 토스트 제거
 (function () {
     const observer = new MutationObserver(() => {
