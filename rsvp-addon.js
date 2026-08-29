@@ -137,7 +137,7 @@ function addRequestedLayoutStyle() {
             left: 50% !important;
             bottom: 10% !important;
             width: 18% !important;
-            height: 29% !important;
+            height: 23% !important;
             transform: translateX(-50%) !important;
             clip-path: polygon(40% 0, 60% 0, 78% 100%, 22% 100%) !important;
             background:
