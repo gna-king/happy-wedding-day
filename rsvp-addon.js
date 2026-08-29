@@ -135,11 +135,11 @@ function addRequestedLayoutStyle() {
             position: absolute !important;
             z-index: 2 !important;
             left: 50% !important;
-            bottom: -1% !important;
-            width: 34% !important;
-            height: 48% !important;
+            bottom: 10% !important;
+            width: 32% !important;
+            height: 29% !important;
             transform: translateX(-50%) !important;
-            clip-path: polygon(40% 0, 60% 0, 82% 100%, 18% 100%) !important;
+            clip-path: polygon(42% 0, 58% 0, 82% 100%, 18% 100%) !important;
             background:
                 repeating-linear-gradient(
                     0deg,
@@ -163,7 +163,7 @@ function addRequestedLayoutStyle() {
             left: 0 !important;
             right: 0 !important;
             bottom: 0 !important;
-            height: 4px !important;
+            height: 3px !important;
             background: #9d6e68 !important;
         }
 
