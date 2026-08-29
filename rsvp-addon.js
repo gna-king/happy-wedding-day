@@ -277,7 +277,7 @@ function addRequestedLayoutStyle() {
 
         /* 캐릭터 클릭 시 이름 말풍선 */
         .guest-name-bubble {
-            position: fixed !important;
+            position: absolute !important;
             z-index: 20000 !important;
             transform: translate(-50%, -100%) scale(.92);
             padding: 7px 10px !important;
@@ -1585,8 +1585,16 @@ function showGuestNameBubble(character) {
 
     removeGuestNameBubble();
 
+    const scene =
+        character.closest('.pixel-scene');
+
+    if (!scene) return;
+
     const rect =
         character.getBoundingClientRect();
+
+    const sceneRect =
+        scene.getBoundingClientRect();
 
     const bubble =
         document.createElement('div');
@@ -1596,15 +1604,33 @@ function showGuestNameBubble(character) {
     bubble.textContent = maskedName;
 
     /*
-     * 화면 기준으로 캐릭터 머리 바로 위에 표시.
+     * 화면 고정 좌표가 아니라 하객 그림 내부 비율로 계산한다.
+     * 데스크톱 zoom과 팝업 복제 장면에서도 머리 중앙을 유지한다.
      */
+    const leftPercent =
+        (
+            rect.left +
+            rect.width / 2 -
+            sceneRect.left
+        ) /
+        sceneRect.width *
+        100;
+
+    const topPercent =
+        (
+            rect.top -
+            sceneRect.top
+        ) /
+        sceneRect.height *
+        100;
+
     bubble.style.left =
-        `${rect.left + rect.width / 2}px`;
+        `${leftPercent}%`;
 
     bubble.style.top =
-        `${Math.max(10, rect.top - 4)}px`;
+        `${Math.max(2, topPercent)}%`;
 
-    document.body.appendChild(bubble);
+    scene.appendChild(bubble);
 
     requestAnimationFrame(() => {
         bubble.classList.add('is-visible');
