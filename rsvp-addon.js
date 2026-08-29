@@ -559,14 +559,13 @@ function addRequestedFormStyle() {
 }
 
 /*
- * One-side seating order:
+ * 한쪽 좌석 배치 순서:
  *
- * 1~4   : row 1, closest to the couple first
- * 5~8   : row 2, from the center outward
- * 9~12  : row 3, from the center outward
- * 13~14 : add two seats to row 1
- * 15~16 : add two seats to row 2
- * 17~18 : adfunction createSeatOrder(count) {
+ * 1단계: 앞줄부터 다섯 줄에 4명씩 배치
+ * 2단계: 앞줄부터 각 줄 양옆에 2명씩 추가
+ * 3단계: 5×6 좌석이 찬 뒤에는 새 줄 없이 앞줄부터 1명씩 추가
+ */
+function createSeatOrder(count) {
     const seats = [];
     const rows = CROWD.maxRows;
     const initialPerRow =
@@ -574,9 +573,6 @@ function addRequestedFormStyle() {
     const extraPerRow =
         CROWD.extraGuestsPerRow;
 
-    /*
-     * 1단계: 앞줄부터 각 줄에 4명씩 채운다.
-     */
     for (
         let row = 0;
         row < rows && seats.length < count;
@@ -592,10 +588,6 @@ function addRequestedFormStyle() {
         }
     }
 
-    /*
-     * 2단계: 다시 앞줄부터 양옆 자리를 2명씩 채운다.
-     * 여기까지 한쪽 5줄 × 6명 = 30명이다.
-     */
     for (
         let row = 0;
         row < rows && seats.length < count;
@@ -614,11 +606,6 @@ function addRequestedFormStyle() {
         }
     }
 
-    /*
-     * 3단계: 양쪽 기본 좌석이 모두 찬 뒤에도 새 줄은 만들지 않는다.
-     * 앞줄부터 한 명씩 추가하고, 다섯 줄을 한 바퀴 돌 때마다
-     * 다음 바깥 자리를 사용한다.
-     */
     let overflowIndex = 0;
 
     while (seats.length < count) {
@@ -631,15 +618,6 @@ function addRequestedFormStyle() {
         });
 
         overflowIndex++;
-    }
-
-    return seats;
-}
-     });
-            }
-        }
-
-        groupStartRow += rowsPerGroup;
     }
 
     return seats;
