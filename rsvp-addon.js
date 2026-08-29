@@ -13,7 +13,7 @@
  * - Guests fill rows in the requested order.
  * - Name and phone last 4 digits are placed on one row.
  * - Phone label is shortened to "전화번호 뒷4자리".
- * - The gender question is shown again.
+ * - Gender is assigned automatically and its choices are hidden.
  * - Extra spacing is added above the male/female choices.
  * - A copy of the currently displayed wedding guest scene is shown
  *   directly below the RSVP submit button.
@@ -389,24 +389,9 @@ function addRequestedFormStyle() {
             min-width: 0 !important;
         }
 
-        /* 성별 질문 다시 표시 + 윗 항목과 간격 */
-        .rsvp-gender-group > .form-label,
-        .rsvp-gender-group > label.form-label {
-            display: block !important;
-            font-size: ${UI.questionSize}px !important;
-            line-height: 1.45 !important;
-            margin-bottom: 9px !important;
-        }
-
+        /* 성별 값은 캐릭터 생성용으로만 자동 지정하고 화면에서는 숨김 */
         .rsvp-gender-group {
-            margin-top: 22px !important;
-        }
-
-        .rsvp-gender-group .choice-row,
-        .rsvp-gender-group .option-row,
-        .rsvp-gender-group .radio-row,
-        .rsvp-gender-group > div {
-            margin-top: 0 !important;
+            display: none !important;
         }
 
         /* 제출 버튼 아래 현재 참여 캐릭터 장면 */
@@ -708,9 +693,18 @@ function getSeatStyle(
         LAYOUT.firstGuestDistance +
         seat.position * metrics.guestGap;
 
-    const bottom =
-        LAYOUT.coupleBottom +
-        seat.row * metrics.rowGap;
+    /*
+     * 뒤쪽 캐릭터가 작아질수록 빈 공간이 넓어 보이지 않도록
+     * 줄 사이 간격도 0.5%씩 줄인다.
+     */
+    let bottom = LAYOUT.coupleBottom;
+
+    for (let row = 0; row < seat.row; row++) {
+        bottom += Math.max(
+            5.5,
+            metrics.rowGap - row * 0.5
+        );
+    }
 
     const rowInset = Math.min(
         seat.row * LAYOUT.rowInset,
@@ -1987,27 +1981,47 @@ function patchAttendanceGuide() {
 }
 
 function patchGender() {
-    const genderInput =
-        document.querySelector('input[name="gender"]');
+    const genderInputs = Array.from(
+        document.querySelectorAll(
+            'input[name="gender"]'
+        )
+    );
 
-    if (!genderInput) return false;
+    if (!genderInputs.length) return false;
 
     const genderGroup =
-        genderInput.closest('.form-group');
+        genderInputs[0].closest('.form-group');
 
     if (!genderGroup) return false;
 
     genderGroup.classList.add('rsvp-gender-group');
 
-    let label = genderGroup.querySelector('.form-label');
+    /*
+     * 원본 제출 검증에는 gender 값이 필요하다.
+     * 선택지는 숨기되, 새 응답은 남/여 중 하나를 임의로 지정하고
+     * form.reset() 뒤에도 그 값이 유지되도록 defaultChecked도 설정한다.
+     */
+    if (!genderInputs.some((input) => input.checked)) {
+        const selected =
+            genderInputs[
+                Math.floor(
+                    Math.random() *
+                    genderInputs.length
+                )
+            ];
 
-    if (!label) {
-        label = document.createElement('div');
-        label.className = 'form-label';
-        genderGroup.insertBefore(label, genderGroup.firstChild);
+        genderInputs.forEach((input) => {
+            input.defaultChecked =
+                input === selected;
+        });
+
+        selected.checked = true;
+        selected.dispatchEvent(
+            new Event('change', {
+                bubbles: true
+            })
+        );
     }
-
-    label.textContent = TEXT.genderQuestion;
 
     return true;
 }
