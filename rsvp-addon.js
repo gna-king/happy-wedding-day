@@ -62,19 +62,22 @@ const LAYOUT = {
 const DECORATIVE_GROOM_GUEST_COUNT = 10;
 
 const CROWD = {
-    // 한쪽에 우선적으로 유지할 인원
-    preferredSideCapacity: 60,
+    // 한쪽은 5줄, 한 줄은 기본 4명 + 양옆 2명까지 우선 배치
+    maxRows: 5,
+    initialGuestsPerRow: 4,
+    extraGuestsPerRow: 2,
+    preferredSideCapacity: 30,
 
-    // 인원 증가에 따른 자동 축소 기준
+    // 양쪽 5×6 자리가 찬 뒤부터 전체 캐릭터를 자동 축소
     normalUntil: 30,
-    compactUntil: 60,
+    compactUntil: 45,
 
     normalScaleMultiplier: 1.00,
-    compactScaleMultiplier: 0.90,
-    denseScaleMultiplier: 0.80,
+    compactScaleMultiplier: 0.88,
+    denseScaleMultiplier: 0.76,
 
     // 캐릭터가 너무 작아지지 않도록 제한
-    minimumCharacterScale: 0.38,
+    minimumCharacterScale: 0.34,
 
     // 가장 뒤쪽 하객이 올라갈 수 있는 최대 높이(%)
     maxBackPosition: 88,
@@ -563,54 +566,76 @@ function addRequestedFormStyle() {
  * 9~12  : row 3, from the center outward
  * 13~14 : add two seats to row 1
  * 15~16 : add two seats to row 2
- * 17~18 : add two seats to row 3
- *
- * When rows 1~3 are complete, rows 4~6 start
- * with the same pattern.
- */
-function createSeatOrder(count) {
+ * 17~18 : adfunction createSeatOrder(count) {
     const seats = [];
+    const rows = CROWD.maxRows;
+    const initialPerRow =
+        CROWD.initialGuestsPerRow;
+    const extraPerRow =
+        CROWD.extraGuestsPerRow;
 
-    const rowsPerGroup = 3;
-    const initialGuestsPerRow = 4;
-    const extraGuestsPerRow = 2;
+    /*
+     * 1단계: 앞줄부터 각 줄에 4명씩 채운다.
+     */
+    for (
+        let row = 0;
+        row < rows && seats.length < count;
+        row++
+    ) {
+        for (
+            let position = 0;
+            position < initialPerRow &&
+            seats.length < count;
+            position++
+        ) {
+            seats.push({ row, position });
+        }
+    }
 
-    let groupStartRow = 0;
+    /*
+     * 2단계: 다시 앞줄부터 양옆 자리를 2명씩 채운다.
+     * 여기까지 한쪽 5줄 × 6명 = 30명이다.
+     */
+    for (
+        let row = 0;
+        row < rows && seats.length < count;
+        row++
+    ) {
+        for (
+            let extra = 0;
+            extra < extraPerRow &&
+            seats.length < count;
+            extra++
+        ) {
+            seats.push({
+                row,
+                position: initialPerRow + extra
+            });
+        }
+    }
+
+    /*
+     * 3단계: 양쪽 기본 좌석이 모두 찬 뒤에도 새 줄은 만들지 않는다.
+     * 앞줄부터 한 명씩 추가하고, 다섯 줄을 한 바퀴 돌 때마다
+     * 다음 바깥 자리를 사용한다.
+     */
+    let overflowIndex = 0;
 
     while (seats.length < count) {
-        for (
-            let rowOffset = 0;
-            rowOffset < rowsPerGroup && seats.length < count;
-            rowOffset++
-        ) {
-            for (
-                let position = 0;
-                position < initialGuestsPerRow &&
-                seats.length < count;
-                position++
-            ) {
-                seats.push({
-                    row: groupStartRow + rowOffset,
-                    position
-                });
-            }
-        }
+        seats.push({
+            row: overflowIndex % rows,
+            position:
+                initialPerRow +
+                extraPerRow +
+                Math.floor(overflowIndex / rows)
+        });
 
-        for (
-            let rowOffset = 0;
-            rowOffset < rowsPerGroup && seats.length < count;
-            rowOffset++
-        ) {
-            for (
-                let extra = 0;
-                extra < extraGuestsPerRow &&
-                seats.length < count;
-                extra++
-            ) {
-                seats.push({
-                    row: groupStartRow + rowOffset,
-                    position: initialGuestsPerRow + extra
-                });
+        overflowIndex++;
+    }
+
+    return seats;
+}
+     });
             }
         }
 
@@ -665,9 +690,28 @@ function getCrowdMetrics(count, seats) {
     let guestGap = LAYOUT.guestGap;
 
     if (count > CROWD.compactUntil) {
-        guestGap *= 0.88;
+        guestGap *= 0.78;
     } else if (count > CROWD.normalUntil) {
-        guestGap *= 0.94;
+        const ratio =
+            (count - CROWD.normalUntil) /
+            (CROWD.compactUntil - CROWD.normalUntil);
+
+        guestGap *= 1 - 0.22 * ratio;
+    }
+
+    /*
+     * 한 줄에 7명 이상 들어가도 화면 밖으로 잘리지 않도록
+     * 가장 바깥 좌석을 기준으로 가로 간격을 한 번 더 제한한다.
+     */
+    const maxPosition = seats.length
+        ? Math.max(...seats.map((seat) => seat.position))
+        : 0;
+
+    if (maxPosition > 0) {
+        guestGap = Math.min(
+            guestGap,
+            (47 - LAYOUT.firstGuestDistance) / maxPosition
+        );
     }
 
     return {
@@ -724,7 +768,8 @@ function getSeatStyle(
 
 function arrangeVisualSide(
     guests,
-    side
+    side,
+    sharedDensityCount = guests.length
 ) {
     if (!guests.length) return;
 
@@ -733,7 +778,7 @@ function arrangeVisualSide(
 
     const metrics =
         getCrowdMetrics(
-            guests.length,
+            sharedDensityCount,
             seats
         );
 
@@ -1304,14 +1349,25 @@ function arrangeAllGuests() {
         brideGuests
     );
 
+    /*
+     * 양쪽 30자리가 모두 찬 뒤에는 더 붐비는 쪽을 기준으로
+     * 신랑측과 신부측 전체 크기를 똑같이 줄인다.
+     */
+    const sharedDensityCount = Math.max(
+        groomVisual.length,
+        brideVisual.length
+    );
+
     arrangeVisualSide(
         groomVisual,
-        'groom'
+        'groom',
+        sharedDensityCount
     );
 
     arrangeVisualSide(
         brideVisual,
-        'bride'
+        'bride',
+        sharedDensityCount
     );
 
     /*
