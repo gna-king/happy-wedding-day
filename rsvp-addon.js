@@ -459,14 +459,19 @@ function addRequestedFormStyle() {
             left: 50% !important;
             transform: translateX(-50%) !important;
             margin: 0 !important;
-            padding: 6px 10px !important;
-            border: 2px solid #5d544d !important;
-            background: rgba(255, 253, 249, .92) !important;
-            box-shadow: 3px 3px 0 rgba(93, 84, 77, .28) !important;
+            padding: 0 !important;
+            border: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
             font-family: 'DungGeunMo', monospace !important;
             font-size: ${UI.previewTitleSize}px !important;
             line-height: 1.2 !important;
-            color: #5d544d !important;
+            color: #4f4843 !important;
+            text-shadow:
+                0 1px 0 rgba(255, 255, 255, .95),
+                1px 0 0 rgba(255, 255, 255, .95),
+                0 -1px 0 rgba(255, 255, 255, .95),
+                -1px 0 0 rgba(255, 255, 255, .95) !important;
             text-align: center !important;
             white-space: nowrap !important;
             pointer-events: none !important;
