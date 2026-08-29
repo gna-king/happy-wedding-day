@@ -321,6 +321,52 @@ function addRequestedFormStyle() {
             overscroll-behavior: contain !important;
         }
 
+        /*
+         * 모바일 첫 화면에 하객 미리보기 제목까지 보이도록
+         * 질문 영역의 세로 여백을 균형 있게 압축한다.
+         */
+        .rsvp-dialog-header {
+            padding: 18px 20px 12px !important;
+        }
+
+        .rsvp-dialog-kicker {
+            margin-bottom: 6px !important;
+        }
+
+        .rsvp-dialog-title {
+            margin-bottom: 4px !important;
+        }
+
+        .rsvp-form {
+            padding: 15px 18px 16px !important;
+        }
+
+        #rsvpForm > .form-group:not(.character-customizer):not(.rsvp-gender-group) {
+            margin-bottom: 13px !important;
+        }
+
+        #rsvpForm > .form-group > .form-label {
+            margin-bottom: 7px !important;
+        }
+
+        #rsvpForm > .form-group .choice-item span {
+            min-height: 42px !important;
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+        }
+
+        .rsvp-name-phone-row .text-input,
+        .rsvp-name-phone-row input {
+            height: 43px !important;
+        }
+
+        /*
+         * 입력칸과 전달 버튼은 너무 붙지 않도록 별도 간격을 둔다.
+         */
+        #rsvpSubmit {
+            margin-top: 14px !important;
+        }
+
         /* 모바일에서도 닫기 버튼이 잘 보이고 쉽게 눌리도록 터치 영역 확대 */
         #rsvpCloseX {
             width: 50px !important;
@@ -396,8 +442,8 @@ function addRequestedFormStyle() {
 
         /* 제출 버튼 아래 현재 참여 캐릭터 장면 */
         .rsvp-live-scene-wrap {
-            margin-top: 18px !important;
-            padding-top: 16px !important;
+            margin-top: 12px !important;
+            padding-top: 10px !important;
             border-top: 2px dashed #d8d0c8 !important;
         }
 
