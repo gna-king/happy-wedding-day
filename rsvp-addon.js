@@ -986,6 +986,40 @@ function addGuestRibbon(character, side) {
             ? TEAM.brideRibbon
             : TEAM.groomRibbon;
 
+    /*
+     * 축소된 하객에서도 리본이 몸통에 묻히지 않도록
+     * 진한 외곽선을 먼저 그리고 색상 리본을 그 위에 올린다.
+     */
+    svgRect(
+        svg,
+        8,
+        14,
+        4,
+        4,
+        '#2A2523',
+        'wedding-v2-decoration'
+    );
+
+    svgRect(
+        svg,
+        12,
+        14,
+        4,
+        4,
+        '#2A2523',
+        'wedding-v2-decoration'
+    );
+
+    svgRect(
+        svg,
+        10,
+        15,
+        4,
+        4,
+        '#2A2523',
+        'wedding-v2-decoration'
+    );
+
     svgRect(
         svg,
         9,
