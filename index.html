@@ -11,19 +11,15 @@
 
     <title>형민 & 진아 결혼합니다</title>
 
-    <!-- RSVP 화면과 백엔드 모듈을 문서 파싱 중 미리 받아 첫 표시를 앞당긴다. -->
+    <!-- RSVP 핵심과 화면 보정 파일을 같은 서버에서 병렬 다운로드 후 순서대로 실행한다. -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preload" href="rsvp-core.js" as="script">
     <link rel="preload" href="rsvp-addon.js" as="script">
-    <link
-        rel="preload"
-        href="https://cdn.jsdelivr.net/gh/gna-king/happy-wedding-day@94966407f843a8951c35d98dd19d168faf33a5ab/rsvp-addon.js"
-        as="fetch"
-        crossorigin="anonymous"
-    >
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js">
     <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js">
+    <script src="rsvp-core.js" defer></script>
     <script src="rsvp-addon.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
