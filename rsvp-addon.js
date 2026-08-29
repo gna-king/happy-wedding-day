@@ -442,20 +442,38 @@ function addRequestedFormStyle() {
 
         /* 제출 버튼 아래 현재 참여 캐릭터 장면 */
         .rsvp-live-scene-wrap {
+            position: relative !important;
             margin-top: 12px !important;
             padding-top: 10px !important;
             border-top: 2px dashed #d8d0c8 !important;
         }
 
+        /*
+         * 제목을 그림 위쪽 안에 픽셀 명패처럼 겹쳐 표시한다.
+         * 바깥 제목 한 줄을 없애 미리보기가 더 위에서 시작된다.
+         */
         .rsvp-live-scene-title {
-            margin-bottom: 10px !important;
-            text-align: center !important;
+            position: absolute !important;
+            z-index: 20 !important;
+            top: 22px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            margin: 0 !important;
+            padding: 6px 10px !important;
+            border: 2px solid #5d544d !important;
+            background: rgba(255, 253, 249, .92) !important;
+            box-shadow: 3px 3px 0 rgba(93, 84, 77, .28) !important;
             font-family: 'DungGeunMo', monospace !important;
             font-size: ${UI.previewTitleSize}px !important;
-            color: #756c65 !important;
+            line-height: 1.2 !important;
+            color: #5d544d !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            pointer-events: none !important;
         }
 
         .rsvp-live-scene {
+            position: relative !important;
             width: 100% !important;
             overflow: hidden !important;
         }
