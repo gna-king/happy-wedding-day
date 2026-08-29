@@ -136,17 +136,23 @@ function addRequestedLayoutStyle() {
             z-index: 2 !important;
             left: 50% !important;
             bottom: -1% !important;
-            width: 58% !important;
-            height: 51% !important;
+            width: 34% !important;
+            height: 48% !important;
             transform: translateX(-50%) !important;
-            clip-path: polygon(43% 0, 57% 0, 96% 100%, 4% 100%) !important;
+            clip-path: polygon(40% 0, 60% 0, 82% 100%, 18% 100%) !important;
             background:
                 repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, .18) 0 2px,
+                    transparent 2px 14px
+                ),
+                linear-gradient(
                     90deg,
-                    rgba(255, 250, 239, .92) 0 12px,
-                    rgba(237, 221, 201, .92) 12px 16px
+                    #b9857d 0 9%,
+                    #efc9c2 9% 91%,
+                    #b9857d 91% 100%
                 ) !important;
-            box-shadow: inset 0 8px 0 rgba(170, 145, 124, .24) !important;
+            box-shadow: none !important;
             image-rendering: pixelated !important;
             pointer-events: none !important;
         }
@@ -154,12 +160,11 @@ function addRequestedLayoutStyle() {
         .scene-virgin-road::after {
             content: '' !important;
             position: absolute !important;
-            inset: 0 !important;
-            background: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, .18),
-                rgba(178, 137, 116, .13)
-            ) !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            height: 4px !important;
+            background: #9d6e68 !important;
         }
 
         /* 신랑·신부 사이의 하트 말풍선 */
@@ -167,15 +172,15 @@ function addRequestedLayoutStyle() {
             position: absolute !important;
             z-index: 120 !important;
             left: 50% !important;
-            bottom: 25% !important;
-            width: 31px !important;
-            height: 25px !important;
+            bottom: 23% !important;
+            width: 24px !important;
+            height: 19px !important;
             transform: translateX(-50%) !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             border: 2px solid #332d2a !important;
-            border-radius: 9px !important;
+            border-radius: 6px !important;
             background: #fffdf8 !important;
             box-shadow: 2px 2px 0 rgba(51, 45, 42, .22) !important;
             pointer-events: none !important;
@@ -186,8 +191,8 @@ function addRequestedLayoutStyle() {
             position: absolute !important;
             left: 50% !important;
             top: calc(100% - 3px) !important;
-            width: 7px !important;
-            height: 7px !important;
+            width: 5px !important;
+            height: 5px !important;
             border-right: 2px solid #332d2a !important;
             border-bottom: 2px solid #332d2a !important;
             background: #fffdf8 !important;
@@ -199,7 +204,7 @@ function addRequestedLayoutStyle() {
             z-index: 1 !important;
             display: inline-block !important;
             color: #ef6f8f !important;
-            font-size: 16px !important;
+            font-size: 10px !important;
             line-height: 1 !important;
             transform-origin: center center !important;
             animation: couple-heart-side-turn 1.25s ease-in-out infinite !important;
