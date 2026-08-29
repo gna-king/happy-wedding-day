@@ -136,10 +136,10 @@ function addRequestedLayoutStyle() {
             z-index: 2 !important;
             left: 50% !important;
             bottom: 10% !important;
-            width: 32% !important;
+            width: 24% !important;
             height: 29% !important;
             transform: translateX(-50%) !important;
-            clip-path: polygon(42% 0, 58% 0, 82% 100%, 18% 100%) !important;
+            clip-path: polygon(42% 0, 58% 0, 80% 100%, 20% 100%) !important;
             background:
                 repeating-linear-gradient(
                     0deg,
