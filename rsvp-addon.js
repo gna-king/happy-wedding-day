@@ -466,12 +466,16 @@ function addRequestedFormStyle() {
             font-family: 'DungGeunMo', monospace !important;
             font-size: ${UI.previewTitleSize}px !important;
             line-height: 1.2 !important;
-            color: #4f4843 !important;
+            color: #fff !important;
             text-shadow:
-                0 1px 0 rgba(255, 255, 255, .95),
-                1px 0 0 rgba(255, 255, 255, .95),
-                0 -1px 0 rgba(255, 255, 255, .95),
-                -1px 0 0 rgba(255, 255, 255, .95) !important;
+                0 1px 0 #111,
+                1px 0 0 #111,
+                0 -1px 0 #111,
+                -1px 0 0 #111,
+                1px 1px 0 #111,
+                -1px 1px 0 #111,
+                1px -1px 0 #111,
+                -1px -1px 0 #111 !important;
             text-align: center !important;
             white-space: nowrap !important;
             pointer-events: none !important;
