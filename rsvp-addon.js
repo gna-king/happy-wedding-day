@@ -130,6 +130,96 @@ function addRequestedLayoutStyle() {
             pointer-events: none !important;
         }
 
+        /* 신랑·신부 뒤쪽의 원근감 있는 픽셀 버진로드 */
+        .scene-virgin-road {
+            position: absolute !important;
+            z-index: 2 !important;
+            left: 50% !important;
+            bottom: -1% !important;
+            width: 58% !important;
+            height: 51% !important;
+            transform: translateX(-50%) !important;
+            clip-path: polygon(43% 0, 57% 0, 96% 100%, 4% 100%) !important;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(255, 250, 239, .92) 0 12px,
+                    rgba(237, 221, 201, .92) 12px 16px
+                ) !important;
+            box-shadow: inset 0 8px 0 rgba(170, 145, 124, .24) !important;
+            image-rendering: pixelated !important;
+            pointer-events: none !important;
+        }
+
+        .scene-virgin-road::after {
+            content: '' !important;
+            position: absolute !important;
+            inset: 0 !important;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, .18),
+                rgba(178, 137, 116, .13)
+            ) !important;
+        }
+
+        /* 신랑·신부 사이의 하트 말풍선 */
+        .couple-heart-bubble {
+            position: absolute !important;
+            z-index: 120 !important;
+            left: 50% !important;
+            bottom: 25% !important;
+            width: 31px !important;
+            height: 25px !important;
+            transform: translateX(-50%) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 2px solid #332d2a !important;
+            border-radius: 9px !important;
+            background: #fffdf8 !important;
+            box-shadow: 2px 2px 0 rgba(51, 45, 42, .22) !important;
+            pointer-events: none !important;
+        }
+
+        .couple-heart-bubble::after {
+            content: '' !important;
+            position: absolute !important;
+            left: 50% !important;
+            top: calc(100% - 3px) !important;
+            width: 7px !important;
+            height: 7px !important;
+            border-right: 2px solid #332d2a !important;
+            border-bottom: 2px solid #332d2a !important;
+            background: #fffdf8 !important;
+            transform: translateX(-50%) rotate(45deg) !important;
+        }
+
+        .couple-heart {
+            position: relative !important;
+            z-index: 1 !important;
+            display: inline-block !important;
+            color: #ef6f8f !important;
+            font-size: 16px !important;
+            line-height: 1 !important;
+            transform-origin: center center !important;
+            animation: couple-heart-side-turn 1.25s ease-in-out infinite !important;
+        }
+
+        @keyframes couple-heart-side-turn {
+            0%, 100% {
+                transform: rotate(-12deg) scale(1);
+            }
+            35% {
+                transform: rotate(14deg) scale(1.08);
+            }
+            65% {
+                transform: rotate(-5deg) scale(.96);
+            }
+            82% {
+                transform: rotate(9deg) scale(1.04);
+            }
+        }
+
         .couple-layer {
             position: absolute !important;
             left: 50% !important;
@@ -1323,6 +1413,36 @@ function updateDisplayedGuestCount() {
         String(displayedGuests);
 }
 
+function ensureSceneDecorations() {
+    const groupLayer =
+        document.querySelector(
+            '#pixelGuestsSection .group-photo-layer'
+        );
+
+    if (!groupLayer) return false;
+
+    if (!groupLayer.querySelector('.scene-virgin-road')) {
+        const road = document.createElement('div');
+        road.className = 'scene-virgin-road';
+        road.setAttribute('aria-hidden', 'true');
+        groupLayer.insertBefore(
+            road,
+            groupLayer.firstChild
+        );
+    }
+
+    if (!groupLayer.querySelector('.couple-heart-bubble')) {
+        const bubble = document.createElement('div');
+        bubble.className = 'couple-heart-bubble';
+        bubble.setAttribute('aria-hidden', 'true');
+        bubble.innerHTML =
+            '<span class="couple-heart">♥</span>';
+        groupLayer.appendChild(bubble);
+    }
+
+    return true;
+}
+
 function arrangeAllGuests() {
     const groomLayer =
         document.getElementById('groomGuestLayer');
@@ -1332,6 +1452,7 @@ function arrangeAllGuests() {
 
     if (!groomLayer || !brideLayer) return;
 
+    ensureSceneDecorations();
     ensureDecorativeGroomGuests();
 
     const groomGuests = Array.from(
