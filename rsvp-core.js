@@ -369,8 +369,28 @@ const RSVP_POPUP_SEEN_KEY = 'jina_hyungmin_rsvp_popup_seen';
 let rsvpPopupSeen = false;
 let rsvpAutoOpenTimer = null;
 
+function returnedFromWeddingStory() {
+    try {
+        const referrer = new URL(document.referrer);
+        return referrer.origin === window.location.origin &&
+            /^\/pixel_road(?:\/|$)/.test(referrer.pathname);
+    } catch (_) { return false; }
+}
+
+function rememberRsvpPopup() {
+    rsvpPopupSeen = true;
+    try { localStorage.setItem(RSVP_POPUP_SEEN_KEY, '1'); } catch (_) {}
+    try { sessionStorage.setItem(RSVP_POPUP_SEEN_KEY, '1'); } catch (_) {}
+    // History survives a back/forward visit even when browser storage is blocked.
+    try {
+        window.history.replaceState({ ...window.history.state, weddingRsvpSeen: true }, '');
+    } catch (_) {}
+}
+
 function hasSeenRsvpPopup() {
     if (rsvpPopupSeen) return true;
+    if (returnedFromWeddingStory()) return true;
+    try { if (window.history.state?.weddingRsvpSeen) return true; } catch (_) {}
     try {
         if (localStorage.getItem(RSVP_POPUP_SEEN_KEY) === '1' ||
             localStorage.getItem('jina_hyungmin_rsvp_submitted') === '1') return true;
@@ -388,15 +408,20 @@ function openRsvpModal() {
     }
     const modal = document.getElementById('rsvpModal');
     if (!modal) return;
-    rsvpPopupSeen = true;
-    try { localStorage.setItem(RSVP_POPUP_SEEN_KEY, '1'); } catch (_) {}
-    try { sessionStorage.setItem(RSVP_POPUP_SEEN_KEY, '1'); } catch (_) {}
+    rememberRsvpPopup();
     if (modal.classList.contains('is-open')) return;
     appState.myRsvp ? fillForm(appState.myRsvp) : resetForm();
     modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 }
-function closeRsvpModal(){document.getElementById('rsvpModal').classList.remove('is-open');document.body.style.overflow='';setFormError('');}
+function closeRsvpModal(){
+    rememberRsvpPopup();
+    if (rsvpAutoOpenTimer !== null) clearTimeout(rsvpAutoOpenTimer);
+    rsvpAutoOpenTimer = null;
+    document.getElementById('rsvpModal').classList.remove('is-open');
+    document.body.style.overflow='';
+    setFormError('');
+}
 function maybeOpenFirstVisitModal() {
     const modal = document.getElementById('rsvpModal');
     if (!modal || appState.myRsvp || hasSeenRsvpPopup() ||
@@ -431,6 +456,12 @@ function bindRsvpEvents(){
 }
 
     bindRsvpEvents();
+    // Do not restore an open dialog from the browser's back/forward snapshot.
+    window.addEventListener('pagehide', () => {
+        if (rsvpAutoOpenTimer !== null) clearTimeout(rsvpAutoOpenTimer);
+        rsvpAutoOpenTimer = null;
+        if (document.getElementById('rsvpModal').classList.contains('is-open')) closeRsvpModal();
+    });
     window.setTimeout(maybeOpenFirstVisitModal,20);
     initializeRsvpBackend();
 }
@@ -441,3 +472,4 @@ if (document.readyState === 'loading') {
     initializeAddon();
 }
 })();
+
