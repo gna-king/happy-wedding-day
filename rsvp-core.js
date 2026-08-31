@@ -365,9 +365,49 @@ function resetForm(){
     document.getElementById('rsvpSubmit').textContent='참석 의사 전달하기';updateCustomizerVisibility();setFormError('');
 }
 function updateRsvpButton(){document.getElementById('openRsvpBtn').textContent=appState.myRsvp?'참석 의사 수정하기':'참석 의사 남기기';}
-function openRsvpModal(){appState.myRsvp?fillForm(appState.myRsvp):resetForm();document.getElementById('rsvpModal').classList.add('is-open');document.body.style.overflow='hidden';}
+const RSVP_POPUP_SEEN_KEY = 'jina_hyungmin_rsvp_popup_seen';
+let rsvpPopupSeen = false;
+let rsvpAutoOpenTimer = null;
+
+function hasSeenRsvpPopup() {
+    if (rsvpPopupSeen) return true;
+    try {
+        if (localStorage.getItem(RSVP_POPUP_SEEN_KEY) === '1' ||
+            localStorage.getItem('jina_hyungmin_rsvp_submitted') === '1') return true;
+    } catch (_) {}
+    try {
+        return sessionStorage.getItem(RSVP_POPUP_SEEN_KEY) === '1' ||
+            sessionStorage.getItem(SNOOZE_KEY) === '1';
+    } catch (_) { return false; }
+}
+
+function openRsvpModal() {
+    if (rsvpAutoOpenTimer !== null) {
+        clearTimeout(rsvpAutoOpenTimer);
+        rsvpAutoOpenTimer = null;
+    }
+    const modal = document.getElementById('rsvpModal');
+    if (!modal) return;
+    rsvpPopupSeen = true;
+    try { localStorage.setItem(RSVP_POPUP_SEEN_KEY, '1'); } catch (_) {}
+    try { sessionStorage.setItem(RSVP_POPUP_SEEN_KEY, '1'); } catch (_) {}
+    if (modal.classList.contains('is-open')) return;
+    appState.myRsvp ? fillForm(appState.myRsvp) : resetForm();
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+}
 function closeRsvpModal(){document.getElementById('rsvpModal').classList.remove('is-open');document.body.style.overflow='';setFormError('');}
-function maybeOpenFirstVisitModal(){if(appState.myRsvp||localStorage.getItem('jina_hyungmin_rsvp_submitted')==='1'||sessionStorage.getItem(SNOOZE_KEY)==='1'||document.getElementById('rsvpModal').classList.contains('is-open'))return;setTimeout(openRsvpModal,20);}
+function maybeOpenFirstVisitModal() {
+    const modal = document.getElementById('rsvpModal');
+    if (!modal || appState.myRsvp || hasSeenRsvpPopup() ||
+        modal.classList.contains('is-open') || rsvpAutoOpenTimer !== null) return;
+    rsvpAutoOpenTimer = setTimeout(() => {
+        rsvpAutoOpenTimer = null;
+        // Backend callbacks can arrive after the visitor closes the popup.
+        if (!appState.myRsvp && !hasSeenRsvpPopup() &&
+            !modal.classList.contains('is-open')) openRsvpModal();
+    }, 20);
+}
 async function handleRsvpSubmit(e){
     e.preventDefault();setFormError('');
     const v=validateForm();if(v.error){setFormError(v.error);return;}
