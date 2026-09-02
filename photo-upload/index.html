@@ -42,7 +42,7 @@ input.addEventListener("change",()=>{
   bar.style.width="0%";
 });
 
-function uploadOne(file,index,total){
+function uploadOne(file,index,total,loadedByIndex,totalBytes,onDone){
   return new Promise((resolve,reject)=>{
     const xhr=new XMLHttpRequest();
     const fd=new FormData();
@@ -52,16 +52,20 @@ function uploadOne(file,index,total){
     xhr.timeout=90000;
 
     xhr.upload.onprogress=(e)=>{
-      const filePct=e.lengthComputable?e.loaded/e.total:0;
-      const overall=((index+filePct)/total)*100;
-      bar.style.width=Math.max(2,Math.round(overall))+"%";
+      if(e.lengthComputable){
+        loadedByIndex[index]=e.loaded;
+        const loaded=loadedByIndex.reduce((a,b)=>a+b,0);
+        const pct=totalBytes?Math.round((loaded/totalBytes)*100):0;
+        bar.style.width=Math.max(2,Math.min(99,pct))+"%";
+      }
       const mb=(file.size/1024/1024).toFixed(1);
-      statusEl.textContent=(index+1)+" / "+total+"장 업로드 중… ("+mb+"MB)";
+      statusEl.textContent="사진 업로드 중… ("+mb+"MB)";
     };
 
     xhr.onload=()=>{
       if(xhr.status>=200&&xhr.status<300){
-        bar.style.width=Math.round(((index+1)/total)*100)+"%";
+        loadedByIndex[index]=file.size;
+        onDone();
         resolve();
       }else{
         reject(new Error("서버 응답 "+xhr.status));
@@ -74,6 +78,32 @@ function uploadOne(file,index,total){
   });
 }
 
+async function runPool(files,limit){
+  const loadedByIndex=new Array(files.length).fill(0);
+  const totalBytes=files.reduce((sum,f)=>sum+f.size,0);
+  let next=0;
+  let completed=0;
+
+  const onDone=()=>{
+    completed++;
+    const loaded=loadedByIndex.reduce((a,b)=>a+b,0);
+    const pct=totalBytes?Math.round((loaded/totalBytes)*100):0;
+    bar.style.width=Math.max(2,Math.min(100,pct))+"%";
+    statusEl.textContent=completed+" / "+files.length+"장 완료 · 나머지 업로드 중…";
+  };
+
+  async function worker(){
+    while(true){
+      const index=next++;
+      if(index>=files.length)return;
+      await uploadOne(files[index],index,files.length,loadedByIndex,totalBytes,onDone);
+    }
+  }
+
+  const workers=Array.from({length:Math.min(limit,files.length)},()=>worker());
+  await Promise.all(workers);
+}
+
 uploadBtn.addEventListener("click",async()=>{
   if(!selectedFiles.length)return;
   const files=[...selectedFiles];
@@ -83,13 +113,10 @@ uploadBtn.addEventListener("click",async()=>{
   progress.style.display="block";
   bar.style.width="2%";
   statusEl.className="status";
-  statusEl.textContent="업로드를 시작할게요…";
+  statusEl.textContent="사진 "+files.length+"장을 빠르게 올리는 중…";
 
   try{
-    for(let i=0;i<files.length;i++){
-      statusEl.textContent=(i+1)+" / "+files.length+"장 업로드 준비 중…";
-      await uploadOne(files[i],i,files.length);
-    }
+    await runPool(files,3);
     bar.style.width="100%";
     statusEl.textContent="사진이 잘 도착했어요. 감사합니다! 🤍";
     statusEl.className="status success";
