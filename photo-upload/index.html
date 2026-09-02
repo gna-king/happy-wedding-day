@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#fffaf5" />
+  <title>진아 · 형민 결혼식 사진 올리기</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:#fffaf5;color:#3d352f;
+      font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    }
+    .wrap{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 18px}
+    .card{
+      width:min(100%,480px);background:#fff;border:1px solid #efe5db;border-radius:24px;
+      padding:30px 22px;box-shadow:0 12px 40px rgba(70,50,30,.08);text-align:center
+    }
+    .ring{font-size:36px;margin-bottom:8px}
+    h1{font-size:24px;margin:0 0 10px;letter-spacing:-.6px}
+    .sub{font-size:15px;line-height:1.65;color:#756a61;margin:0 0 26px}
+    .drop{
+      display:block;border:2px dashed #d9c8b8;border-radius:18px;padding:28px 16px;
+      background:#fffdfb;cursor:pointer;transition:.2s
+    }
+    .drop:active{transform:scale(.99);background:#fff8f0}
+    .drop strong{display:block;font-size:18px;margin-bottom:7px}
+    .drop span{font-size:13px;color:#8c8178}
+    input{display:none}
+    .preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+    .preview img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px}
+    button{
+      width:100%;border:0;border-radius:14px;padding:16px;margin-top:18px;
+      font-size:16px;font-weight:700;background:#473d35;color:white;cursor:pointer
+    }
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .status{margin-top:15px;font-size:14px;line-height:1.5;min-height:22px;color:#665c54}
+    .progress{height:7px;background:#eee6df;border-radius:999px;overflow:hidden;margin-top:14px;display:none}
+    .bar{height:100%;width:0;background:#8f7865;transition:width .2s}
+    .note{font-size:12px;color:#9a8f86;margin-top:18px;line-height:1.55}
+    .success{color:#47745b;font-weight:700}
+    .error{color:#a34d4d;font-weight:700}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <div class="ring">💍</div>
+      <h1>결혼식 사진을 보내주세요</h1>
+      <p class="sub">오늘의 순간을 함께 남겨주세요.<br>휴대폰에서 사진을 여러 장 한 번에 선택할 수 있어요.</p>
+
+      <label class="drop" for="photos">
+        <strong>📷 사진 선택하기</strong>
+        <span>여기를 눌러 사진을 골라주세요</span>
+      </label>
+      <input id="photos" type="file" accept="image/*" multiple />
+
+      <div id="preview" class="preview"></div>
+      <button id="uploadBtn" disabled>사진 올리기</button>
+
+      <div id="progress" class="progress"><div id="bar" class="bar"></div></div>
+      <div id="status" class="status"></div>
+      <p class="note">선택한 사진은 진아 · 형민의 결혼식 사진 보관함에 저장됩니다.</p>
+    </section>
+  </main>
+
+  <script src="../firebase-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script>
+    const app = firebase.initializeApp(window.WEDDING_FIREBASE_CONFIG);
+    const auth = firebase.auth();
+    const storage = firebase.storage();
+
+    const input = document.getElementById('photos');
+    const preview = document.getElementById('preview');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const statusEl = document.getElementById('status');
+    const progress = document.getElementById('progress');
+    const bar = document.getElementById('bar');
+
+    let selectedFiles = [];
+
+    auth.signInAnonymously().catch(err => {
+      console.error(err);
+      statusEl.textContent = '업로드 준비 중 문제가 생겼어요. 잠시 후 다시 시도해주세요.';
+      statusEl.className = 'status error';
+    });
+
+    input.addEventListener('change', () => {
+      selectedFiles = Array.from(input.files || []).filter(f => f.type.startsWith('image/'));
+      preview.innerHTML = '';
+      selectedFiles.slice(0, 12).forEach(file => {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        preview.appendChild(img);
+      });
+      uploadBtn.disabled = selectedFiles.length === 0;
+      statusEl.className = 'status';
+      statusEl.textContent = selectedFiles.length ? selectedFiles.length + '장 선택했어요.' : '';
+    });
+
+    function safeName(name) {
+      return name.normalize('NFKC').replace(/[^a-zA-Z0-9._-]/g, '_').slice(-100);
+    }
+
+    uploadBtn.addEventListener('click', async () => {
+      if (!selectedFiles.length) return;
+      uploadBtn.disabled = true;
+      input.disabled = true;
+      progress.style.display = 'block';
+      bar.style.width = '0%';
+      statusEl.className = 'status';
+
+      try {
+        if (!auth.currentUser) {
+          await auth.signInAnonymously();
+        }
+        const uid = auth.currentUser.uid;
+        const now = new Date();
+        const date = now.toISOString().slice(0,10);
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i];
+          const stamp = Date.now() + '_' + i;
+          const path = 'wedding-photos/' + date + '/' + uid + '/' + stamp + '_' + safeName(file.name || 'photo.jpg');
+          const ref = storage.ref().child(path);
+          await ref.put(file, { contentType: file.type || 'image/jpeg' });
+          bar.style.width = Math.round(((i + 1) / selectedFiles.length) * 100) + '%';
+          statusEl.textContent = (i + 1) + ' / ' + selectedFiles.length + '장 올리는 중…';
+        }
+
+        statusEl.textContent = '사진이 잘 도착했어요. 감사합니다! 🤍';
+        statusEl.className = 'status success';
+        preview.innerHTML = '';
+        selectedFiles = [];
+        input.value = '';
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = '업로드에 실패했어요. 저장소 권한 설정을 확인해주세요.';
+        statusEl.className = 'status error';
+      } finally {
+        uploadBtn.disabled = selectedFiles.length === 0;
+        input.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
