@@ -1,135 +1,64 @@
 <!doctype html>
-<html lang="ko">
-<head>
+<html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fffaf5"><title>진아 · 형민 결혼식 사진 올리기</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#fffaf5;color:#3d352f;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}.wrap{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 18px}.card{width:min(100%,480px);background:#fff;border:1px solid #efe5db;border-radius:24px;padding:30px 22px;box-shadow:0 12px 40px rgba(70,50,30,.08);text-align:center}.ring{font-size:36px;margin-bottom:8px}h1{font-size:24px;margin:0 0 10px;letter-spacing:-.6px}.sub{font-size:15px;line-height:1.65;color:#756a61;margin:0 0 26px}.drop{display:block;border:2px dashed #d9c8b8;border-radius:18px;padding:28px 16px;background:#fffdfb;cursor:pointer}.drop:active{transform:scale(.99);background:#fff8f0}.drop strong{display:block;font-size:18px;margin-bottom:7px}.drop span{font-size:13px;color:#8c8178}input{display:none}.preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.preview img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}button{width:100%;border:0;border-radius:14px;padding:16px;margin-top:18px;font-size:16px;font-weight:700;background:#473d35;color:#fff}button:disabled{opacity:.45}.status{margin-top:15px;font-size:14px;line-height:1.5;min-height:44px;color:#665c54}.progress{height:7px;background:#eee6df;border-radius:999px;overflow:hidden;margin-top:14px;display:none}.bar{height:100%;width:0;background:#8f7865;transition:width .15s}.note{font-size:12px;color:#9a8f86;margin-top:18px;line-height:1.55}.success{color:#47745b;font-weight:700}.error{color:#a34d4d;font-weight:700}.retry{margin-top:8px;font-size:12px;color:#8d8177}
-</style></head>
-<body><main class="wrap"><section class="card">
+*{box-sizing:border-box}body{margin:0;background:#fffaf5;color:#3d352f;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}.wrap{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 18px}.card{width:min(100%,480px);background:#fff;border:1px solid #efe5db;border-radius:24px;padding:30px 22px;box-shadow:0 12px 40px rgba(70,50,30,.08);text-align:center}.ring{font-size:36px;margin-bottom:8px}h1{font-size:24px;margin:0 0 10px}.sub{font-size:15px;line-height:1.65;color:#756a61;margin:0 0 26px}.drop{display:block;border:2px dashed #d9c8b8;border-radius:18px;padding:28px 16px;background:#fffdfb;cursor:pointer}.drop strong{display:block;font-size:18px;margin-bottom:7px}.drop span{font-size:13px;color:#8c8178}input{display:none}.preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.preview img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}button{width:100%;border:0;border-radius:14px;padding:16px;margin-top:18px;font-size:16px;font-weight:700;background:#473d35;color:#fff}button:disabled{opacity:.45}.status{margin-top:15px;font-size:14px;line-height:1.5;min-height:44px;color:#665c54}.progress{height:7px;background:#eee6df;border-radius:999px;overflow:hidden;margin-top:14px;display:none}.bar{height:100%;width:0;background:#8f7865;transition:width .15s}.note{font-size:12px;color:#9a8f86;margin-top:18px;line-height:1.55}.success{color:#47745b;font-weight:700}.error{color:#a34d4d;font-weight:700}.retry{font-size:12px;color:#8d8177}
+</style></head><body><main class="wrap"><section class="card">
 <div class="ring">💍</div><h1>결혼식 사진을 보내주세요</h1>
 <p class="sub">오늘의 순간을 함께 남겨주세요.<br>휴대폰에서 사진을 여러 장 한 번에 선택할 수 있어요.</p>
 <label class="drop" for="photos"><strong>📷 사진 선택하기</strong><span>여기를 눌러 사진을 골라주세요</span></label>
-<input id="photos" type="file" accept="image/*" multiple>
-<div id="preview" class="preview"></div>
-<button id="uploadBtn" disabled>사진 올리기</button>
-<div id="progress" class="progress"><div id="bar" class="bar"></div></div>
-<div id="status" class="status"></div>
-<p class="note">선택한 사진은 진아 · 형민의 결혼식 사진 보관함에 저장됩니다.</p>
+<input id="photos" type="file" accept="image/*" multiple><div id="preview" class="preview"></div>
+<button id="uploadBtn" disabled>사진 올리기</button><div id="progress" class="progress"><div id="bar" class="bar"></div></div>
+<div id="status" class="status"></div><p class="note">선택한 사진은 진아 · 형민의 결혼식 사진 보관함에 원본 그대로 저장됩니다.</p>
 </section></main>
 <script>
 const WORKER_URL="https://polished-hill-a3db.wls0202dk.workers.dev";
-const input=document.getElementById("photos");
-const preview=document.getElementById("preview");
-const uploadBtn=document.getElementById("uploadBtn");
-const statusEl=document.getElementById("status");
-const progress=document.getElementById("progress");
-const bar=document.getElementById("bar");
+const input=document.getElementById("photos"),preview=document.getElementById("preview"),uploadBtn=document.getElementById("uploadBtn"),statusEl=document.getElementById("status"),progress=document.getElementById("progress"),bar=document.getElementById("bar");
 let selectedFiles=[];
 
 input.addEventListener("change",()=>{
-  selectedFiles=Array.from(input.files||[]).filter(f=>f.type.startsWith("image/"));
-  preview.innerHTML="";
-  selectedFiles.slice(0,12).forEach(file=>{
-    const img=document.createElement("img");
-    img.src=URL.createObjectURL(file);
-    preview.appendChild(img);
-  });
-  uploadBtn.disabled=!selectedFiles.length;
-  statusEl.className="status";
-  statusEl.textContent=selectedFiles.length?selectedFiles.length+"장 선택했어요.":"";
-  progress.style.display="none";
-  bar.style.width="0%";
+ selectedFiles=Array.from(input.files||[]).filter(f=>f.type.startsWith("image/"));preview.innerHTML="";
+ selectedFiles.slice(0,12).forEach(f=>{const img=document.createElement("img");img.src=URL.createObjectURL(f);preview.appendChild(img)});
+ uploadBtn.disabled=!selectedFiles.length;statusEl.className="status";statusEl.textContent=selectedFiles.length?selectedFiles.length+"장 선택했어요.":"";
+ progress.style.display="none";bar.style.width="0%";
 });
 
-function uploadOne(file,index,total,loadedByIndex,totalBytes,onDone){
-  return new Promise((resolve,reject)=>{
-    const xhr=new XMLHttpRequest();
-    const fd=new FormData();
-    fd.append("photo",file);
+async function getUploadUrl(file){
+ const res=await fetch(WORKER_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fileName:file.name,contentType:file.type||"application/octet-stream"})});
+ if(!res.ok)throw new Error("업로드 주소 발급 실패 ("+res.status+")");
+ const data=await res.json();if(!data.uploadUrl)throw new Error("업로드 주소를 받지 못했어요");return data.uploadUrl;
+}
 
-    xhr.open("POST",WORKER_URL,true);
-    xhr.timeout=90000;
+function putFile(file,url,index,loaded,totalBytes){
+ return new Promise((resolve,reject)=>{
+  const xhr=new XMLHttpRequest();xhr.open("PUT",url,true);xhr.timeout=120000;
+  if(file.type)xhr.setRequestHeader("Content-Type",file.type);
+  xhr.upload.onprogress=e=>{if(e.lengthComputable){loaded[index]=e.loaded;const n=loaded.reduce((a,b)=>a+b,0);bar.style.width=Math.max(2,Math.min(99,Math.round(n/totalBytes*100)))+"%"}};
+  xhr.onload=()=>xhr.status>=200&&xhr.status<300?resolve():reject(new Error("R2 응답 "+xhr.status));
+  xhr.onerror=()=>reject(new Error("네트워크 연결 오류"));xhr.ontimeout=()=>reject(new Error("업로드 시간 초과"));xhr.send(file);
+ });
+}
 
-    xhr.upload.onprogress=(e)=>{
-      if(e.lengthComputable){
-        loadedByIndex[index]=e.loaded;
-        const loaded=loadedByIndex.reduce((a,b)=>a+b,0);
-        const pct=totalBytes?Math.round((loaded/totalBytes)*100):0;
-        bar.style.width=Math.max(2,Math.min(99,pct))+"%";
-      }
-      const mb=(file.size/1024/1024).toFixed(1);
-      statusEl.textContent="사진 업로드 중… ("+mb+"MB)";
-    };
-
-    xhr.onload=()=>{
-      if(xhr.status>=200&&xhr.status<300){
-        loadedByIndex[index]=file.size;
-        onDone();
-        resolve();
-      }else{
-        reject(new Error("서버 응답 "+xhr.status));
-      }
-    };
-
-    xhr.onerror=()=>reject(new Error("네트워크 연결 오류"));
-    xhr.ontimeout=()=>reject(new Error("업로드 시간이 너무 오래 걸렸어요"));
-    xhr.send(fd);
-  });
+async function uploadWithRetry(file,index,loaded,totalBytes){
+ let last;
+ for(let attempt=1;attempt<=3;attempt++){
+  try{const url=await getUploadUrl(file);await putFile(file,url,index,loaded,totalBytes);loaded[index]=file.size;return}
+  catch(e){last=e;loaded[index]=0;if(attempt<3)await new Promise(r=>setTimeout(r,700*attempt))}
+ }
+ throw last;
 }
 
 async function runPool(files,limit){
-  const loadedByIndex=new Array(files.length).fill(0);
-  const totalBytes=files.reduce((sum,f)=>sum+f.size,0);
-  let next=0;
-  let completed=0;
-
-  const onDone=()=>{
-    completed++;
-    const loaded=loadedByIndex.reduce((a,b)=>a+b,0);
-    const pct=totalBytes?Math.round((loaded/totalBytes)*100):0;
-    bar.style.width=Math.max(2,Math.min(100,pct))+"%";
-    statusEl.textContent=completed+" / "+files.length+"장 완료 · 나머지 업로드 중…";
-  };
-
-  async function worker(){
-    while(true){
-      const index=next++;
-      if(index>=files.length)return;
-      await uploadOne(files[index],index,files.length,loadedByIndex,totalBytes,onDone);
-    }
-  }
-
-  const workers=Array.from({length:Math.min(limit,files.length)},()=>worker());
-  await Promise.all(workers);
+ const loaded=new Array(files.length).fill(0),totalBytes=files.reduce((s,f)=>s+f.size,0);let next=0,done=0;
+ async function worker(){while(true){const i=next++;if(i>=files.length)return;statusEl.textContent=(done+1)+" / "+files.length+"장 처리 중…";await uploadWithRetry(files[i],i,loaded,totalBytes);done++;statusEl.textContent=done+" / "+files.length+"장 완료 · 나머지 업로드 중…"}}
+ await Promise.all(Array.from({length:Math.min(limit,files.length)},()=>worker()));
 }
 
 uploadBtn.addEventListener("click",async()=>{
-  if(!selectedFiles.length)return;
-  const files=[...selectedFiles];
-
-  uploadBtn.disabled=true;
-  input.disabled=true;
-  progress.style.display="block";
-  bar.style.width="2%";
-  statusEl.className="status";
-  statusEl.textContent="사진 "+files.length+"장을 빠르게 올리는 중…";
-
-  try{
-    await runPool(files,3);
-    bar.style.width="100%";
-    statusEl.textContent="사진이 잘 도착했어요. 감사합니다! 🤍";
-    statusEl.className="status success";
-    preview.innerHTML="";
-    selectedFiles=[];
-    input.value="";
-  }catch(e){
-    console.error(e);
-    statusEl.innerHTML="업로드에 실패했어요.<br><span class='retry'>"+String(e.message||"연결 오류")+" — 다시 눌러 재시도해주세요.</span>";
-    statusEl.className="status error";
-  }finally{
-    input.disabled=false;
-    uploadBtn.disabled=!selectedFiles.length;
-  }
+ if(!selectedFiles.length)return;const files=[...selectedFiles];uploadBtn.disabled=true;input.disabled=true;progress.style.display="block";bar.style.width="2%";statusEl.className="status";statusEl.textContent="원본 사진 "+files.length+"장을 빠르게 올리는 중…";
+ try{await runPool(files,4);bar.style.width="100%";statusEl.textContent="사진이 잘 도착했어요. 감사합니다! 🤍";statusEl.className="status success";preview.innerHTML="";selectedFiles=[];input.value=""}
+ catch(e){console.error(e);statusEl.innerHTML="업로드에 실패했어요.<br><span class='retry'>"+String(e.message||"연결 오류")+" · 잠시 후 다시 눌러주세요.</span>";statusEl.className="status error"}
+ finally{input.disabled=false;uploadBtn.disabled=!selectedFiles.length}
 });
 </script></body></html>
