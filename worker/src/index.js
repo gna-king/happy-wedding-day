@@ -12,6 +12,17 @@ function corsHeaders() {
   };
 }
 
+function mediaKind(fileName, contentType) {
+  if (contentType.startsWith("image/")) return "image";
+  if (contentType.startsWith("video/")) return "video";
+  const ext = (fileName.split(".").pop() || "").toLowerCase();
+  const images = new Set(["jpg","jpeg","png","gif","webp","heic","heif","avif"]);
+  const videos = new Set(["mov","mp4","m4v","webm","avi"]);
+  if (images.has(ext)) return "image";
+  if (videos.has(ext)) return "video";
+  return null;
+}
+
 export default {
   async fetch(request, env) {
     const cors = corsHeaders();
@@ -43,17 +54,23 @@ export default {
 
     try {
       const body = await request.json();
-      const fileName = String(body.fileName || "photo");
+      const fileName = String(body.fileName || "media");
       const contentType = String(body.contentType || "application/octet-stream");
+      const kind = mediaKind(fileName, contentType);
 
-      if (!contentType.startsWith("image/")) {
-        return Response.json({ success:false, error:"image_only" }, { status:400, headers:cors });
+      if (!kind) {
+        return Response.json(
+          { success:false, error:"media_only" },
+          { status:400, headers:cors }
+        );
       }
 
       const extMatch = fileName.match(/\.([a-zA-Z0-9]{1,10})$/);
       const ext = extMatch ? "." + extMatch[1].toLowerCase() : "";
       const date = new Date().toISOString().slice(0, 10);
-      const key = "wedding-photos/" + date + "/" + Date.now() + "-" + crypto.randomUUID() + ext;
+      const key =
+        "wedding-media/" + date + "/" + kind + "/" +
+        Date.now() + "-" + crypto.randomUUID() + ext;
 
       const objectPath = key.split("/").map(encodeURIComponent).join("/");
       const endpoint =
@@ -68,7 +85,7 @@ export default {
       });
 
       const signedUrl = new URL(endpoint);
-      signedUrl.searchParams.set("X-Amz-Expires", "600");
+      signedUrl.searchParams.set("X-Amz-Expires", "3600");
 
       const signedRequest = await signer.sign(
         new Request(signedUrl, {
@@ -79,7 +96,7 @@ export default {
       );
 
       return Response.json(
-        { success:true, uploadUrl:signedRequest.url, key },
+        { success:true, uploadUrl:signedRequest.url, key, kind },
         { headers:{ ...cors, "Cache-Control":"no-store" } }
       );
     } catch (e) {
