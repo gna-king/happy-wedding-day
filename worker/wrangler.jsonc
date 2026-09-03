@@ -4,6 +4,9 @@
   "main": "src/index.js",
   "compatibility_date": "2026-09-03",
   "keep_vars": true,
+  "vars": {
+    "R2_ACCOUNT_ID": "dc9da0585922ce7c8bf0e3acea3d8854"
+  },
   "r2_buckets": [
     {
       "binding": "BUCKET",
