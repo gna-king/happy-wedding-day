@@ -1,60 +1,93 @@
+import { AwsClient } from "aws4fetch";
+
+const BUCKET = "wedding-photos";
 const ALLOWED_ORIGIN = "https://gna-king.github.io";
 
-function cors() {
+function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, X-File-Name",
-    "Vary": "Origin"
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin",
   };
 }
 
 export default {
   async fetch(request, env) {
-    const headers = cors();
+    const cors = corsHeaders();
     const url = new URL(request.url);
 
-    if (url.pathname === "/health") {
-      let r2BindingOk = false;
-      try {
-        await env.BUCKET.list({ limit: 1 });
-        r2BindingOk = true;
-      } catch {}
-      return Response.json({ ok: true, hasBucketBinding: !!env.BUCKET, r2BindingOk });
+    if (request.method === "GET" && url.pathname === "/health") {
+      return Response.json({
+        ok: true,
+        hasAccountId: !!env.R2_ACCOUNT_ID,
+        accountIdLength: env.R2_ACCOUNT_ID ? String(env.R2_ACCOUNT_ID).length : 0,
+        hasAccessKey: !!env.R2_ACCESS_KEY_ID,
+        hasSecretKey: !!env.R2_SECRET_ACCESS_KEY,
+        hasBucketBinding: !!env.BUCKET
+      });
     }
 
     if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers });
+      return new Response(null, { status: 204, headers: cors });
     }
+
     if (request.method !== "POST") {
-      return new Response("Not allowed", { status: 405, headers });
+      return new Response("Not allowed", { status: 405, headers: cors });
     }
+
     const origin = request.headers.get("Origin");
     if (origin && origin !== ALLOWED_ORIGIN) {
-      return new Response("Forbidden", { status: 403, headers });
+      return new Response("Forbidden", { status: 403, headers: cors });
     }
 
     try {
-      const contentType = request.headers.get("Content-Type") || "application/octet-stream";
+      const body = await request.json();
+      const fileName = String(body.fileName || "photo");
+      const contentType = String(body.contentType || "application/octet-stream");
+
       if (!contentType.startsWith("image/")) {
-        return Response.json({ success:false, error:"image_only" }, { status:400, headers });
+        return Response.json({ success:false, error:"image_only" }, { status:400, headers:cors });
       }
 
-      const rawName = decodeURIComponent(request.headers.get("X-File-Name") || "photo");
-      const extMatch = rawName.match(/\.([a-zA-Z0-9]{1,10})$/);
+      const extMatch = fileName.match(/\.([a-zA-Z0-9]{1,10})$/);
       const ext = extMatch ? "." + extMatch[1].toLowerCase() : "";
-      const date = new Date().toISOString().slice(0,10);
+      const date = new Date().toISOString().slice(0, 10);
       const key = "wedding-photos/" + date + "/" + Date.now() + "-" + crypto.randomUUID() + ext;
 
-      await env.BUCKET.put(key, request.body, {
-        httpMetadata: { contentType },
-        customMetadata: { originalName: rawName.slice(0, 500) }
+      const objectPath = key.split("/").map(encodeURIComponent).join("/");
+      const endpoint =
+        "https://" + env.R2_ACCOUNT_ID + ".r2.cloudflarestorage.com/" +
+        BUCKET + "/" + objectPath;
+
+      const signer = new AwsClient({
+        accessKeyId: env.R2_ACCESS_KEY_ID,
+        secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+        service: "s3",
+        region: "auto",
       });
 
-      return Response.json({ success:true, key }, { headers });
+      const signedUrl = new URL(endpoint);
+      signedUrl.searchParams.set("X-Amz-Expires", "600");
+
+      const signedRequest = await signer.sign(
+        new Request(signedUrl, {
+          method: "PUT",
+          headers: { "Content-Type": contentType }
+        }),
+        { aws: { signQuery: true } }
+      );
+
+      return Response.json(
+        { success:true, uploadUrl:signedRequest.url, key },
+        { headers:{ ...cors, "Cache-Control":"no-store" } }
+      );
     } catch (e) {
       console.error(e);
-      return Response.json({ success:false, error:"upload_failed" }, { status:500, headers });
+      return Response.json(
+        { success:false, error:"presign_failed" },
+        { status:500, headers:cors }
+      );
     }
   }
 };
