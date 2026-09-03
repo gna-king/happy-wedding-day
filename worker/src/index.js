@@ -15,6 +15,30 @@ function corsHeaders() {
 export default {
   async fetch(request, env) {
     const cors = corsHeaders();
+    const u = new URL(request.url);
+
+    if (request.method === "GET" && u.pathname === "/health") {
+      let r2BindingOk = false;
+      let r2BindingError = null;
+      try {
+        if (env.BUCKET && typeof env.BUCKET.list === "function") {
+          await env.BUCKET.list({ limit: 1 });
+          r2BindingOk = true;
+        }
+      } catch (e) {
+        r2BindingError = String(e?.message || e);
+      }
+      return Response.json({
+        ok: true,
+        hasAccountId: !!env.R2_ACCOUNT_ID,
+        accountIdLength: env.R2_ACCOUNT_ID ? String(env.R2_ACCOUNT_ID).length : 0,
+        hasAccessKey: !!env.R2_ACCESS_KEY_ID,
+        hasSecretKey: !!env.R2_SECRET_ACCESS_KEY,
+        hasBucketBinding: !!env.BUCKET,
+        r2BindingOk,
+        r2BindingError
+      });
+    }
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
