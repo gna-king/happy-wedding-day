@@ -77,7 +77,12 @@ export default {
       url.searchParams.set("X-Amz-Expires", "600");
 
       const signed = await signer.sign(
-        new Request(url, { method: "PUT" }),
+        new Request(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": contentType,
+          },
+        }),
         { aws: { signQuery: true } }
       );
 
